@@ -1487,9 +1487,10 @@ export default function SwapBox(props) {
       }
     }
 
-    let params = [[
+    let params = [
         path, // _path
         indexTokenAddress, // _indexToken
+        boundedFromAmount,
         0, // _minOut
         toUsdMax, // _sizeDelta
         isLong, // _isLong
@@ -1497,17 +1498,16 @@ export default function SwapBox(props) {
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
         AddressZero // _callbackTarget
-      ],
-      boundedFromAmount, // _amountIn
     ];
     let method = "createIncreasePosition";
     let value = minExecutionFee;
     if (fromTokenAddress === AddressZero) {
       method = "createIncreasePositionETH";
       value = boundedFromAmount.add(minExecutionFee);
-      params = [[
+      params = [
         path, // _path
         indexTokenAddress, // _indexToken
+        boundedFromAmount,
         0, // _minOut
         toUsdMax, // _sizeDelta
         isLong, // _isLong
@@ -1515,7 +1515,7 @@ export default function SwapBox(props) {
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
         AddressZero // _callbackTarget
-      ]];
+      ];
 
     }
 

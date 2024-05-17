@@ -303,9 +303,10 @@ export default function PositionEditor(props) {
     if (collateralTokenAddress === AddressZero) {
       method = "createIncreasePositionETH";
       value = fromAmount.add(minExecutionFee);
-      params = [[
+      params = [
         path, // _path
         indexTokenAddress, // _indexToken
+        boundedFromAmount,
         0, // _minOut
         0, // _sizeDelta
         position.isLong, // _isLong
@@ -313,7 +314,7 @@ export default function PositionEditor(props) {
         minExecutionFee, // _executionFee
         referralCode, // _referralCode
         AddressZero, // _callbackTarget
-      ]];
+      ];
     }
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {

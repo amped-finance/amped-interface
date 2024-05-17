@@ -12,7 +12,7 @@ export const SUBGRAPH_URLS = {
     referrals: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/referrals",
     trades:"https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/trades",  
     raw:"https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/raw2",  
-    price: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/prices"
+    price: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/pricesz"
   },
   
   [PHOENIX]: {
@@ -24,6 +24,6 @@ export const SUBGRAPH_URLS = {
   },
   
   common: {
-    chainLink: "http://info3.amped.finance/subgraphs/name/amped/prices"
+    chainLink: "http://info3.amped.finance/subgraphs/name/amped/pricesz"
   },
 };
