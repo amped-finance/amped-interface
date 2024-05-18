@@ -306,7 +306,6 @@ export default function PositionEditor(props) {
       params = [
         path, // _path
         indexTokenAddress, // _indexToken
-        boundedFromAmount,
         0, // _minOut
         0, // _sizeDelta
         position.isLong, // _isLong

@@ -1507,7 +1507,6 @@ export default function SwapBox(props) {
       params = [
         path, // _path
         indexTokenAddress, // _indexToken
-        boundedFromAmount,
         0, // _minOut
         toUsdMax, // _sizeDelta
         isLong, // _isLong
