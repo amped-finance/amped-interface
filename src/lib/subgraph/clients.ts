@@ -63,3 +63,15 @@ export function getAmpGraphClientByNewCreate(chainId: number) {
 
   throw new Error(`Unsupported chain ${chainId}`);
 }
+
+export function getAmpGraphClientByNewCreateOrder(chainId: number) {
+  if (chainId === ARBITRUM) {
+    return createClient(SUBGRAPH_URLS[ARBITRUM].stats);
+  } else if (chainId === PEGASUS) {
+    return createClient(SUBGRAPH_URLS[PEGASUS].ordernew);
+  } else if (chainId === PHOENIX) {
+    return createClient(SUBGRAPH_URLS[PHOENIX].ordernew);
+  }
+
+  throw new Error(`Unsupported chain ${chainId}`);
+}

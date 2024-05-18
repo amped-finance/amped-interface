@@ -1,13 +1,13 @@
 import { BigNumber, ethers } from "ethers";
-import { useContext } from 'react'
+import { useContext } from "react";
 import { gql } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
-import { chain, sumBy, sortBy, maxBy, minBy } from 'lodash'
+import { chain, sumBy, sortBy, maxBy, minBy } from "lodash";
 
-import { RefreshContext } from '../Context/RefreshContext'
+import { RefreshContext } from "../Context/RefreshContext";
 
 import OrderBook from "abis/OrderBook.json";
 import PositionManager from "abis/PositionManager.json";
@@ -26,7 +26,14 @@ import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy"
 import { groupBy } from "lodash";
 import { UI_VERSION } from "config/ui";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
-import { getAmpGraphClient, nissohGraphClient, getAmpGraphClientByNewCreate, getTradesGraphClient, getRawGraphClient } from "lib/subgraph/clients";
+import {
+  getAmpGraphClient,
+  nissohGraphClient,
+  getAmpGraphClientByNewCreate,
+  getAmpGraphClientByNewCreateOrder,
+  getTradesGraphClient,
+  getRawGraphClient,
+} from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
@@ -38,16 +45,16 @@ import { useChainId } from "lib/chains";
 
 export * from "./prices";
 
-const NOW_TS = parseInt(Date.now() / 1000)
-const FIRST_DATE_TS = parseInt(+(new Date(2023, 3, 20)) / 1000)
-const MOVING_AVERAGE_DAYS = 7
-const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS
+const NOW_TS = parseInt(Date.now() / 1000);
+const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
+const MOVING_AVERAGE_DAYS = 7;
+const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
 
 export const useRefresh = () => {
-  const { fast, slow } = useContext(RefreshContext)
-  return { fastRefresh: fast, fastRefresh: slow }
-}
+  const { fast, slow } = useContext(RefreshContext);
+  return { fastRefresh: fast, fastRefresh: slow };
+};
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{
@@ -195,8 +202,8 @@ export function usePositionStates(chainId) {
     }
     
     }`);
-    
-    const graphClient = getTradesGraphClient(chainId)
+
+    const graphClient = getTradesGraphClient(chainId);
     if (!graphClient) {
       return;
     }
@@ -207,10 +214,8 @@ export function usePositionStates(chainId) {
         setRes(res);
       })
       .catch((err) => {
-          console.warn(err);
-        }
-      );
-
+        console.warn(err);
+      });
   }, [setRes, chainId]);
 
   const tradeVolueDataMap = useMemo(() => {
@@ -219,21 +224,30 @@ export function usePositionStates(chainId) {
     }
     const tradeData = res.data;
     const superArray = {
-      totalLongPositionCollaterals	:	bigNumberify(0),
-      totalLongPositionSizes	:	bigNumberify(0),
-      totalShortPositionCollaterals	:	bigNumberify(0),
-      totalShortPositionSizes	:	bigNumberify(0),
-      totalActivePositions	:	0
+      totalLongPositionCollaterals: bigNumberify(0),
+      totalLongPositionSizes: bigNumberify(0),
+      totalShortPositionCollaterals: bigNumberify(0),
+      totalShortPositionSizes: bigNumberify(0),
+      totalActivePositions: 0,
     };
     tradeData.createIncreasePositions.forEach((item) => {
-      const decimals = 18//getToken(chainId, item.indexToken).decimals
-      const positionSizeInUSD = ethers.utils.formatUnits(item.amountIn, decimals) * ethers.utils.formatUnits(item.acceptablePrice, 30)
-      if(item.isLong) {
-        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(ethers.utils.parseEther(positionSizeInUSD.toFixed(18)));
-        superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(ethers.utils.parseEther(positionSizeInUSD.toFixed(18)));
+      const decimals = 18; //getToken(chainId, item.indexToken).decimals
+      const positionSizeInUSD =
+        ethers.utils.formatUnits(item.amountIn, decimals) * ethers.utils.formatUnits(item.acceptablePrice, 30);
+      if (item.isLong) {
+        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(
+          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
+        );
+        superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(
+          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
+        );
       } else {
-        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(ethers.utils.parseEther(positionSizeInUSD.toFixed(18)));
-        superArray.totalShortPositionSizes = superArray.totalShortPositionSizes.add(ethers.utils.parseEther(positionSizeInUSD.toFixed(18)));
+        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(
+          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
+        );
+        superArray.totalShortPositionSizes = superArray.totalShortPositionSizes.add(
+          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
+        );
       }
       superArray.totalActivePositions += 1;
     });
@@ -251,9 +265,8 @@ export function usePositionStates(chainId) {
     //   superArray.push(parent);
     // });
 
-
     // tradeData.orders.forEach((item) => {
-      
+
     //   const obj = {
     //     timestamp: item.createdTimestamp,
     //     group: 1669248000,
@@ -267,7 +280,6 @@ export function usePositionStates(chainId) {
     //   superArray.push(parent);
     // });
 
-
     // const mapData = new Map();
 
     // return tradeHistoryData.forEach((item) => ({
@@ -280,7 +292,7 @@ export function usePositionStates(chainId) {
 }
 
 export function useTotalVolume() {
-  const { chainId } = useChainId()
+  const { chainId } = useChainId();
   const [res, setRes] = useState();
   useEffect(() => {
     const query = gql(`
@@ -400,7 +412,7 @@ export function useTotalVolume() {
     
     }`);
 
-    const graphClient = getTradesGraphClient(chainId)
+    const graphClient = getTradesGraphClient(chainId);
     if (!graphClient) {
       return;
     }
@@ -411,9 +423,8 @@ export function useTotalVolume() {
         setRes(res);
       })
       .catch((err) => {
-          console.warn(err);
-        }
-      );
+        console.warn(err);
+      });
 
     // goerliGraphClientForTrades
     //   .query({ query })
@@ -424,8 +435,6 @@ export function useTotalVolume() {
     //       console.error(err);
     //     }
     //   );
-
-
   }, [setRes]);
 
   const tradeVolueDataMap = useMemo(() => {
@@ -446,11 +455,10 @@ export function useTotalVolume() {
       // superArray.add(bigNumberify(item.amountOut));
     });
 
-
     tradeData.orders.forEach((item) => {
       superArray = superArray.add(item.size);
     });
-    
+
     return superArray;
   }, [res]);
 
@@ -576,22 +584,20 @@ export function useTradeVolumeHistory(chainId) {
     }
     
     }`);
-    
-    const graphClient = getTradesGraphClient(chainId)
+
+    const graphClient = getTradesGraphClient(chainId);
     if (!graphClient) {
       return;
     }
-    
+
     graphClient
       .query({ query })
       .then((res) => {
         setRes(res);
       })
       .catch((err) => {
-          console.warn(err);
-        }
-      );
-
+        console.warn(err);
+      });
   }, [setRes, chainId]);
 
   const tradeVolueDataMap = useMemo(() => {
@@ -606,10 +612,10 @@ export function useTradeVolumeHistory(chainId) {
         group: 1669248000,
         action: "Swap",
         token: ethers.utils.getAddress(item.tokenOut),
-        volume: item.amountIn
+        volume: item.amountIn,
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -623,7 +629,7 @@ export function useTradeVolumeHistory(chainId) {
         volume: item.amountIn,
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -637,27 +643,24 @@ export function useTradeVolumeHistory(chainId) {
         volume: item.amountOut,
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
 
-
     tradeData.orders.forEach((item) => {
-      
       const obj = {
         timestamp: item.createdTimestamp,
         group: 1669248000,
         action: "CreateIncreaseOrder",
         token: ethers.utils.getAddress(item.indexToken),
-        volume: item.size
+        volume: item.size,
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
-
 
     // const mapData = new Map();
 
@@ -779,21 +782,20 @@ export function useAllTradesHistory(chainId, account) {
       
       }
       `);
-      
-      const graphClient = getTradesGraphClient(chainId)
+
+      const graphClient = getTradesGraphClient(chainId);
       if (!graphClient) {
         return;
       }
-  
+
       graphClient
         .query({ query })
         .then((res) => {
           setRes(res);
         })
         .catch((err) => {
-            console.warn(err);
-          }
-        );
+          console.warn(err);
+        });
     }
   }, [setRes, chainId, account]);
 
@@ -810,18 +812,18 @@ export function useAllTradesHistory(chainId, account) {
         account: item.account,
         action: "CreateIncreasePosition",
         params: {
-          "indexToken": ethers.utils.getAddress(item.indexToken),
-          "tokenOut": item.tokenOut,
-          "amountIn": item.amountIn,
-          "acceptablePrice": item.acceptablePrice,
-          "collateralToken": ethers.utils.getAddress(item.collateralToken),
-          "executionFee": item.executionFee,
-          "isLong": item.isLong,
-          "sizeDelta": item.sizeDelta,
+          indexToken: ethers.utils.getAddress(item.indexToken),
+          tokenOut: item.tokenOut,
+          amountIn: item.amountIn,
+          acceptablePrice: item.acceptablePrice,
+          collateralToken: ethers.utils.getAddress(item.collateralToken),
+          executionFee: item.executionFee,
+          isLong: item.isLong,
+          sizeDelta: item.sizeDelta,
         },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -833,18 +835,18 @@ export function useAllTradesHistory(chainId, account) {
         account: item.account,
         action: "CreateDecreasePosition",
         params: {
-          "indexToken": ethers.utils.getAddress(item.indexToken),
-          "tokenOut": item.tokenOut,
-          "amountOut": item.amountOut,
-          "acceptablePrice": item.acceptablePrice,
-          "collateralToken": ethers.utils.getAddress(item.collateralToken),
-          "executionFee": item.executionFee,
-          "isLong": item.isLong,
-          "sizeDelta": item.sizeDelta,
+          indexToken: ethers.utils.getAddress(item.indexToken),
+          tokenOut: item.tokenOut,
+          amountOut: item.amountOut,
+          acceptablePrice: item.acceptablePrice,
+          collateralToken: ethers.utils.getAddress(item.collateralToken),
+          executionFee: item.executionFee,
+          isLong: item.isLong,
+          sizeDelta: item.sizeDelta,
         },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -856,14 +858,14 @@ export function useAllTradesHistory(chainId, account) {
         account: item.account,
         action: "CancelIncreasePosition",
         params: {
-          "indexToken": ethers.utils.getAddress(item.indexToken),
-          "acceptablePrice": item.acceptablePrice,
-          "isLong": item.isLong,
-          "sizeDelta": item.sizeDelta,
+          indexToken: ethers.utils.getAddress(item.indexToken),
+          acceptablePrice: item.acceptablePrice,
+          isLong: item.isLong,
+          sizeDelta: item.sizeDelta,
         },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -875,62 +877,63 @@ export function useAllTradesHistory(chainId, account) {
         account: item.account,
         action: "CancelDecreasePosition",
         params: {
-          "indexToken": ethers.utils.getAddress(item.indexToken),
-          "acceptablePrice": item.acceptablePrice,
-          "isLong": item.isLong,
-          "sizeDelta": item.sizeDelta,
+          indexToken: ethers.utils.getAddress(item.indexToken),
+          acceptablePrice: item.acceptablePrice,
+          isLong: item.isLong,
+          sizeDelta: item.sizeDelta,
         },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
 
     tradeData.orders.forEach((item) => {
-      
       const obj = {
         timestamp: item.createdTimestamp,
         txhash: item.transaction,
         account: item.account,
         action: "CreateIncreaseOrder",
         params: {
-          "order": {
-            "type":item.type,
+          order: {
+            type: item.type,
             // "createdAtBlock":22518920,
-            "updatedAt":1668747661257,
-            "account":item.account,
-            "orderIndex": {
-              "_type": "BigNumber",
-              "value":item.index
+            updatedAt: 1668747661257,
+            account: item.account,
+            orderIndex: {
+              _type: "BigNumber",
+              value: item.index,
             },
             // "triggerPrice": {
             //   "_type":"BigNumber",
             //   "value":item.triggerPrice
             // },
-            "triggerPrice": item.triggerPrice,
-            "triggerAboveThreshold":item.triggerAboveThreshold,
-            "executionFee": {
-              "_type":"BigNumber",
-              "value":0
+            triggerPrice: item.triggerPrice,
+            triggerAboveThreshold: item.triggerAboveThreshold,
+            executionFee: {
+              _type: "BigNumber",
+              value: 0,
             },
-            "indexToken": item.indexToken? ethers.utils.getAddress(item.indexToken) : item.indexToken,
-            "collateralToken":item.collateralToken? ethers.utils.getAddress(item.collateralToken) : item.collateralToken,
+            indexToken: item.indexToken ? ethers.utils.getAddress(item.indexToken) : item.indexToken,
+            collateralToken: item.collateralToken
+              ? ethers.utils.getAddress(item.collateralToken)
+              : item.collateralToken,
             // "purchaseToken":"0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
             // "purchaseTokenAmount":{
             //   "_type":"BigNumber",
             //   "value":"10000000"
             // },
-            "sizeDelta":item.size,
-            "isLong":item.isLong
-          }},
+            sizeDelta: item.size,
+            isLong: item.isLong,
+          },
+        },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
-
 
     // const mapData = new Map();
 
@@ -945,7 +948,7 @@ export function useAllTradesHistory(chainId, account) {
   return tradeHistoryDataMap;
 }
 
-export function useRawData(chainId, account) {  
+export function useRawData(chainId, account) {
   const [res, setRes] = useState();
   useEffect(() => {
     if (account) {
@@ -1011,21 +1014,20 @@ export function useRawData(chainId, account) {
           status
         }
       }`);
-      
-      const graphClient = getRawGraphClient(chainId)
+
+      const graphClient = getRawGraphClient(chainId);
       if (!graphClient) {
         return;
       }
-  
+
       graphClient
         .query({ query })
         .then((res) => {
           setRes(res);
         })
         .catch((err) => {
-            console.warn(err);
-          }
-        );
+          console.warn(err);
+        });
     }
   }, [setRes, chainId, account]);
 
@@ -1042,68 +1044,68 @@ export function useRawData(chainId, account) {
         account: item.account,
         action: "CreateSwapOrder",
         params: {
-          "order": item,
+          order: item,
         },
       };
       let parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
 
-      if(item.status === "cancelled") {
+      if (item.status === "cancelled") {
         obj = {
           timestamp: item.cancelledAt,
           txhash: item.cancelTx,
           account: item.account,
           action: "CancelSwapOrder",
           params: {
-            "order": item,
+            order: item,
           },
         };
         parent = {
-          data: obj
+          data: obj,
         };
         superArray.push(parent);
       }
-      if(item.status === "liquidated") {
+      if (item.status === "liquidated") {
         obj = {
           timestamp: item.executedAt,
           txhash: item.executeTx,
           account: item.account,
           action: "ExecuteSwapOrder",
           params: {
-            "order": item,
+            order: item,
           },
         };
         parent = {
-          data: obj
+          data: obj,
         };
         superArray.push(parent);
       }
     });
-    
+
     tradeData.positions.forEach((item) => {
       const obj = {
         timestamp: item.liquidatedAt,
         txhash: item.liquidateTx,
         account: item.account,
-        action: item.isLong? "LiquidatePosition-Long" : "LiquidatePosition-Short",
+        action: item.isLong ? "LiquidatePosition-Long" : "LiquidatePosition-Short",
         params: {
-          "type": item.type,
-          "timestamp": item.timestamp,
-          "size": item.size,
-          "markPrice": item.markPrice,
-          "loss": item.loss,
-          "key": item.key,
-          "indexToken": ethers.utils.getAddress(item.indexToken),
-          "collateralToken": item.collateralToken,
-          "collateral": item.collateral,
-          "borrowFee": item.borrowFee,
-          "averagePrice": item.averagePrice,
+          type: item.type,
+          timestamp: item.timestamp,
+          size: item.size,
+          markPrice: item.markPrice,
+          loss: item.loss,
+          key: item.key,
+          indexToken: ethers.utils.getAddress(item.indexToken),
+          collateralToken: item.collateralToken,
+          collateral: item.collateral,
+          borrowFee: item.borrowFee,
+          averagePrice: item.averagePrice,
         },
       };
       const parent = {
-        data: obj
+        data: obj,
       };
       superArray.push(parent);
     });
@@ -1249,31 +1251,67 @@ export function useAllPositions(chainId, library) {
 }
 
 export function useAllOrders(chainId, library, account) {
+  // const query = gql(`{
+  //   orders(
+  //     first: 1000,
+  //     orderBy: createdTimestamp,
+  //     orderDirection: desc,
+  //     where: {status: "open"}
+  //   ) {
+  //     type
+  //     account
+  //     index
+  //     status
+  //     createdTimestamp
+  //   }
+  // }`);
+
   const query = gql(`{
-    orders(
-      first: 1000,
+    decreaseOrders ( first: 1000,
       orderBy: createdTimestamp,
       orderDirection: desc,
-      where: {status: "open"}
-    ) {
-      type
+      where: {status: "open"}) {
+    type
       account
       index
       status
       createdTimestamp
-    }
+  }
+  increaseOrders ( first: 1000,
+      orderBy: createdTimestamp,
+      orderDirection: desc,
+      where: {status: "open"}) {
+    type
+      account
+      index
+      status
+      createdTimestamp
+  }
   }`);
 
   const [res, setRes] = useState();
   const { fastRefresh } = useRefresh();
 
   useEffect(() => {
-    getAmpGraphClientByNewCreate(chainId).query({ query }).then(setRes).catch(err => console.warn(err));
+    getAmpGraphClientByNewCreateOrder(chainId)
+      .query({ query })
+      .then(setRes)
+      .catch((err) => console.warn(err));
   }, [setRes, query, chainId, fastRefresh]);
-  
-  const ordersForAccount = res ? res.data.orders.filter((order) => order.account === account?.toLowerCase()) : undefined
 
-  const key = ordersForAccount ? ordersForAccount.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
+  // const newOrders = (res?.data.increaseOrders).concat(res?.data.increaseOrders)
+  const newOrders = res ? [...res?.data.increaseOrders, ...res?.data.decreaseOrders] : undefined;
+  // const ordersForAccount = res
+  //   ? res.data.orders.filter((order) => order.account === account?.toLowerCase())
+  //   : undefined;
+
+  const ordersForAccount = newOrders
+    ? newOrders.filter((order) => order.account === account?.toLowerCase())
+    : undefined;
+
+  const key = ordersForAccount
+    ? ordersForAccount.map((order) => `${order.type}-${order.account}-${order.index}`)
+    : null;
   const { data: orders = [] } = useSWR(key, () => {
     const orderBookAddress = getContract(chainId, "OrderBook");
     const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library);
@@ -1440,7 +1478,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   if (chainId === ARBITRUM) {
     multiplier = 65000;
   } else {
-    multiplier = 700000
+    multiplier = 700000;
   }
 
   let finalExecutionFee = minExecutionFee;
@@ -1451,13 +1489,13 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
       finalExecutionFee = estimatedExecutionFee;
     }
   }
-  
+
   const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
-  const isFeeHigh = false // added sniper because lightlink gas fee is zero // finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
+  const isFeeHigh = false; // added sniper because lightlink gas fee is zero // finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
     `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
-    
+
   return {
     minExecutionFee: finalExecutionFee,
     minExecutionFeeUSD: finalExecutionFeeUSD,
@@ -1499,16 +1537,19 @@ export function useAmpPrice(chainId, library, active) {
 
   return {
     ampPrice: ethers.utils.parseUnits("0.1", 30),
-    mutate: null
-  }
+    mutate: null,
+  };
 }
 
 // use only the supply endpoint on arbitrum, it includes the supply on avalanche
 export function useTotalAmpSupply(chainId = DEFAULT_CHAIN_ID) {
-  const { data: ampSupply } = useSWR([`StakeV2:totalSupply:${chainId}`, chainId, getContract(chainId, "AMP"), "totalSupply"], {
-    fetcher: contractFetcher(undefined, Token),
-  });
-  
+  const { data: ampSupply } = useSWR(
+    [`StakeV2:totalSupply:${chainId}`, chainId, getContract(chainId, "AMP"), "totalSupply"],
+    {
+      fetcher: contractFetcher(undefined, Token),
+    }
+  );
+
   return {
     total: ampSupply,
     mutate: undefined,
@@ -1519,13 +1560,7 @@ export function useTotalAmpStaked(chainId = DEFAULT_CHAIN_ID) {
   const stakedAmpTrackerAddress = getContract(chainId, "StakedAmpTracker");
   let totalStakedAmp = useRef(bigNumberify(0));
   const { data: stakedAmpSupply, mutate: updateStakedAmpSupply } = useSWR(
-    [
-      `StakeV2:stakedAmpSupply:${chainId}`,
-      chainId,
-      getContract(chainId, "AMP"),
-      "balanceOf",
-      stakedAmpTrackerAddress,
-    ],
+    [`StakeV2:stakedAmpSupply:${chainId}`, chainId, getContract(chainId, "AMP"), "balanceOf", stakedAmpTrackerAddress],
     {
       fetcher: contractFetcher(undefined, Token),
     }
@@ -1907,7 +1942,7 @@ export function executeDecreaseOrder(chainId, library, account, index, feeReceiv
 }
 
 export function useFeesData(chainId = DEFAULT_CHAIN_ID, { from = FIRST_DATE_TS, to = NOW_TS } = {}) {
-  const PROPS = 'margin liquidation swap mint burn'.split(' ')
+  const PROPS = "margin liquidation swap mint burn".split(" ");
   const query = gql(`{
     feeStats(
       first: 1000
@@ -1940,72 +1975,71 @@ export function useFeesData(chainId = DEFAULT_CHAIN_ID, { from = FIRST_DATE_TS, 
 
   const feesChartData = useMemo(() => {
     if (!feesData) {
-      return null
+      return null;
     }
 
     // let chartData = sortBy(feesData.feeStats, 'id').map(item => {
-    let chartData = sortBy(feesData.data.feeStats, 'id').map(item => {
-
+    let chartData = sortBy(feesData.data.feeStats, "id").map((item) => {
       const ret = { timestamp: item.timestamp || item.id };
 
-      PROPS.forEach(prop => {
+      PROPS.forEach((prop) => {
         if (item[prop]) {
-          ret[prop] = item[prop] / 1e30
+          ret[prop] = item[prop] / 1e30;
         }
-      })
+      });
 
-      ret.liquidation = item.marginAndLiquidation / 1e30 - item.margin / 1e30
-      ret.all = PROPS.reduce((memo, prop) => memo + ret[prop], 0)
-      return ret
-    })
+      ret.liquidation = item.marginAndLiquidation / 1e30 - item.margin / 1e30;
+      ret.all = PROPS.reduce((memo, prop) => memo + ret[prop], 0);
+      return ret;
+    });
 
-    let cumulative = 0
-    const cumulativeByTs = {}
+    let cumulative = 0;
+    const cumulativeByTs = {};
     return chain(chartData)
-      .groupBy(item => item.timestamp)
+      .groupBy((item) => item.timestamp)
       .map((values, timestamp) => {
-        const all = sumBy(values, 'all')
-        cumulative += all
+        const all = sumBy(values, "all");
+        cumulative += all;
 
-        let movingAverageAll
-        const movingAverageTs = timestamp - MOVING_AVERAGE_PERIOD
+        let movingAverageAll;
+        const movingAverageTs = timestamp - MOVING_AVERAGE_PERIOD;
         if (movingAverageTs in cumulativeByTs) {
-          movingAverageAll = (cumulative - cumulativeByTs[movingAverageTs]) / MOVING_AVERAGE_DAYS
+          movingAverageAll = (cumulative - cumulativeByTs[movingAverageTs]) / MOVING_AVERAGE_DAYS;
         }
 
         const ret = {
           timestamp: Number(timestamp),
           all,
           cumulative,
-          movingAverageAll
-        }
-        PROPS.forEach(prop => {
-           ret[prop] = sumBy(values, prop)
-        })
-        cumulativeByTs[timestamp] = cumulative
-        return ret
+          movingAverageAll,
+        };
+        PROPS.forEach((prop) => {
+          ret[prop] = sumBy(values, prop);
+        });
+        cumulativeByTs[timestamp] = cumulative;
+        return ret;
       })
       .value()
-      .filter(item => item.timestamp >= from)
-  }, [feesData])
+      .filter((item) => item.timestamp >= from);
+  }, [feesData]);
   const [totalFees, totalFeesDelta] = useMemo(() => {
     if (!feesChartData) {
-      return []
+      return [];
     }
-    const total = feesChartData[feesChartData.length - 1]?.cumulative
-    const delta = total - feesChartData[feesChartData.length - 2]?.cumulative
-    return [total, delta]
-  }, [feesChartData])
+    const total = feesChartData[feesChartData.length - 1]?.cumulative;
+    const delta = total - feesChartData[feesChartData.length - 2]?.cumulative;
+    return [total, delta];
+  }, [feesChartData]);
 
   return [totalFees, totalFeesDelta];
 }
 
 export function useVolumeData(chainId = DEFAULT_CHAIN_ID, { from = FIRST_DATE_TS, to = NOW_TS } = {}) {
-	const PROPS = 'margin liquidation swap mint burn'.split(' ')
+  const PROPS = "margin liquidation swap mint burn".split(" ");
   // const timestampProp = chainName === "arbitrum" ? "id" : "timestamp"
-  const timestampProp = "timestamp"
+  const timestampProp = "timestamp";
   const [graphData, setRes] = useState();
-  
+
   const query = gql`{
     volumeStats(
       first: 1000,
@@ -2015,9 +2049,9 @@ export function useVolumeData(chainId = DEFAULT_CHAIN_ID, { from = FIRST_DATE_TS
       subgraphError: allow
     ) {
       ${timestampProp}
-      ${PROPS.join('\n')}
+      ${PROPS.join("\n")}
     }
-  }`
+  }`;
   // const [graphData, loading, error] = useGraph(query, { chainName })
 
   useEffect(() => {
@@ -2030,55 +2064,55 @@ export function useVolumeData(chainId = DEFAULT_CHAIN_ID, { from = FIRST_DATE_TS
 
   const data = useMemo(() => {
     if (!graphData) {
-      return null
+      return null;
     }
 
-    let ret =  sortBy(graphData.data.volumeStats, timestampProp).map(item => {
+    let ret = sortBy(graphData.data.volumeStats, timestampProp).map((item) => {
       const ret = { timestamp: item[timestampProp] };
       let all = 0;
-      PROPS.forEach(prop => {
-        ret[prop] = item[prop] / 1e30
-        all += ret[prop]
-      })
-      ret.all = all
-      return ret
-    })
+      PROPS.forEach((prop) => {
+        ret[prop] = item[prop] / 1e30;
+        all += ret[prop];
+      });
+      ret.all = all;
+      return ret;
+    });
 
-    let cumulative = 0
-    const cumulativeByTs = {}
-    return ret.map(item => {
-      cumulative += item.all
+    let cumulative = 0;
+    const cumulativeByTs = {};
+    return ret.map((item) => {
+      cumulative += item.all;
 
-      let movingAverageAll
-      const movingAverageTs = item.timestamp - MOVING_AVERAGE_PERIOD
+      let movingAverageAll;
+      const movingAverageTs = item.timestamp - MOVING_AVERAGE_PERIOD;
       if (movingAverageTs in cumulativeByTs) {
-        movingAverageAll = (cumulative - cumulativeByTs[movingAverageTs]) / MOVING_AVERAGE_DAYS
+        movingAverageAll = (cumulative - cumulativeByTs[movingAverageTs]) / MOVING_AVERAGE_DAYS;
       }
 
       return {
         movingAverageAll,
         cumulative,
-        ...item
-      }
-    })
-  }, [graphData])
+        ...item,
+      };
+    });
+  }, [graphData]);
 
   // return [data, loading, error]
 
   const [totalVolume, totalVolumeDelta] = useMemo(() => {
     if (!data) {
-      return []
+      return [];
     }
-    const total = data[data.length - 1]?.cumulative
-    const delta = total - data[data.length - 2]?.cumulative
-    return [total, delta]
-  }, [data])
+    const total = data[data.length - 1]?.cumulative;
+    const delta = total - data[data.length - 2]?.cumulative;
+    return [total, delta];
+  }, [data]);
 
   return [totalVolume, totalVolumeDelta];
 }
 
 export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
-  const PROPS = 'margin liquidation swap mint burn'.split(' ')
+  const PROPS = "margin liquidation swap mint burn".split(" ");
   const [graphData, setRes] = useState();
   const query = gql`{
     tradingStats(
@@ -2096,7 +2130,7 @@ export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
       longOpenInterest
       shortOpenInterest
     }
-  }`
+  }`;
 
   useEffect(() => {
     const graphClient = getAmpGraphClient(PEGASUS);
@@ -2104,55 +2138,57 @@ export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
       return;
     }
     graphClient.query({ query }).then(setRes).catch(console.warn);
-  }, [setRes, query]);  
+  }, [setRes, query]);
 
-  let ret = null
+  let ret = null;
   let currentPnlCumulative = 0;
   let currentProfitCumulative = 0;
   let currentLossCumulative = 0;
-  
-  const data = graphData ? sortBy(graphData.data.tradingStats).map(dataItem => {
-    const longOpenInterest = dataItem.longOpenInterest / 1e30
-    const shortOpenInterest = dataItem.shortOpenInterest / 1e30
-    const openInterest = longOpenInterest + shortOpenInterest
-    const profit = dataItem.profit / 1e30
-    const loss = dataItem.loss / 1e30
-    const profitCumulative = dataItem.profitCumulative / 1e30
-    const lossCumulative = dataItem.lossCumulative / 1e30
-    const pnlCumulative = profitCumulative - lossCumulative
-    const pnl = profit - loss
-    currentProfitCumulative += profit
-    currentLossCumulative -= loss
-    currentPnlCumulative += pnl
-    return {
-      longOpenInterest,
-      shortOpenInterest,
-      openInterest,
-      profit,
-      loss: -loss,
-      profitCumulative,
-      lossCumulative: -lossCumulative,
-      pnl,
-      pnlCumulative,
-      timestamp: dataItem.timestamp,
-      currentPnlCumulative,
-      currentLossCumulative,
-      currentProfitCumulative
-    }
-  }) : null
+
+  const data = graphData
+    ? sortBy(graphData.data.tradingStats).map((dataItem) => {
+        const longOpenInterest = dataItem.longOpenInterest / 1e30;
+        const shortOpenInterest = dataItem.shortOpenInterest / 1e30;
+        const openInterest = longOpenInterest + shortOpenInterest;
+        const profit = dataItem.profit / 1e30;
+        const loss = dataItem.loss / 1e30;
+        const profitCumulative = dataItem.profitCumulative / 1e30;
+        const lossCumulative = dataItem.lossCumulative / 1e30;
+        const pnlCumulative = profitCumulative - lossCumulative;
+        const pnl = profit - loss;
+        currentProfitCumulative += profit;
+        currentLossCumulative -= loss;
+        currentPnlCumulative += pnl;
+        return {
+          longOpenInterest,
+          shortOpenInterest,
+          openInterest,
+          profit,
+          loss: -loss,
+          profitCumulative,
+          lossCumulative: -lossCumulative,
+          pnl,
+          pnlCumulative,
+          timestamp: dataItem.timestamp,
+          currentPnlCumulative,
+          currentLossCumulative,
+          currentProfitCumulative,
+        };
+      })
+    : null;
 
   if (data && data.length) {
-    const maxProfit = maxBy(data, item => item.profit).profit
-    const maxLoss = minBy(data, item => item.loss).loss
-    const maxProfitLoss = Math.max(maxProfit, -maxLoss)
+    const maxProfit = maxBy(data, (item) => item.profit).profit;
+    const maxLoss = minBy(data, (item) => item.loss).loss;
+    const maxProfitLoss = Math.max(maxProfit, -maxLoss);
 
-    const maxPnl = maxBy(data, item => item.pnl).pnl
-    const minPnl = minBy(data, item => item.pnl).pnl
-    const maxCurrentCumulativePnl = maxBy(data, item => item.currentPnlCumulative).currentPnlCumulative
-    const minCurrentCumulativePnl = minBy(data, item => item.currentPnlCumulative).currentPnlCumulative
+    const maxPnl = maxBy(data, (item) => item.pnl).pnl;
+    const minPnl = minBy(data, (item) => item.pnl).pnl;
+    const maxCurrentCumulativePnl = maxBy(data, (item) => item.currentPnlCumulative).currentPnlCumulative;
+    const minCurrentCumulativePnl = minBy(data, (item) => item.currentPnlCumulative).currentPnlCumulative;
 
-    const currentProfitCumulative = data[data.length - 1].currentProfitCumulative
-    const currentLossCumulative = data[data.length - 1].currentLossCumulative
+    const currentProfitCumulative = data[data.length - 1].currentProfitCumulative;
+    const currentLossCumulative = data[data.length - 1].currentLossCumulative;
     const stats = {
       maxProfit,
       maxLoss,
@@ -2161,92 +2197,97 @@ export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
       currentLossCumulative,
       maxCurrentCumulativeProfitLoss: Math.max(currentProfitCumulative, -currentLossCumulative),
 
-      maxAbsPnl: Math.max(
-        Math.abs(maxPnl),
-        Math.abs(minPnl),
-      ),
-      maxAbsCumulativePnl: Math.max(
-        Math.abs(maxCurrentCumulativePnl),
-        Math.abs(minCurrentCumulativePnl)
-      ),
-      
-    }
+      maxAbsPnl: Math.max(Math.abs(maxPnl), Math.abs(minPnl)),
+      maxAbsCumulativePnl: Math.max(Math.abs(maxCurrentCumulativePnl), Math.abs(minCurrentCumulativePnl)),
+    };
 
     ret = {
       data,
-      stats
-    }
+      stats,
+    };
   }
 
   // return [ret, loading]
   const [totalTraders, totalTradersDelta] = useMemo(() => {
     if (!ret) {
-      return []
+      return [];
     }
-    const total = ret.data[ret.data.length - 1]?.openInterest
-    const delta = total - ret.data[ret.data.length - 2]?.openInterest
-    return [total, delta]
-  }, [ret])
-  return [totalTraders, totalTradersDelta]
+    const total = ret.data[ret.data.length - 1]?.openInterest;
+    const delta = total - ret.data[ret.data.length - 2]?.openInterest;
+    return [total, delta];
+  }, [ret]);
+  return [totalTraders, totalTradersDelta];
 }
 
-
-const numberFmt0 = Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
-const numberFmt1 = Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 1 })
-const numberFmt2 = Intl.NumberFormat('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
-const currencyFmt0 = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })
-const currencyFmt1 = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 1 })
-const currencyFmt2 = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-
+const numberFmt0 = Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const numberFmt1 = Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 1 });
+const numberFmt2 = Intl.NumberFormat("en-US", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+const currencyFmt0 = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+const currencyFmt1 = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const currencyFmt2 = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 function _getCurrencyFmt(value) {
-  const absValue = Math.abs(value)
+  const absValue = Math.abs(value);
   if (absValue < 10) {
-    return currencyFmt2
+    return currencyFmt2;
   } else if (absValue < 1000) {
-    return currencyFmt1
+    return currencyFmt1;
   } else {
-    return currencyFmt0
+    return currencyFmt0;
   }
 }
 
 function _getNumberFmt(value) {
-  const absValue = Math.abs(value)
+  const absValue = Math.abs(value);
   if (absValue < 10) {
-    return numberFmt2
+    return numberFmt2;
   } else if (absValue < 1000) {
-    return numberFmt1
+    return numberFmt1;
   } else {
-    return numberFmt0
+    return numberFmt0;
   }
 }
-
 
 export const formatNumber = (value, opts = {}) => {
-  const currency = !!opts.currency
-  const compact = !!opts.compact
+  const currency = !!opts.currency;
+  const compact = !!opts.compact;
 
   if (currency && !compact) {
-    return _getCurrencyFmt(value).format(value)
+    return _getCurrencyFmt(value).format(value);
   }
 
-  const display = compact ? compactNumber(value) : _getNumberFmt(value).format(value)
+  const display = compact ? compactNumber(value) : _getNumberFmt(value).format(value);
   if (currency) {
-    return `$${display}`
+    return `$${display}`;
   }
-  return display
-}
+  return display;
+};
 
-export const compactNumber = value => {
-  const abs = Math.abs(value)
+export const compactNumber = (value) => {
+  const abs = Math.abs(value);
   if (abs >= 1e9) {
-    return `${(value / 1e9).toFixed(abs < 1e10 ? 2 : 1)}B`
+    return `${(value / 1e9).toFixed(abs < 1e10 ? 2 : 1)}B`;
   }
   if (abs >= 1e6) {
-    return `${(value / 1e6).toFixed(abs < 1e7 ? 2 : 1)}M`
+    return `${(value / 1e6).toFixed(abs < 1e7 ? 2 : 1)}M`;
   }
   if (abs >= 1e3) {
-    return `${(value / 1e3).toFixed(abs < 1e4 ? 2 : 1)}K`
+    return `${(value / 1e3).toFixed(abs < 1e4 ? 2 : 1)}K`;
   }
-  return `${value.toFixed(1)}`
-}
+  return `${value.toFixed(1)}`;
+};

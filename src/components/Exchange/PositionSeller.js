@@ -713,7 +713,7 @@ export default function PositionSeller(props) {
 
     const withdrawETH = isUnwrap;
 
-    const params = [[
+    const params = [
       path, // _path
       indexTokenAddress, // _indexToken
       collateralDelta, // _collateralDelta
@@ -725,7 +725,7 @@ export default function PositionSeller(props) {
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
       AddressZero, // _callbackTarget
-    ]];
+    ];
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 

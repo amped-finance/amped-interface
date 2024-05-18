@@ -361,7 +361,7 @@ export default function PositionEditor(props) {
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
     const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
-    const params = [[
+    const params = [
       [tokenAddress0], // _path
       indexTokenAddress, // _indexToken
       fromAmount, // _collateralDelta
@@ -373,7 +373,7 @@ export default function PositionEditor(props) {
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
       AddressZero, // _callbackTarget
-    ]];
+    ];
 
     const method = "createDecreasePosition";
 
