@@ -203,8 +203,8 @@ export default function PositionEditor(props) {
       return t`Min leverage: 1.1x`;
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(100 * BASIS_POINTS_DIVISOR)) {
-      return t`Max leverage: 100x`;
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(8 * BASIS_POINTS_DIVISOR)) {
+      return t`Max leverage: 8x`;
     }
   };
 

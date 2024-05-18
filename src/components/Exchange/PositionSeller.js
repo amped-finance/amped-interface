@@ -545,8 +545,8 @@ export default function PositionSeller(props) {
       return t`Min leverage: 1.1x`;
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return t`Max leverage: 30.5xt`;
+    if (nextLeverage && nextLeverage.gt(8 * BASIS_POINTS_DIVISOR)) {
+      return t`Max leverage: 8x`;
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
