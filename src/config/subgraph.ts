@@ -13,7 +13,7 @@ export const SUBGRAPH_URLS = {
     trades:"http://178.215.224.9:8000/subgraphs/name/amped/amped-tradepositions/",  
     raw:"https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/raw2",  
     price: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/pricesz",
-    ordernew: "http://178.215.224.9:8000/subgraphs/name/amped/amped-orders1"
+    ordernew: "https://info3.amped.finance/subgraphs/name/amped/amped-orders1"
   },
   
   [PHOENIX]: {
