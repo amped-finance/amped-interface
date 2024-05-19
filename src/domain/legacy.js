@@ -231,9 +231,9 @@ export function usePositionStates(chainId) {
       totalActivePositions: 0,
     };
     tradeData.createIncreasePositions.forEach((item) => {
-      const decimals = 18; //getToken(chainId, item.indexToken).decimals
+      const decimals = 31; //getToken(chainId, item.indexToken).decimals
       const positionSizeInUSD =
-        ethers.utils.formatUnits(item.amountIn, decimals) * ethers.utils.formatUnits(item.acceptablePrice, 30);
+        ethers.utils.formatUnits(item.amountIn, decimals) * ethers.utils.formatUnits(item.acceptablePrice, 31);
       if (item.isLong) {
         superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(
           ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
