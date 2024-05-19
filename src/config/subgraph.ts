@@ -18,7 +18,7 @@ export const SUBGRAPH_URLS = {
   
   [PHOENIX]: {
     stats: "https://info.amped.finance/subgraphs/name/amped/stats",
-    referrals: "https://info.amped.finance/subgraphs/name/amped/referrals",
+    referrals: "https://info3.amped.finance/subgraphs/name/amped/amped-referrals",
     trades:"https://info.amped.finance/subgraphs/name/amped/trades",  
     raw:"https://info.amped.finance/subgraphs/name/amped/raw",  
     price: "http://info3.amped.finance/subgraphs/name/amped/prices",

@@ -7,7 +7,7 @@ export const PEGASUS = 1891
 export const PHOENIX = 1890
 
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = PHOENIX;
+export const DEFAULT_CHAIN_ID = PEGASUS;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const SUPPORTED_CHAIN_IDS = [PEGASUS];
