@@ -1194,7 +1194,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setStakingTokenSymbol("AMP");
     setStakingTokenAddress(ampAddress);
     setStakingFarmAddress(stakedAmpTrackerAddress);
-    setStakeMethodName("stakeAmp");
+    setStakeMethodName("stakeGmx");
   };
 
   const showStakeEsAmpModal = () => {

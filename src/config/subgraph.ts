@@ -10,7 +10,7 @@ export const SUBGRAPH_URLS = {
   [PEGASUS]: {
     stats: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/stats",
     referrals: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/referrals",
-    trades:"http://178.215.224.9:8000/subgraphs/name/amped/amped-tradepositions/",  
+    trades:"https://info3.amped.finance/subgraphs/name/amped/amped-trades/",  
     raw:"https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/raw2",  
     price: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/pricesz",
     ordernew: "https://info3.amped.finance/subgraphs/name/amped/amped-orders1"
