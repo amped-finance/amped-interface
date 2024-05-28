@@ -26,6 +26,6 @@ export const SUBGRAPH_URLS = {
   },
   
   common: {
-    chainLink: "http://info3.amped.finance/subgraphs/name/amped/pricesz"
+    chainLink: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/trades"
   },
 };
