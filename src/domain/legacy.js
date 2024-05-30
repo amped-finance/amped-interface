@@ -1314,7 +1314,7 @@ export function useAllOrders(chainId, library, account) {
   swapOrders = swapOrders?.map((swaps) => {
     return { ...swaps, type: "swap" };
   });
-  const newOrders = res ? [...res?.data.increaseOrders, ...res?.data.decreaseOrders] : undefined;
+  const newOrders = res ? [...res?.data.increaseOrders, ...res?.data.decreaseOrders, ...swapOrders] : undefined;
   // const ordersForAccount = res
   //   ? res.data.orders.filter((order) => order.account === account?.toLowerCase())
   //   : undefined;
