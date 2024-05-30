@@ -89,7 +89,7 @@ export default function Home() {
             just trading – it's a revolution in how perpetual swaps are traded.
           </div>
         </div>
-        <video autoPlay loop muted className="landing-video-bg">
+        <video autoPlay loop muted playsInline className="landing-video-bg">
           <source src={video} type="video/mp4" />
         </video>
         <div className="landing-bg-top"></div>
