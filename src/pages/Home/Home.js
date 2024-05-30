@@ -88,6 +88,20 @@ export default function Home() {
             Discover just how easy on-chain trading can be, with ultra-fast transactions and zero gas fees. It's not
             just trading – it's a revolution in how perpetual swaps are traded.
           </div>
+          <div className="socials default-container">
+            <a href="https://discord.gg/nNKqweuAXj" target="_blank">
+              <img src={discord} alt="" />
+            </a>
+            <a href="https://t.me/ampedfinance" target="_blank">
+              <img src={telegram} alt="" />
+            </a>
+            <a href="https://twitter.com/ampedfinance" target="_blank">
+              <img src={twitter} alt="" />
+            </a>
+            <a href="https://github.com/amped-finance" target="_blank">
+              <img src={github} alt="" />
+            </a>
+          </div>
         </div>
         <video autoPlay loop muted playsInline className="landing-video-bg">
           <source src={video} type="video/mp4" />
@@ -96,20 +110,6 @@ export default function Home() {
         <div className="landing-bg-bottom"></div>
         <div className="landing-bg-left"></div>
         <div className="landing-bg-right"></div>
-        <div className="landing-video-right default-container">
-          <a href="https://discord.gg/nNKqweuAXj" target="_blank">
-            <img src={discord} alt="" />
-          </a>
-          <a href="https://t.me/ampedfinance" target="_blank">
-            <img src={telegram} alt="" />
-          </a>
-          <a href="https://twitter.com/ampedfinance" target="_blank">
-            <img src={twitter} alt="" />
-          </a>
-          <a href="https://github.com/amped-finance" target="_blank">
-            <img src={github} alt="" />
-          </a>
-        </div>
       </div>
       <div className="landing-video-bottom default-container">
         <img src={logoImg} className="landing-video-bottom-logo" alt="" />
