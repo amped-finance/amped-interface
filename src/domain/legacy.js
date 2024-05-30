@@ -1287,6 +1287,16 @@ export function useAllOrders(chainId, library, account) {
       status
       createdTimestamp
   }
+
+  swapOrders ( first: 1000,
+    orderBy: createdTimestamp,
+    orderDirection: desc,
+    where: {status: "open"}) {
+    account
+    index
+    status
+    createdTimestamp
+  }
   }`);
 
   const [res, setRes] = useState();
@@ -1300,6 +1310,10 @@ export function useAllOrders(chainId, library, account) {
   }, [setRes, query, chainId, fastRefresh]);
 
   // const newOrders = (res?.data.increaseOrders).concat(res?.data.increaseOrders)
+  let swapOrders = res ? [...res?.data.swapOrders] : undefined;
+  swapOrders = swapOrders?.map((swaps) => {
+    return { ...swaps, type: "swap" };
+  });
   const newOrders = res ? [...res?.data.increaseOrders, ...res?.data.decreaseOrders] : undefined;
   // const ordersForAccount = res
   //   ? res.data.orders.filter((order) => order.account === account?.toLowerCase())
