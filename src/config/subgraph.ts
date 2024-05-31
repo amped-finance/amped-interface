@@ -17,15 +17,15 @@ export const SUBGRAPH_URLS = {
   },
   
   [PHOENIX]: {
-    stats: "https://info.amped.finance/subgraphs/name/amped/stats",
-    referrals: "https://info3.amped.finance/subgraphs/name/amped/amped-referrals",
-    trades:"https://info.amped.finance/subgraphs/name/amped/trades",  
-    raw:"https://info.amped.finance/subgraphs/name/amped/raw",  
-    price: "http://info3.amped.finance/subgraphs/name/amped/prices",
-    ordernew: "http://178.215.224.9:8000/subgraphs/name/amped/amped-orders1"
+    stats: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",
+    referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
+    trades:"https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",  
+    raw:"https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",  
+    price: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",
+    ordernew: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/orders"
   },
   
   common: {
-    chainLink: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/trades"
+    chainLink: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades"
   },
 };
