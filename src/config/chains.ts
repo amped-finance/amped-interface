@@ -141,7 +141,7 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: PEGASUS_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(PEGASUS)],
-  }
+  },
    [PHOENIX]: {
     chainId: "0x" + PHOENIX.toString(16),
     chainName: "Phoenix",
@@ -152,7 +152,7 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: PHOENIX_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(PHOENIX)],
-  },
+  }
 };
 
 export const getConstant = (chainId: number, key: string) => {
