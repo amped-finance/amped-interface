@@ -880,8 +880,8 @@ export default function SwapBox(props) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (leverage && leverage.gt(8 * BASIS_POINTS_DIVISOR)) {
-      return [t`Max leverage: 8x`];
+    if (leverage && leverage.gt(50 * BASIS_POINTS_DIVISOR)) {
+      return [t`Max leverage: 50x`];
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
