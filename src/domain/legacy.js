@@ -231,23 +231,12 @@ export function usePositionStates(chainId) {
       totalActivePositions: 0,
     };
     tradeData.createIncreasePositions.forEach((item) => {
-      const decimals = 31; //getToken(chainId, item.indexToken).decimals
-      const positionSizeInUSD =
-        ethers.utils.formatUnits(item.amountIn, decimals) * ethers.utils.formatUnits(item.acceptablePrice, 31);
-      if (item.isLong) {
-        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(
-          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
-        );
-        superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(
-          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
-        );
+      if(item.isLong) {
+        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(bigNumberify(item.sizeDelta));
+        superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(bigNumberify(item.sizeDelta));
       } else {
-        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(
-          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
-        );
-        superArray.totalShortPositionSizes = superArray.totalShortPositionSizes.add(
-          ethers.utils.parseEther(positionSizeInUSD.toFixed(18))
-        );
+        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(bigNumberify(item.sizeDelta));
+        superArray.totalShortPositionSizes = superArray.totalShortPositionSizes.add(bigNumberify(item.sizeDelta));
       }
       superArray.totalActivePositions += 1;
     });
