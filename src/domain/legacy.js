@@ -231,7 +231,7 @@ export function usePositionStates(chainId) {
       totalActivePositions: 0,
     };
     tradeData.createIncreasePositions.forEach((item) => {
-      if(item.isLong) {
+      if (item.isLong) {
         superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(bigNumberify(item.sizeDelta));
         superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(bigNumberify(item.sizeDelta));
       } else {
@@ -742,6 +742,22 @@ export function useAllTradesHistory(chainId, account) {
         transaction
         timestamp
       }
+
+      swaps(
+            first: 1000, 
+            where: { 
+              account: "${account.toLowerCase()}",
+          }) {
+          amountIn
+          amountOut
+          tokenIn
+          tokenInPrice
+          tokenOut
+          timestamp
+          transaction {
+            id
+        }
+      }
       
       orders(
           first: 1000, 
@@ -794,6 +810,9 @@ export function useAllTradesHistory(chainId, account) {
     }
     const tradeData = res.data;
     const superArray = [];
+
+    console.log("VANSH TRADE DATA", tradeData)
+
     tradeData.createIncreasePositions.forEach((item) => {
       const obj = {
         timestamp: item.timestamp,
@@ -809,6 +828,25 @@ export function useAllTradesHistory(chainId, account) {
           executionFee: item.executionFee,
           isLong: item.isLong,
           sizeDelta: item.sizeDelta,
+        },
+      };
+      const parent = {
+        data: obj,
+      };
+      superArray.push(parent);
+    });
+
+    tradeData.swaps.forEach((item) => {
+      const obj = {
+        timestamp: item.timestamp,
+        txhash: item.transaction.id,
+        account: item.account,
+        action: "Swap",
+        params: {
+          tokenIn: item.tokenIn,
+          tokenOut: item.tokenOut,
+          amountIn: item.amountIn,
+          amountOut: item.amountOut
         },
       };
       const parent = {
@@ -2150,34 +2188,34 @@ export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
 
   const data = graphData
     ? sortBy(graphData.data.tradingStats).map((dataItem) => {
-        const longOpenInterest = dataItem.longOpenInterest / 1e30;
-        const shortOpenInterest = dataItem.shortOpenInterest / 1e30;
-        const openInterest = longOpenInterest + shortOpenInterest;
-        const profit = dataItem.profit / 1e30;
-        const loss = dataItem.loss / 1e30;
-        const profitCumulative = dataItem.profitCumulative / 1e30;
-        const lossCumulative = dataItem.lossCumulative / 1e30;
-        const pnlCumulative = profitCumulative - lossCumulative;
-        const pnl = profit - loss;
-        currentProfitCumulative += profit;
-        currentLossCumulative -= loss;
-        currentPnlCumulative += pnl;
-        return {
-          longOpenInterest,
-          shortOpenInterest,
-          openInterest,
-          profit,
-          loss: -loss,
-          profitCumulative,
-          lossCumulative: -lossCumulative,
-          pnl,
-          pnlCumulative,
-          timestamp: dataItem.timestamp,
-          currentPnlCumulative,
-          currentLossCumulative,
-          currentProfitCumulative,
-        };
-      })
+      const longOpenInterest = dataItem.longOpenInterest / 1e30;
+      const shortOpenInterest = dataItem.shortOpenInterest / 1e30;
+      const openInterest = longOpenInterest + shortOpenInterest;
+      const profit = dataItem.profit / 1e30;
+      const loss = dataItem.loss / 1e30;
+      const profitCumulative = dataItem.profitCumulative / 1e30;
+      const lossCumulative = dataItem.lossCumulative / 1e30;
+      const pnlCumulative = profitCumulative - lossCumulative;
+      const pnl = profit - loss;
+      currentProfitCumulative += profit;
+      currentLossCumulative -= loss;
+      currentPnlCumulative += pnl;
+      return {
+        longOpenInterest,
+        shortOpenInterest,
+        openInterest,
+        profit,
+        loss: -loss,
+        profitCumulative,
+        lossCumulative: -lossCumulative,
+        pnl,
+        pnlCumulative,
+        timestamp: dataItem.timestamp,
+        currentPnlCumulative,
+        currentLossCumulative,
+        currentProfitCumulative,
+      };
+    })
     : null;
 
   if (data && data.length) {
