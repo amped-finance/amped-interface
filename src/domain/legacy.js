@@ -811,8 +811,6 @@ export function useAllTradesHistory(chainId, account) {
     const tradeData = res.data;
     const superArray = [];
 
-    console.log("VANSH TRADE DATA", tradeData)
-
     tradeData.createIncreasePositions.forEach((item) => {
       const obj = {
         timestamp: item.timestamp,
