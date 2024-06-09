@@ -3,7 +3,7 @@ import { ARBITRUM, PEGASUS, PHOENIX } from "./chains";
 export const AMP_STATS_API_URL = "https://stats.gmx.io/api";
 
 // export const MEXC_API_URL = "https://www.mexc.com/api/platform/spot/market";
-export const MEXC_API_URL = "https://mexc.bluespade.xyz/api/mexc";
+export const MEXC_API_URL = "https://www.mexc.com/api/platform/spot/market";
 
 const BACKEND_URLS = {
   default: "https://gmx-server-mainnet.uw.r.appspot.com",

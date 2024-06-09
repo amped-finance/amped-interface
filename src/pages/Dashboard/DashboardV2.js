@@ -610,7 +610,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(
                         // positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                         positionStatsInfo?.totalLongPositionSizes,
-                        18,
+                        30,
                         0,
                         true
                       )}`}
@@ -619,10 +619,8 @@ export default function DashboardV2() {
                           title={t`Long Positions`}
                           // arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
                           // goerliValue={positionStatsInfo?.totalLongPositionSizes}
-                          baseValue={ethers.BigNumber.from("0xE8D4A51000").mul(
-                            positionStatsInfo && positionStatsInfo.totalShortPositionSizes? positionStatsInfo.totalLongPositionSizes:bigNumberify(0)
-                          )}
-                          total={ethers.BigNumber.from("0xE8D4A51000").mul(positionStatsInfo && positionStatsInfo.totalShortPositionSizes? positionStatsInfo.totalLongPositionSizes:bigNumberify(0))}
+                          baseValue={positionStatsInfo && positionStatsInfo.totalShortPositionSizes? positionStatsInfo.totalLongPositionSizes:bigNumberify(0)}
+                          total={ethers.BigNumber.from("0x1").mul(positionStatsInfo && positionStatsInfo.totalShortPositionSizes? positionStatsInfo.totalLongPositionSizes:bigNumberify(0))}
                         />
                       )}
                     />
@@ -639,7 +637,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(
                         // positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                         positionStatsInfo?.totalShortPositionSizes,
-                        18,
+                        30,
                         0,
                         true
                       )}`}
@@ -648,10 +646,8 @@ export default function DashboardV2() {
                           title={t`Short Positions`}
                           // arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
                           // goerliValue={positionStatsInfo?.totalShortPositionSizes}
-                          baseValue={ethers.BigNumber.from("0xE8D4A51000").mul(
-                            positionStatsInfo && positionStatsInfo.totalShortPositionSizes ? positionStatsInfo.totalShortPositionSizes:bigNumberify(0)
-                          )}
-                          total={ethers.BigNumber.from("0xE8D4A51000").mul(positionStatsInfo && positionStatsInfo.totalShortPositionSizes ? positionStatsInfo.totalShortPositionSizes:bigNumberify(0))}
+                          baseValue={positionStatsInfo && positionStatsInfo.totalShortPositionSizes ? positionStatsInfo.totalShortPositionSizes:bigNumberify(0)}
+                          total={ethers.BigNumber.from("0x1").mul(positionStatsInfo && positionStatsInfo.totalShortPositionSizes ? positionStatsInfo.totalShortPositionSizes:bigNumberify(0))}
                         />
                       )}
                     />

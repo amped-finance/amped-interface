@@ -10,9 +10,9 @@ export const PHOENIX = 1890
 export const DEFAULT_CHAIN_ID = PEGASUS;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -78,10 +78,10 @@ const constants = {
     positionReaderPropsLength: 9,
     v2: true,
 
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.002"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.002"),
     // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00100001"),
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.002"),
   },
 };
 
@@ -141,18 +141,18 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: PEGASUS_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(PEGASUS)],
+  },
+   [PHOENIX]: {
+    chainId: "0x" + PHOENIX.toString(16),
+    chainName: "Phoenix",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: PHOENIX_RPC_PROVIDERS,
+    blockExplorerUrls: [getExplorerUrl(PHOENIX)],
   }
-  // [PHOENIX]: {
-  //   chainId: "0x" + PHOENIX.toString(16),
-  //   chainName: "Phoenix",
-  //   nativeCurrency: {
-  //     name: "ETH",
-  //     symbol: "ETH",
-  //     decimals: 18,
-  //   },
-  //   rpcUrls: PHOENIX_RPC_PROVIDERS,
-  //   blockExplorerUrls: [getExplorerUrl(PHOENIX)],
-  // },
 };
 
 export const getConstant = (chainId: number, key: string) => {

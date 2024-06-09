@@ -591,8 +591,6 @@ export default function AlpSwap(props) {
     const params = swapTokenAddress === AddressZero ? [0, minAlp] : [swapTokenAddress, swapAmount, 0, minAlp];
     const value = swapTokenAddress === AddressZero ? swapAmount : 0;
 
-    console.log("vansh", minAlp)
-
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: t`Buy submitted.`,
