@@ -1293,7 +1293,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setUnstakeModalReservedAmount(vestingData.ampVesterPairAmount);
     setUnstakeValue("");
     setUnstakingTokenSymbol("AMP");
-    setUnstakeMethodName("unstakeAmp");
+    setUnstakeMethodName("unstakeGmx");
   };
 
   const showUnstakeEsAmpModal = () => {
