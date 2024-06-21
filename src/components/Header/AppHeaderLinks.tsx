@@ -88,7 +88,7 @@ export function AppHeaderLinks({
       </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://amped.gitbook.io/amped/">
-          <Trans>About</Trans>
+          <Trans>Documentation</Trans>
         </ExternalLink>
       </div>
       {small && !isHomeSite() && (
