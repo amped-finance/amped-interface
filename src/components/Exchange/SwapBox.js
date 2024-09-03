@@ -2033,8 +2033,8 @@ export default function SwapBox(props) {
               >
                 <Slider
                   min={1}
-                  max={8}
-                  step={0.2}
+                  max={11}
+                  step={0.5}
                   marks={leverageMarks}
                   handle={leverageSliderHandle}
                   onChange={(value) => setLeverageOption(value)}
