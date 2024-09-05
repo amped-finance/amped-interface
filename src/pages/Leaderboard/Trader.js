@@ -21,7 +21,6 @@ const TradersLeaderboard = ({ leaderboardData }) => {
                 <th>Rank</th>
                 <th>Trader</th>
                 <th>Trading Volume USDT</th>
-                <th>Liquidity Added</th>
               </tr>
             </thead>
             <tbody>
@@ -32,23 +31,21 @@ const TradersLeaderboard = ({ leaderboardData }) => {
                   </td>
                   <td className="glass-effect">{entry[0]}</td>
                   <td className="glass-effect reward">{parseFloat(entry[1]).toFixed(2)}</td>
-                  <td className="glass-effect masked-column">{parseFloat(entry[1]).toFixed(2)}</td>
                 </tr>
               ))}
               {active && (
                 <tr className="ownrecord">
                   <td className="glass-effect">
-                    {leaderboardData.findIndex(([address]) => address === walletAccount) != -1
-                      ? leaderboardData.findIndex(([address]) => address === walletAccount)
+                    {leaderboardData.findIndex(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) != -1
+                      ? leaderboardData.findIndex(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) + 1
                       : "-"}
                   </td>
                   <td className="glass-effect">{walletAccount}</td>
                   <td className="glass-effect">
-                    {leaderboardData?.find(([address]) => address === walletAccount)
-                      ? parseFloat(tradePoints.find(([address]) => address === walletAccount)[1]).toFixed(2)
+                    {leaderboardData?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())
+                      ? parseFloat(tradePoints.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2)
                       : 0}
                   </td>
-                  <td className="glass-effect masked-column">100000</td>
                 </tr>
               )}
             </tbody>

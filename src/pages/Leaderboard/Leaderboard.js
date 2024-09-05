@@ -17,19 +17,6 @@ import LiquidityLeaderboard from "./Liquidity";
 import { useAlpPoints, useAlpPointsRemoval, useOrderPoints, useTradePoints } from "domain/legacy";
 import { useChainId } from "lib/chains";
 
-const leaderboardData = [
-  { date: "07-09", rank: 1, trader: "0xacf3...236F", volume: 39364949.42, reward: 810.0 },
-  { date: "07-08", rank: 2, trader: "0xCF9D...1BDC", volume: 21857180.14, reward: 540.0 },
-  { date: "07-07", rank: 3, trader: "0xd8B5...b448", volume: 13330642.9, reward: 360.0 },
-  { date: "07-06", rank: 4, trader: "0xE690...6987", volume: 12768965.4, reward: 300.0 },
-  { date: "07-05", rank: 5, trader: "0x8510...5061", volume: 10047080.0, reward: 240.0 },
-  { date: "07-04", rank: 6, trader: "0x6f73...3f37", volume: 10018000.0, reward: 120.0 },
-  { date: "07-03", rank: 7, trader: "0x8C82...1D86", volume: 9960552.81, reward: 105.0 },
-  { date: "07-02", rank: 8, trader: "0x9816...5213", volume: 8287160.0, reward: 90.0 },
-  { date: "07-01", rank: 9, trader: "0x25F9...b3E0", volume: 8287080.0, reward: 75.0 },
-  { date: "06-30", rank: 10, trader: "0x276E...24D3", volume: 7528600.0, reward: 60.0 },
-];
-
 const TOTAL = "Total";
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";

@@ -22,7 +22,6 @@ const LiquidityLeaderboard = ({ leaderboardData }) => {
             <tr>
               <th>Rank</th>
               <th>Trader</th>
-              <th className="masked-column">Trading Volume USDT</th>
               <th>Liquidity Added</th>
             </tr>
           </thead>
@@ -33,18 +32,14 @@ const LiquidityLeaderboard = ({ leaderboardData }) => {
                   {index+1 <= 3 ? <FaTrophy className={`trophy rank-${index + 1}`} /> : index + 1}
                 </td>
                 <td className="glass-effect">{entry[0]}</td>
-                <td className="glass-effect masked-column">
-                  {parseFloat(entry[1]).toFixed(2)}
-                </td>
                 <td className="glass-effect reward">{parseFloat(entry[1]).toFixed(2)}</td>
               </tr>
             ))}
             {active && (
                 <tr className='ownrecord'>
-                  <td className="glass-effect">{(leaderboardData.findIndex(([address]) => address === walletAccount) != -1) ? leaderboardData.findIndex(([address]) => address === walletAccount) : '-'}</td>
+                  <td className="glass-effect">{(leaderboardData.findIndex(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) != -1) ? leaderboardData.findIndex(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) + 1 : '-'}</td>
                   <td className="glass-effect">{walletAccount}</td>
-                  <td className="glass-effect masked-column">100000</td>
-                  <td className="glass-effect">{leaderboardData?.find(([address]) => address === walletAccount) ? parseFloat(tradePoints.find(([address]) => address === walletAccount)[1]).toFixed(2) : 0}</td>
+                  <td className="glass-effect">{leaderboardData?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) ? parseFloat(tradePoints.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2) : 0}</td>
                 </tr>
               )}
           </tbody>
