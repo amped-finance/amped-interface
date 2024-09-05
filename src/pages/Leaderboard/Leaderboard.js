@@ -136,22 +136,23 @@ function Leaderboard() {
 
   return (
     <SEO title={getPageTitle("Leaderboard")}>
-      <div className="default-container page-layout Leaderboard">
-        <div className="section-title-block">
-          <div className="section-title-icon" />
-          <div className="section-title-content">
-            <div className="Page-title font-kufam">
-              <FaTrophy className="trophy-icon" />
-              <Trans>Leaderboard</Trans>
-            </div>
-            <div className="Page-description">
-              <Trans>
-                Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. For more information, please read the{" "}
-                <ExternalLink href="https://amped.gitbook.io/amped/referrals">Leaderboard competition page for details</ExternalLink>. The first season will commence soon!
-              </Trans>
-            </div>
-          </div>
+  <div className="default-container page-layout Leaderboard" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+    <div className="section-title-block" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+      <div className="section-title-icon" />
+      <div className="section-title-content">
+        <div className="Page-title font-kufam" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <FaTrophy className="trophy-icon" />
+          <Trans>Leaderboard</Trans>
         </div>
+        <div className="Page-description">
+          <Trans>
+            Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. For more information, please read the{" "}
+            <ExternalLink href="https://amped.gitbook.io/amped/referrals">Leaderboard competition page</ExternalLink> for details. The first season will commence soon!
+          </Trans>
+        </div>
+      </div>
+    </div>
+  </div>
         <div className="leaderboard-tab-container">
           <Tab
             options={TAB_OPTIONS}
