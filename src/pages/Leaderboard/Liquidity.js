@@ -2,9 +2,15 @@
 import React from "react";
 import { FaTrophy } from "react-icons/fa";
 import { Trans } from "@lingui/macro";
+import {
+  useWeb3ModalAccount,
+} from "@web3modal/ethers5/react";
 import "./Leaderboard.css";
 
-const LiquidityLeaderboard = ({ leaderboardData }) => (
+const LiquidityLeaderboard = ({ leaderboardData }) => {
+  const { isConnected: active, address: walletAccount } = useWeb3ModalAccount();
+  
+  return (
   <div>
     <div className="leaderboard-card section-center mt-medium">
       <h2 className="title font-kufam">
@@ -33,11 +39,19 @@ const LiquidityLeaderboard = ({ leaderboardData }) => (
                 <td className="glass-effect reward">{parseFloat(entry[1]).toFixed(2)}</td>
               </tr>
             ))}
+            {active && (
+                <tr className='ownrecord'>
+                  <td className="glass-effect">{(leaderboardData.findIndex(([address]) => address === walletAccount) != -1) ? leaderboardData.findIndex(([address]) => address === walletAccount) : '-'}</td>
+                  <td className="glass-effect">{walletAccount}</td>
+                  <td className="glass-effect masked-column">100000</td>
+                  <td className="glass-effect">{leaderboardData?.find(([address]) => address === walletAccount) ? parseFloat(tradePoints.find(([address]) => address === walletAccount)[1]).toFixed(2) : 0}</td>
+                </tr>
+              )}
           </tbody>
         </table>
       </div>
     </div>
   </div>
-);
+)};
 
 export default LiquidityLeaderboard;
