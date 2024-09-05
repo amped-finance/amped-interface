@@ -146,8 +146,8 @@ function Leaderboard() {
             </div>
             <div className="Page-description">
               <Trans>
-                Compete in Amped Finance season and earn exciting rewards. For more information, please read the{" "}
-                <ExternalLink href="https://amped.gitbook.io/amped/referrals">referral program details</ExternalLink>.
+                Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. For more information, please read the{" "}
+                <ExternalLink href="https://amped.gitbook.io/amped/referrals">Leaderboard competition page for details</ExternalLink>. The first season will commence soon!
               </Trans>
             </div>
           </div>
