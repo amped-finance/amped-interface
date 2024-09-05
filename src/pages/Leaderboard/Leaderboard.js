@@ -136,7 +136,7 @@ function Leaderboard() {
 
   return (
     <SEO title={getPageTitle("Leaderboard")}>
-  <div className="default-container page-layout Leaderboard" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+  <div className="default-container page-layout Leaderboard" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", minHeight: "100vh" }}>
     <div className="section-title-block" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
       <div className="section-title-icon" />
       <div className="section-title-content">
@@ -152,20 +152,21 @@ function Leaderboard() {
         </div>
       </div>
     </div>
+    
+    {/* Tab container remains centered */}
+    <div className="leaderboard-tab-container" style={{ width: "100%", textAlign: "center", marginTop: "20px" }}>
+      <Tab
+        options={TAB_OPTIONS}
+        optionLabels={TAB_OPTION_LABELS}
+        option={activeTab}
+        setOption={setActiveTab}
+        onChange={setActiveTab}
+      />
+    </div>
+    {renderContent()}
   </div>
-        <div className="leaderboard-tab-container">
-          <Tab
-            options={TAB_OPTIONS}
-            optionLabels={TAB_OPTION_LABELS}
-            option={activeTab}
-            setOption={setActiveTab}
-            onChange={setActiveTab}
-          />
-        </div>
-        {renderContent()}
-      </div>
-      <Footer />
-    </SEO>
+  <Footer />
+</SEO>
   );
 }
 
