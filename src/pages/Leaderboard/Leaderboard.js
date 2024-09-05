@@ -153,8 +153,8 @@ function Leaderboard() {
       </div>
     </div>
     
-    {/* Tab container remains centered */}
-    <div className="leaderboard-tab-container" style={{ width: "100%", textAlign: "center", marginTop: "20px" }}>
+    {/* Center the tab container but keep buttons their original size */}
+    <div className="leaderboard-tab-container" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
       <Tab
         options={TAB_OPTIONS}
         optionLabels={TAB_OPTION_LABELS}
