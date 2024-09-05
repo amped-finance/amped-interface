@@ -33,6 +33,7 @@ import NftWallet from "pages/NftWallet/NftWallet";
 import ClaimEsAmp from "pages/ClaimEsAmp/ClaimEsAmp";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Leaderboard from "pages/Leaderboard/Leaderboard";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -603,6 +604,9 @@ function FullApp() {
               </Route>
               <Route path="/buy_alp151">
                 <PageOnPresale />
+              </Route>
+              <Route path="/leaderboard">
+                <Leaderboard />
               </Route>
               <Route path="*">
                 <PageNotFound />
