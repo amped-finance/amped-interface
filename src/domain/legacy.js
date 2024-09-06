@@ -51,6 +51,8 @@ const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
 const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
+const startBlock = 85247896;
+const endBlock = 120000000;
 
 export const useRefresh = () => {
   const { fast, slow } = useContext(RefreshContext);
@@ -88,7 +90,7 @@ export function useAlpPoints(chainId) {
   const query = gql(`{
     usersPoints(
     first: 1000
-    where: {type: 1 }
+    where: {type: 1 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
     orderBy: points
     orderDirection: desc
   ) {
@@ -117,7 +119,7 @@ export function useAlpPointsRemoval(chainId) {
   const query = gql(`{
     usersPoints(
     first: 1000
-    where: {type: 2 }
+    where: {type: 2 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
     orderBy: points
     orderDirection: desc
   ) {
@@ -146,7 +148,7 @@ export function useOrderPoints(chainId) {
   const query = gql(`{
     usersPoints(
     first: 1000
-    where: {type: 0 }
+    where: {type: 0 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
     orderBy: points
     orderDirection: desc
   ) {
@@ -175,7 +177,7 @@ export function useTradePoints(chainId) {
   const query = gql(`{
     usersPoints(
     first: 1000
-    where: {type: 3 }
+    where: {type: 3 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
     orderBy: points
     orderDirection: desc
   ) {
