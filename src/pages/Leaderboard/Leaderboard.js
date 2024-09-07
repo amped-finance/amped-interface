@@ -144,7 +144,7 @@ function Leaderboard() {
           <FaTrophy className="trophy-icon" />
           <Trans>Leaderboard</Trans>
         </div>
-        <div className="Page-description" style={{ maxWidth: "1280px", width: "100%", margin: "0 auto" }}>
+        <div className="Page-description" style={{ maxWidth: "800px", width: "100%", margin: "0 auto" }}>
   <Trans>
     <div style={{ marginBottom: "16px" }}>
       Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards.
@@ -157,7 +157,7 @@ function Leaderboard() {
       Season 1 will commence on Monday the 9th of September and conclude on Monday the 30th of September.
     </div>
     <div>
-      There are 50,000 LL tokens to be distributed among participants who make the leaderboards for both categories!
+      There are 50,000 LL tokens to be distributed among participants who make the leaderboard! The higher your rank, the more you will receive.
     </div>
   </Trans>
 </div>
