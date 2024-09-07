@@ -146,8 +146,10 @@ function Leaderboard() {
         </div>
         <div className="Page-description">
           <Trans>
-            Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. For more information, please read the{" "}
-            <ExternalLink href="https://amped.gitbook.io/amped/referrals">Leaderboard competition page</ExternalLink> for details. The first season will commence soon!
+            Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. <br />
+            For more information, please read the{" "}<ExternalLink href="https://amped.gitbook.io/amped/leaderboard">Leaderboard page</ExternalLink> for details.<br />
+            Season 1 will commence on Monday the 9th of September and conclude on Monday the 30th of September.<br />
+            There is 50,000 LL tokens to be distributed among partipants who make the leaderboards for both categories!
           </Trans>
         </div>
       </div>
