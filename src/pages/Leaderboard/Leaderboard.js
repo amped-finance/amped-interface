@@ -144,14 +144,23 @@ function Leaderboard() {
           <FaTrophy className="trophy-icon" />
           <Trans>Leaderboard</Trans>
         </div>
-        <div className="Page-description">
-          <Trans>
-            Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards. <br />
-            For more information, please read the{" "}<ExternalLink href="https://amped.gitbook.io/amped/leaderboard">Leaderboard page</ExternalLink> for details.<br />
-            Season 1 will commence on Monday the 9th of September and conclude on Monday the 30th of September.<br />
-            There is 50,000 LL tokens to be distributed among partipants who make the leaderboards for both categories!
-          </Trans>
-        </div>
+        <div className="Page-description" style={{ maxWidth: "800px", width: "100%", margin: "0 auto" }}>
+  <Trans>
+    <div style={{ marginBottom: "16px" }}>
+      Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards.
+    </div>
+    <div style={{ marginBottom: "16px" }}>
+      For more information, please read the{" "}
+      <ExternalLink href="https://amped.gitbook.io/amped/leaderboard">Leaderboard page</ExternalLink> for details.
+    </div>
+    <div style={{ marginBottom: "16px" }}>
+      Season 1 will commence on Monday the 9th of September and conclude on Monday the 30th of September.
+    </div>
+    <div>
+      There are 50,000 LL tokens to be distributed among participants who make the leaderboards for both categories!
+    </div>
+  </Trans>
+</div>
       </div>
     </div>
     
