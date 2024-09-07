@@ -33,6 +33,7 @@ import {
   getAmpGraphClientByNewCreateOrder,
   getTradesGraphClient,
   getRawGraphClient,
+  getPointsGraphClient,
 } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { replaceNativeTokenAddress } from "./tokens";
@@ -50,6 +51,8 @@ const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
 const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
+const startBlock = 9000000;
+const endBlock = 103237315;
 
 export const useRefresh = () => {
   const { fast, slow } = useContext(RefreshContext);
@@ -81,6 +84,122 @@ export function useAllOrdersStats(chainId) {
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
+}
+
+export function useAlpPoints(chainId) {
+  const query = gql(`{
+    usersPoints(
+    first: 1000
+    where: {type: 1 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
+    orderBy: points
+    orderDirection: desc
+  ) {
+    id
+    points
+    type
+    account
+    price
+    amount
+    transaction
+  }}`);
+
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    const graphClient = getPointsGraphClient(chainId);
+    if(graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
+  }, [setRes, query, chainId]);
+
+  return res ? res.data.usersPoints : null;
+}
+
+export function useAlpPointsRemoval(chainId) {
+  const query = gql(`{
+    usersPoints(
+    first: 1000
+    where: {type: 2 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
+    orderBy: points
+    orderDirection: desc
+  ) {
+    id
+    points
+    type
+    account
+    price
+    amount
+    transaction
+  }}`);
+
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    const graphClient = getPointsGraphClient(chainId);
+    if(graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
+  }, [setRes, query, chainId]);
+
+  return res ? res.data.usersPoints : null;
+}
+
+export function useOrderPoints(chainId) {
+  const query = gql(`{
+    usersPoints(
+    first: 1000
+    where: {type: 0 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
+    orderBy: points
+    orderDirection: desc
+  ) {
+    id
+    points
+    type
+    account
+    price
+    amount
+    transaction
+  }}`);
+
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    const graphClient = getPointsGraphClient(chainId);
+    if(graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
+  }, [setRes, query, chainId]);
+
+  return res ? res.data.usersPoints : null;
+}
+
+export function useTradePoints(chainId) {
+  const query = gql(`{
+    usersPoints(
+    first: 1000
+    where: {type: 3 blockNumber_gte:${startBlock} blockNumber_lte:${endBlock}}
+    orderBy: points
+    orderDirection: desc
+  ) {
+    id
+    points
+    type
+    account
+    price
+    amount
+    transaction
+  }}`);
+
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    const graphClient = getPointsGraphClient(chainId);
+    if(graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
+  }, [setRes, query, chainId]);
+
+  return res ? res.data.usersPoints : null;
 }
 
 export function usePositionStates(chainId) {
@@ -232,10 +351,14 @@ export function usePositionStates(chainId) {
     };
     tradeData.createIncreasePositions.forEach((item) => {
       if (item.isLong) {
-        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(bigNumberify(item.sizeDelta));
+        superArray.totalLongPositionCollaterals = superArray.totalLongPositionCollaterals.add(
+          bigNumberify(item.sizeDelta)
+        );
         superArray.totalLongPositionSizes = superArray.totalLongPositionSizes.add(bigNumberify(item.sizeDelta));
       } else {
-        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(bigNumberify(item.sizeDelta));
+        superArray.totalShortPositionCollaterals = superArray.totalShortPositionCollaterals.add(
+          bigNumberify(item.sizeDelta)
+        );
         superArray.totalShortPositionSizes = superArray.totalShortPositionSizes.add(bigNumberify(item.sizeDelta));
       }
       superArray.totalActivePositions += 1;
@@ -844,7 +967,7 @@ export function useAllTradesHistory(chainId, account) {
           tokenIn: item.tokenIn,
           tokenOut: item.tokenOut,
           amountIn: item.amountIn,
-          amountOut: item.amountOut
+          amountOut: item.amountOut,
         },
       };
       const parent = {
@@ -2186,34 +2309,34 @@ export function useTradersData({ from = FIRST_DATE_TS, to = NOW_TS } = {}) {
 
   const data = graphData
     ? sortBy(graphData.data.tradingStats).map((dataItem) => {
-      const longOpenInterest = dataItem.longOpenInterest / 1e30;
-      const shortOpenInterest = dataItem.shortOpenInterest / 1e30;
-      const openInterest = longOpenInterest + shortOpenInterest;
-      const profit = dataItem.profit / 1e30;
-      const loss = dataItem.loss / 1e30;
-      const profitCumulative = dataItem.profitCumulative / 1e30;
-      const lossCumulative = dataItem.lossCumulative / 1e30;
-      const pnlCumulative = profitCumulative - lossCumulative;
-      const pnl = profit - loss;
-      currentProfitCumulative += profit;
-      currentLossCumulative -= loss;
-      currentPnlCumulative += pnl;
-      return {
-        longOpenInterest,
-        shortOpenInterest,
-        openInterest,
-        profit,
-        loss: -loss,
-        profitCumulative,
-        lossCumulative: -lossCumulative,
-        pnl,
-        pnlCumulative,
-        timestamp: dataItem.timestamp,
-        currentPnlCumulative,
-        currentLossCumulative,
-        currentProfitCumulative,
-      };
-    })
+        const longOpenInterest = dataItem.longOpenInterest / 1e30;
+        const shortOpenInterest = dataItem.shortOpenInterest / 1e30;
+        const openInterest = longOpenInterest + shortOpenInterest;
+        const profit = dataItem.profit / 1e30;
+        const loss = dataItem.loss / 1e30;
+        const profitCumulative = dataItem.profitCumulative / 1e30;
+        const lossCumulative = dataItem.lossCumulative / 1e30;
+        const pnlCumulative = profitCumulative - lossCumulative;
+        const pnl = profit - loss;
+        currentProfitCumulative += profit;
+        currentLossCumulative -= loss;
+        currentPnlCumulative += pnl;
+        return {
+          longOpenInterest,
+          shortOpenInterest,
+          openInterest,
+          profit,
+          loss: -loss,
+          profitCumulative,
+          lossCumulative: -lossCumulative,
+          pnl,
+          pnlCumulative,
+          timestamp: dataItem.timestamp,
+          currentPnlCumulative,
+          currentLossCumulative,
+          currentProfitCumulative,
+        };
+      })
     : null;
 
   if (data && data.length) {
