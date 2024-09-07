@@ -144,7 +144,7 @@ function Leaderboard() {
           <FaTrophy className="trophy-icon" />
           <Trans>Leaderboard</Trans>
         </div>
-        <div className="Page-description" style={{ maxWidth: "800px", width: "100%", margin: "0 auto" }}>
+        <div className="Page-description" style={{ maxWidth: "1280px", width: "100%", margin: "0 auto" }}>
   <Trans>
     <div style={{ marginBottom: "16px" }}>
       Compete among other traders on the Amped Finance Leaderboard and earn exciting rewards.
