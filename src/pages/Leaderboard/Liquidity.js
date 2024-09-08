@@ -9,6 +9,7 @@ import "./Leaderboard.css";
 
 const LiquidityLeaderboard = ({ leaderboardData }) => {
   const { isConnected: active, address: walletAccount } = useWeb3ModalAccount();
+  const top10ALpAccounts = leaderboardData.slice(0, 10);
   
   return (
   <div>
@@ -26,7 +27,7 @@ const LiquidityLeaderboard = ({ leaderboardData }) => {
             </tr>
           </thead>
           <tbody>
-            {leaderboardData.map((entry, index) => (
+            {top10ALpAccounts.map((entry, index) => (
               <tr key={index}>
                 <td className="glass-effect">
                   {index+1 <= 3 ? <FaTrophy className={`trophy rank-${index + 1}`} /> : index + 1}

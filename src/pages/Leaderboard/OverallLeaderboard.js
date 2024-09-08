@@ -8,6 +8,7 @@ import {
 
 const OverallLeaderboard = ({ leaderboardData, tradePoints, alpPoints }) => {
   const { isConnected: active, address: walletAccount } = useWeb3ModalAccount();
+  const top10OverallAccounts = leaderboardData.slice(0, 10);
 
   return (
     <div>
@@ -27,7 +28,7 @@ const OverallLeaderboard = ({ leaderboardData, tradePoints, alpPoints }) => {
               </tr>
             </thead>
             <tbody>
-              {leaderboardData.map((entry, index) => (
+              {top10OverallAccounts.map((entry, index) => (
                 <tr key={index}>
                   <td className="glass-effect">
                     {index + 1 <= 3 ? <FaTrophy className={`trophy rank-${index + 1}`} /> : index + 1}
