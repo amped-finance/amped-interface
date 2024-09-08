@@ -71,7 +71,7 @@ function Leaderboard() {
   });
   const groupedALpPointsArray = Object.entries(groupedALpPoints);
   groupedALpPointsArray.sort((a, b) => b[1] - a[1]);
-  const top10ALpAccounts = groupedALpPointsArray.slice(0, 10);
+  // const top10ALpAccounts = groupedALpPointsArray.slice(0, 10);
 
   const allTradePoints = tradePoints?.concat(orderPoints);
   const groupedTradePoints = {};
@@ -85,7 +85,7 @@ function Leaderboard() {
   });
   const groupedTradePointsArray = Object.entries(groupedTradePoints);
   groupedTradePointsArray.sort((a, b) => b[1] - a[1]);
-  const top10Traders = groupedTradePointsArray.slice(0, 10);
+  // const top10Traders = groupedTradePointsArray.slice(0, 10);
 
   const overallLeaderboardData = groupedTradePointsArray.concat(groupedALpPointsArray);
   const groupedOverallLeaderboardData = overallLeaderboardData.reduce((acc, [address, value]) => {
@@ -100,7 +100,6 @@ function Leaderboard() {
   }, {});
   const overallLeadetboardDataArray = Object.entries(groupedOverallLeaderboardData);
   overallLeadetboardDataArray.sort((a, b) => b[1] - a[1]);
-  const top10OverallAccounts = overallLeadetboardDataArray.slice(0, 10);
   console.log("Overall Leaderboard Data", overallLeadetboardDataArray);
 
   const [activeTab, setActiveTab] = useLocalStorage(LEADERBOARD_SELECTED_TAB_KEY, TOTAL);
@@ -111,13 +110,13 @@ function Leaderboard() {
     [ALP]: t`Liquidity`,
   };
 
-  const renderOverallTab = () => <OverallLeaderboard leaderboardData={top10OverallAccounts} tradePoints={groupedTradePointsArray} alpPoints={groupedALpPointsArray} />;
+  const renderOverallTab = () => <OverallLeaderboard leaderboardData={overallLeadetboardDataArray} tradePoints={groupedTradePointsArray} alpPoints={groupedALpPointsArray} />;
 
-  const renderTradersTab = () => <TradersLeaderboard leaderboardData={top10Traders} />;
+  const renderTradersTab = () => <TradersLeaderboard leaderboardData={groupedTradePointsArray} />;
 
-  const renderAffiliatesTab = () => <AffiliatesLeaderboard leaderboardData={leaderboardData} />;
+  const renderAffiliatesTab = () => <AffiliatesLeaderboard leaderboardData={overallLeadetboardDataArray} />;
 
-  const renderLiquidityTab = () => <LiquidityLeaderboard leaderboardData={top10ALpAccounts} />;
+  const renderLiquidityTab = () => <LiquidityLeaderboard leaderboardData={groupedALpPointsArray} />;
 
   const renderContent = () => {
     switch (activeTab) {
