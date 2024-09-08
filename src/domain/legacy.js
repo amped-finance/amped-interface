@@ -51,7 +51,7 @@ const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
 const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
-const startBlock = 101422915;
+const startBlock = 101420000;
 const endBlock = 103237315;
 
 export const useRefresh = () => {
