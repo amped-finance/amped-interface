@@ -66,7 +66,13 @@ function Leaderboard() {
     if (!groupedALpPoints[item.account]) {
       groupedALpPoints[item.account] = 0;
     }
-    groupedALpPoints[item.account] += Number(item.points) / 10 ** 30 * 5;
+    if(item.type === 1) {
+
+      groupedALpPoints[item.account] += Number(item.points) / 10 ** 30 * 5;
+    }
+    else if(item.type === 2) {
+      groupedALpPoints[item.account] -= Number(item.points) / 10 ** 30 * 5;
+    }
   }
   });
   const groupedALpPointsArray = Object.entries(groupedALpPoints);
