@@ -49,7 +49,7 @@ const OverallLeaderboard = ({ leaderboardData, tradePoints, alpPoints }) => {
                 <tr className='ownrecord'>
                   <td className="glass-effect">{(leaderboardData.findIndex(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) != -1) ? leaderboardData.findIndex(([address]) =>  address.toLowerCase() === walletAccount.toLowerCase()) + 1 : '-'}</td>
                   <td className="glass-effect">{walletAccount}</td>
-                  <td className="glass-effect">{leaderboardData?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) ? parseFloat(tradePoints.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2) : 0}</td>
+                  <td className="glass-effect">{leaderboardData?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) ? parseFloat(leaderboardData.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2) : 0}</td>
                   <td className="glass-effect">{tradePoints?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) ? parseFloat(tradePoints.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2) : 0}</td>
                   <td className="glass-effect">{alpPoints?.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase()) ? parseFloat(alpPoints.find(([address]) => address.toLowerCase() === walletAccount.toLowerCase())[1]).toFixed(2) : 0}</td>
                 </tr>
