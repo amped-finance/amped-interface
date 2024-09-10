@@ -56,10 +56,10 @@ function Leaderboard() {
       }
       if (item.type === 1) {
         console.log((blockNumber - item.blockNumber) / 7200)
-        groupedALpPoints[item.account] += Number(item.points) / 10 ** 30 * 5 * ((blockNumber - item.blockNumber) / 7200);
+        groupedALpPoints[item.account] += (Number(item.points) / 10 ** 30) * (0.2 * ((blockNumber - item.blockNumber) / 7200));
       }
       else if (item.type === 2) {
-        groupedALpPoints[item.account] -= Number(item.points) / 10 ** 30 * 5 * ((blockNumber - item.blockNumber) / 7200);
+        groupedALpPoints[item.account] -= (Number(item.points) / 10 ** 30) * (0.2 * ((blockNumber - item.blockNumber) / 7200));
       }
     }
   });
