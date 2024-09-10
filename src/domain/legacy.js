@@ -51,8 +51,8 @@ const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
 const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
-const startBlock = 101420000;
-const endBlock = 103237315;
+export const startBlock = 101420000;
+export const endBlock = 103237315;
 
 export const useRefresh = () => {
   const { fast, slow } = useContext(RefreshContext);
@@ -101,6 +101,7 @@ export function useAlpPoints(chainId) {
     price
     amount
     transaction
+    blockNumber
   }}`);
 
   const [res, setRes] = useState();
@@ -130,6 +131,7 @@ export function useAlpPointsRemoval(chainId) {
     price
     amount
     transaction
+    blockNumber
   }}`);
 
   const [res, setRes] = useState();
