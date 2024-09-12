@@ -23,7 +23,7 @@ const LiquidityLeaderboard = ({ leaderboardData }) => {
             <tr>
               <th>Rank</th>
               <th>Trader</th>
-              <th>Liquidity Added</th>
+              <th>LP Points</th>
             </tr>
           </thead>
           <tbody>
