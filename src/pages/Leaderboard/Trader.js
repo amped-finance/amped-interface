@@ -21,7 +21,7 @@ const TradersLeaderboard = ({ leaderboardData }) => {
               <tr>
                 <th>Rank</th>
                 <th>Trader</th>
-                <th>Trading Volume USDT</th>
+                <th>Trading Volume</th>
               </tr>
             </thead>
             <tbody>
