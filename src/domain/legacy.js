@@ -54,6 +54,7 @@ const { AddressZero } = ethers.constants;
 export const startBlock = 101420000;
 export const endBlock = 105876732;
 
+
 export const useRefresh = () => {
   const { fast, slow } = useContext(RefreshContext);
   return { fastRefresh: fast, fastRefresh: slow };

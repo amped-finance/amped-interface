@@ -880,8 +880,8 @@ export default function SwapBox(props) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (leverage && leverage.gt(8 * BASIS_POINTS_DIVISOR)) {
-      return [t`Max leverage: 8x`];
+    if (leverage && leverage.gt(11 * BASIS_POINTS_DIVISOR)) {
+      return [t`Max leverage: 11x`];
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
@@ -1746,10 +1746,11 @@ export default function SwapBox(props) {
 
   const leverageMarks = {
     1: "1x",
-    2: "2x",
-    4: "4x",
-    6: "6x",
-    8: "8x",
+    2.5: "2.5x",
+    5: "5x",
+    7.5: "7.5x",
+    10: "10x",
+    11: "11x",
   };
 
   if (!fromToken || !toToken) {
@@ -2032,8 +2033,8 @@ export default function SwapBox(props) {
               >
                 <Slider
                   min={1}
-                  max={8}
-                  step={0.2}
+                  max={11}
+                  step={0.5}
                   marks={leverageMarks}
                   handle={leverageSliderHandle}
                   onChange={(value) => setLeverageOption(value)}
