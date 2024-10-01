@@ -147,7 +147,7 @@ function Leaderboard() {
                   <ExternalLink href="https://medium.com/@ampedfinance/user-guide-for-trading-leaderboard-dc380228cdc4">Leaderboard Guide</ExternalLink> for details.
                 </div>
                 <div style={{ marginBottom: "16px" }}>
-                  Season 1 will commence on Monday the 9th of September and conclude on 00:00 UTC Friday the 5th of October.
+                  Season 1 will commence on Monday the 9th of September and conclude at 00:00 UTC on Friday the 4th of October.
                 </div>
                 <div>
                   There are 50,000 LL tokens to be distributed among participants who make the leaderboard! The higher your rank, the more you will receive.
