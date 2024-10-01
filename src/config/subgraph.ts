@@ -14,7 +14,7 @@ export const SUBGRAPH_URLS = {
     raw:"https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/trades",  
     price: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/trades",
     ordernew: "https://graph.pegasus.lightlink.io/query/subgraphs/name/amped-finance/orders",
-    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew"
+    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
 
   },
   
@@ -25,7 +25,7 @@ export const SUBGRAPH_URLS = {
     raw:"https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",  
     price: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",
     ordernew: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/orders",
-    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew"
+    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
   },
   
   common: {
