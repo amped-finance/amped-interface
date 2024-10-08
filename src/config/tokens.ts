@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX } from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -241,6 +241,60 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     // },
   ],
+  [BSCTESTNET]: [
+    {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/4713/small/weth.png?1624446912",
+    },
+    {
+      name: "Wrapped BNB",
+      symbol: "WBNB",
+      decimals: 18,
+      address: "0x612777eea37a44f7a95e3b101c39e1e2695fa6c2",
+      isWrapped: true,
+      baseSymbol: "BNB",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    {
+      name: "Bitcoin (WBTC)",
+      symbol: "BTC",
+      decimals: 8,
+      address: "0xb19c12715134bee7c4b1ca593ee9e430dabe7b56",
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Tether USD",
+      symbol: "USDT",
+      address: "0x337610d27c682e347c9cd60bd4b3b107c9d34ddd",
+      decimals: 18,
+      isStable: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      address: "0x1958f7c067226c7c8ac310dc994d0cebabfb2b02",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    // {
+    //   name: "DAI",
+    //   symbol: "DAI",
+    //   address: "0x4b6b9b31c72836806b0b1104cf1cdab8a0e3bd66",
+    //   decimals: 18,
+    //   isStable: true,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    // },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -435,6 +489,38 @@ export const ICONLINKS = {
       pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
     },
   },
+  [BSCTESTNET]: {
+    AMP: {
+      pagasus: "https://basescan.org/address/0x155BabF44190E2ef3d5EEae6AA261E794de83b23",
+    },
+    ALP: {
+      pagasus: "https://basescan.org/address/0x3c6DEc605311571b67978C6EF2DbfE77A841722d",
+    },
+    CRO: {
+      coingecko: "https://www.coingecko.com/en/coins/base",
+    },
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      pagasus: "https://basescan.org/address/0xe44fd7fcb2b1581822d0c862b68222998a0c299a",
+    },
+   
+    DOGE: {
+      coingecko: "https://www.coingecko.com/en/coins/dogecoin",
+      pagasus: "https://basescan.org/address/0x1a8e39ae59e5556b56b76fcba98d22c9ae557396",
+    },
+    DAI: {
+      coingecko: "https://www.coingecko.com/en/coins/dai",
+      pagasus: "https://basescan.org/address/0xf2001b145b43032aaf5ee2884e456ccd805f677d",
+    },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      pagasus: "https://basescan.org/address/0x66e428c3f67a68878562e79a0234c1f83c208770",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
+    },
+  },
 };
 
 export const ALP_POOL_COLORS = {
@@ -460,7 +546,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX];
+const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
