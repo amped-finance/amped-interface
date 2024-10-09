@@ -1044,7 +1044,7 @@ export default function DashboardV2() {
                             tokenInfo,
                             "minPrice",
                             USD_DECIMALS,
-                            token.symbol.includes("CRO") ? 4 : 2,
+                            token.symbol.includes("FLOKI") || token.symbol.includes("PEPE") ? 6 : 2,
                             true
                           )}
                         </td>
@@ -1123,7 +1123,7 @@ export default function DashboardV2() {
                             tokenInfo,
                             "minPrice",
                             USD_DECIMALS,
-                            token.symbol.includes("CRO") ? 4 : 2,
+                            token.symbol.includes("pepe") ? 6 : 2,
                             true
                           )}
                         </div>
