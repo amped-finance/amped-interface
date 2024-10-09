@@ -20,7 +20,7 @@ import Token from "abis/Token.json";
 import PositionRouter from "abis/PositionRouter.json";
 
 import { getContract } from "config/contracts";
-import { ARBITRUM, DEFAULT_CHAIN_ID, getConstant, getHighExecutionFee, PEGASUS, PHOENIX } from "config/chains";
+import { ARBITRUM, DEFAULT_CHAIN_ID, getConstant, getHighExecutionFee, PEGASUS, PHOENIX, BSCTESTNET } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { groupBy } from "lodash";

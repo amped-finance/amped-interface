@@ -1,4 +1,4 @@
-import { ARBITRUM, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX } from "./chains";
 
 export const AMP_STATS_API_URL = "https://stats.gmx.io/api";
 
@@ -11,6 +11,7 @@ const BACKEND_URLS = {
   [ARBITRUM]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [PEGASUS]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [PHOENIX]: "https://gmx-server-mainnet.uw.r.appspot.com",
+  [BSCTESTNET]: "https://gmx-server-mainnet.uw.r.appspot.com",
 };
 
 export function getServerBaseUrl(chainId: number) {

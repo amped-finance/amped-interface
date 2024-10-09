@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getChainName } from "config/chains";
+import { BSCTESTNET, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
@@ -194,9 +194,9 @@ export default function DashboardV2() {
   const ampAddress = getContract(chainId, "AMP");
   const alpAddress = getContract(chainId, "ALP");
   const usdgAddress = getContract(chainId, "USDG");
-
+  
   const tokensForSupplyQuery = [ampAddress, alpAddress, usdgAddress];
-
+  
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, alpManagerAddress, "getAums"], {
     fetcher: contractFetcher(library, AlpManager),
   });
@@ -250,7 +250,12 @@ export default function DashboardV2() {
 
   // const { data: feesSummaryByChain } = useFeesSummary();
   // const feesSummary = feesSummaryByChain[chainId];
-  const eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
+  let eth
+  if (chainId === BSCTESTNET)
+    eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
+  else 
+    eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
+
   // const shouldIncludeCurrrentFees =
   //   feesSummaryByChain[chainId].lastUpdatedAt &&
   //   parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
