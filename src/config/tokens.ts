@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, BSC } from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -295,6 +295,76 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     // },
   ],
+  [BSC]: [
+    {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/4713/small/weth.png?1624446912",
+    },
+    {
+      name: "Wrapped BNB",
+      symbol: "WBNB",
+      decimals: 18,
+      address: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+      isWrapped: true,
+      baseSymbol: "BNB",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    {
+      name: "CAKE",
+      symbol: "CAKE",
+      decimals: 18,
+      address: "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/12632/standard/pancakeswap-cake-logo_%281%29.png?1696512440",
+    },
+    {
+      name: "BSC-USD",
+      symbol: "USDT",
+      address: "0x55d398326f99059ff775485246999027b3197955",
+      decimals: 18,
+      isStable: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/35021/standard/USDT.png?1707233575",
+    },
+    {
+      name: "PEPE",
+      symbol: "PEPE",
+      address: "0x25d887ce7a35172c62febfd67a1856f20faebb00",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/29850/standard/pepe-token.jpeg?1696528776",
+    },
+    {
+      name: "FLOKI",
+      symbol: "FLOKI",
+      address: "0xfb5b838b6cfeedc2873ab27866079ac55363d37e",
+      decimals: 9,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/16746/standard/PNG_image.png?1696516318",
+    },
+    {
+      name: "MAGA",
+      symbol: "MAGA",
+      address: "0x4ea98c1999575aaadfb38237dd015c5e773f75a2",
+      decimals: 9,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/31498/standard/Maga-Trump-Logo-200px.png?1696530309",
+    },
+    // {
+    //   name: "DAI",
+    //   symbol: "DAI",
+    //   address: "0x4b6b9b31c72836806b0b1104cf1cdab8a0e3bd66",
+    //   decimals: 18,
+    //   isStable: true,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    // },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -521,6 +591,46 @@ export const ICONLINKS = {
       pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
     },
   },
+  [BSC]: {
+    AMP: {
+      pagasus: "https://basescan.org/address/0x155BabF44190E2ef3d5EEae6AA261E794de83b23",
+    },
+    ALP: {
+      pagasus: "https://basescan.org/address/0x3c6DEc605311571b67978C6EF2DbfE77A841722d",
+    },
+    CRO: {
+      coingecko: "https://www.coingecko.com/en/coins/base",
+    },
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      pagasus: "https://basescan.org/address/0xe44fd7fcb2b1581822d0c862b68222998a0c299a",
+    },
+   
+    PEPE: {
+      coingecko: "https://www.coingecko.com/en/coins/pepe",
+    },
+
+    FLOKI: {
+      coingecko: "https://www.coingecko.com/en/coins/floki",
+    },
+
+    MAGA: {
+      coingecko: "https://www.coingecko.com/en/coins/maga",
+    },
+
+    DAI: {
+      coingecko: "https://www.coingecko.com/en/coins/dai",
+      pagasus: "https://basescan.org/address/0xf2001b145b43032aaf5ee2884e456ccd805f677d",
+    },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      pagasus: "https://basescan.org/address/0x66e428c3f67a68878562e79a0234c1f83c208770",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
+    },
+  },
 };
 
 export const ALP_POOL_COLORS = {
@@ -546,7 +656,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET];
+const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, BSC];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];

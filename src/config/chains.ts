@@ -6,20 +6,22 @@ export const ARBITRUM = 42161;
 export const PEGASUS = 1891
 export const PHOENIX = 1890
 export const BSCTESTNET = 97
+export const BSC = 56
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = PEGASUS;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, BSC];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, BSC]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
   [PEGASUS]: false,
   [PHOENIX]: false,
   [BSCTESTNET]: false,
+  [BSC]: false
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -27,6 +29,7 @@ export const CHAIN_NAMES_MAP = {
   [PEGASUS]: "Pegasus",
   [PHOENIX]: "Phoenix",
   [BSCTESTNET]: "BSC Testnet",
+  [BSC]: "Binance Smart Chain",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -34,12 +37,14 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [PEGASUS]: "2000000000000", // 3 times
   [PHOENIX]: "2000000", // 3 times
   [BSCTESTNET]: "0", // 3 times
+  [BSC]: "0", // 3 times
 };
 
 export const MAX_GAS_PRICE_MAP = {
   [PEGASUS]: "2000000000000000",
   [PHOENIX]: "200000000000",
   [BSCTESTNET]: "20000000",
+  [BSC]: "1000000000",
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -47,6 +52,7 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [PEGASUS]: 10,
   [PHOENIX]: 10,
   [BSCTESTNET]: 10,
+  [BSC]: 10,
 };
 
 const constants = {
@@ -103,6 +109,19 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00011"),
   },
+  [BSC]: {
+    nativeTokenSymbol: "BNB",
+    wrappedTokenSymbol: "WBNB",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00011"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["amp.io", "app.amp.io"];
@@ -146,14 +165,16 @@ export const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [PEGASUS]: PEGASUS_RPC_PROVIDERS,
   [PHOENIX]: PHOENIX_RPC_PROVIDERS,
-  [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER
+  [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER,
+  [BSC]: BSC_RPC_PROVIDERS
 };
 
 export const FALLBACK_PROVIDERS = {
   [ARBITRUM]: [getAlchemyHttpUrl()],
   [PEGASUS]: [PEGASUS_RPC_PROVIDERS[0]],
   [PHOENIX]: [PHOENIX_RPC_PROVIDERS[0]],
-  [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]]
+  [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]],
+  [BSC]: [BSC_RPC_PROVIDERS[0]]
 };
 
 export const NETWORK_METADATA = {
@@ -188,7 +209,18 @@ export const NETWORK_METADATA = {
       decimals: 18,
     },
     rpcUrls: BSC_TESTNET_RPC_PROVIDER,
-    blockExplorerUrls: [getExplorerUrl(PHOENIX)],
+    blockExplorerUrls: [getExplorerUrl(BSCTESTNET)],
+  },
+  [BSC]: {
+    chainId: "0x" + BSC.toString(16),
+    chainName: "Binance Smart Chain",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    rpcUrls: BSC_RPC_PROVIDERS,
+    blockExplorerUrls: [getExplorerUrl(BSC)],
   }
 };
 
@@ -235,6 +267,8 @@ export function getExplorerUrl(chainId) {
     return "https://phoenix.lightlink.io/"
   } else if (chainId === BSCTESTNET) {
     return "https://testnet.bscscan.com/"
+  } else if (chainId === BSC) {
+    return 'https://bscscan.com/'
   }
   return "https://phoenix.lightlink.io/";
 }
