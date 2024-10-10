@@ -649,6 +649,10 @@ export const ALP_POOL_COLORS = {
   LINK: "#3256D6",
   SOL: "#9845FF",
   LL: "#3256D6",
+  PEPE: "#4B9743",
+  FLOKI: "#F79322",
+  MAGA: "#BA133D",
+  CAKE: "#53DEE9"
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
