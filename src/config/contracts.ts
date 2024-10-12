@@ -201,7 +201,7 @@ const CONTRACTS = {
     PositionManager: "0x12114fa102609B22BD166632DAE039A5544aA29D",
 
     // Replaced TraderJoeAmpAvaxPool with FastPriceFeed as it's the closest match
-    FastPriceFeed: "0x01E8Fb23957EAabF85211B4D35F2e0C84e904F68",
+    TraderJoeAmpAvaxPool: "0x01E8Fb23957EAabF85211B4D35F2e0C84e904F68",
     ReferralStorage: "0xE5E4D807FC0a9fE98D64910892a257B0669Aa2a0",
     ReferralReader: "0x400e7090e96b110841b86f00A148E612EeDAc853",
   },
