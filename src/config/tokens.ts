@@ -341,7 +341,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Moodeng",
-      symbol: "MOO DENG",
+      symbol: "MOODENG",
       address: "0x6cf75cd2ecdb83359cfc90fa49ada344f24c6f51",
       decimals: 18,
       isShortable: true,
@@ -642,7 +642,7 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/uniswap",
       pagasus: "https://sepolia.uniscan.xyz/token/0x0Cd0CBDade6e130ec432a589b48e9408100b2fE6",
     },
-    MOO_DENG: {
+    MOODENG: {
       coingecko: "https://www.coingecko.com/en/coins/moo-deng-2",
       pagasus: "https://sepolia.uniscan.xyz/token/0x6Cf75cd2eCDB83359Cfc90FA49aDA344f24C6F51",
     },
@@ -665,7 +665,7 @@ export const ALP_POOL_COLORS = {
   LINK: "#3256D6",
   SOL: "#9845FF",
   LL: "#3256D6",
-  MOO_DENG: "#E0A882",
+  MOODENG: "#E0A882",
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
