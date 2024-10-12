@@ -1,6 +1,6 @@
 import { createClient } from "./utils";
 import { SUBGRAPH_URLS } from "config/subgraph";
-import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET } from "config/chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET } from "config/chains";
 
 export const chainlinkClient = createClient(SUBGRAPH_URLS.common.chainLink);
 
@@ -26,6 +26,13 @@ export const bsctestnetGraphClientForTrades = createClient(SUBGRAPH_URLS[BSCTEST
 export const bsctestnetGraphClientForRaw = createClient(SUBGRAPH_URLS[BSCTESTNET].raw);
 export const bsctestnetGraphClientForPoints = createClient(SUBGRAPH_URLS[BSCTESTNET].points);
 
+export const unichaintestnetGraphClient = createClient(SUBGRAPH_URLS[UNICHAINTESTNET].stats);
+export const unichaintestnetReferralsGraphClient = createClient(SUBGRAPH_URLS[UNICHAINTESTNET].referrals);
+export const unichaintestnetGraphClientForTrades = createClient(SUBGRAPH_URLS[UNICHAINTESTNET].trades);
+export const unichaintestnetGraphClientForRaw = createClient(SUBGRAPH_URLS[UNICHAINTESTNET].raw);
+export const unichaintestnetGraphClientForPoints = createClient(SUBGRAPH_URLS[UNICHAINTESTNET].points);
+
+
 export function getAmpGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
     return arbitrumGraphClient;
@@ -35,6 +42,8 @@ export function getAmpGraphClient(chainId: number) {
     return phoenixGraphClient;
   } else if (chainId === BSCTESTNET) {
     return bsctestnetGraphClient
+  } else if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetGraphClient
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -49,6 +58,8 @@ export function getTradesGraphClient(chainId: number) {
     return phoenixGraphClientForTrades;
   } else if (chainId === BSCTESTNET) {
     return bsctestnetGraphClientForTrades
+  } else if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetGraphClientForTrades
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -63,6 +74,8 @@ export function getPointsGraphClient(chainId: number) {
     return phoenixGraphClientForPoints;
   } else if (chainId === BSCTESTNET) {
     return bsctestnetGraphClientForPoints;
+  } else if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetGraphClientForPoints
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -75,6 +88,8 @@ export function getRawGraphClient(chainId: number) {
     return phoenixGraphClientForRaw;
   } else if (chainId === BSCTESTNET) {
     return bsctestnetGraphClientForRaw
+  } else if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetGraphClientForRaw
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -89,6 +104,8 @@ export function getAmpGraphClientByNewCreate(chainId: number) {
     return createClient(SUBGRAPH_URLS[PHOENIX].stats);
   } else if (chainId === BSCTESTNET) {
     return createClient(SUBGRAPH_URLS[BSCTESTNET].stats)
+  } else if (chainId === UNICHAINTESTNET) {
+    return createClient(SUBGRAPH_URLS[UNICHAINTESTNET].stats)
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -103,6 +120,8 @@ export function getAmpGraphClientByNewCreateOrder(chainId: number) {
     return createClient(SUBGRAPH_URLS[PHOENIX].ordernew);
   } else if (chainId === BSCTESTNET) {
     return createClient(SUBGRAPH_URLS[BSCTESTNET].ordernew);
+  } else if (chainId === UNICHAINTESTNET) {
+    return createClient(SUBGRAPH_URLS[UNICHAINTESTNET].ordernew)
   }
 
   throw new Error(`Unsupported chain ${chainId}`);

@@ -72,7 +72,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, PEGASUS, PEGASUS_RPC_PROVIDERS, PHOENIX, PHOENIX_RPC_PROVIDERS, getAlchemyWsUrl, getExplorerUrl, BSCTESTNET, BSC_RPC_PROVIDERS, BSC_TESTNET_RPC_PROVIDER } from "config/chains";
+import { ARBITRUM, PEGASUS, PEGASUS_RPC_PROVIDERS, PHOENIX, PHOENIX_RPC_PROVIDERS, getAlchemyWsUrl, getExplorerUrl, BSCTESTNET, BSC_RPC_PROVIDERS, BSC_TESTNET_RPC_PROVIDER, UNICHAINTESTNET, UNICHAINTESTNET_RPC_PROVIDERS, UNICHAIN_TESTNET_RPC_PROVIDER } from "config/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import {
@@ -133,6 +133,8 @@ const phoenixProvider = new ethers.providers.JsonRpcProvider(PHOENIX_RPC_PROVIDE
 
 const bsctestnetProvider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
 
+const unichaintestnetProvider = new ethers.providers.JsonRpcProvider(UNICHAIN_TESTNET_RPC_PROVIDER[0]);
+
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
@@ -149,6 +151,9 @@ function getWsProvider(active, chainId) {
 
   if(chainId === BSCTESTNET) {
     return bsctestnetProvider;
+  }
+  if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetProvider;
   }
 }
 
@@ -446,7 +451,7 @@ function FullApp() {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
-    const wsVaultAbi = (chainId === PEGASUS || chainId === PHOENIX || chainId === BSCTESTNET) ? Vault.abi : VaultV2b.abi;
+    const wsVaultAbi = (chainId === PEGASUS || chainId === PHOENIX || chainId === BSCTESTNET || chainId === UNICHAINTESTNET) ? Vault.abi : VaultV2b.abi;
     const wsProvider = getWsProvider(isConnected, chainId);
     if (!wsProvider) {
       return;
