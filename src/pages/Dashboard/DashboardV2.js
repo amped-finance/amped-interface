@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BSCTESTNET, getChainName } from "config/chains";
+import { BSCTESTNET, UNICHAINTESTNET, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
