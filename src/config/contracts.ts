@@ -1,4 +1,4 @@
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET } from "./chains";
 
 export const XGMT_EXCLUDED_ACCOUNTS = [
   "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
