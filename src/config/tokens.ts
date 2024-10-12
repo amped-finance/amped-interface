@@ -404,6 +404,27 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "",
     },
   ],
+  [UNICHAINTESTNET]: [
+    {
+      name: "AMP",
+      symbol: "AMP",
+      address: getContract(UNICHAINTESTNET, "AMP"),
+      decimals: 18,
+      imageUrl: "",
+    },
+    {
+      name: "Escrowed AMP",
+      symbol: "esAMP",
+      address: getContract(UNICHAINTESTNET, "ES_AMP"),
+      decimals: 18,
+    },
+    {
+      name: "AMP LP",
+      symbol: "ALP",
+      address: getContract(UNICHAINTESTNET, "ALP"),
+      decimals: 18,
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -437,6 +458,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "ALP",
       decimals: 18,
       address: getContract(PEGASUS, "StakedAlpTracker"), // address of fsALP token because user only holds fsALP
+      imageUrl: "",
+    },
+  },
+  [UNICHAINTESTNET]: {
+    AMP: {
+      name: "AMP",
+      symbol: "AMP",
+      decimals: 18,
+      address: getContract(UNICHAINTESTNET, "AMP"),
+      imageUrl: "",
+    },
+    ALP: {
+      name: "AMP LP",
+      symbol: "ALP",
+      decimals: 18,
+      address: getContract(UNICHAINTESTNET, "ALP"),
       imageUrl: "",
     },
   },
@@ -585,29 +622,29 @@ export const ICONLINKS = {
   },
   [UNICHAINTESTNET]: {
     AMP: {
-      uniscan: "https://sepolia.uniscan.xyz/token/0x39e7261F8EF390AC578E89c15b1CeE48787126Ad",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x39e7261F8EF390AC578E89c15b1CeE48787126Ad",
     },
     ALP: {
-      uniscan: "https://sepolia.uniscan.xyz/token/0x35630c50eE58BF168c3eC1c65E77f9A635Bbc53d",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x35630c50eE58BF168c3eC1c65E77f9A635Bbc53d",
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
     }, 
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      uniscan: "https://sepolia.uniscan.xyz/token/0x659919D8068B19BD2f352ECC2b1FDe2344752C4D",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x659919D8068B19BD2f352ECC2b1FDe2344752C4D",
     },
     WBTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      uniscan: "https://sepolia.uniscan.xyz/token/0x07e571AF7cDab6a67468308bac76395132cE2F8f",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x07e571AF7cDab6a67468308bac76395132cE2F8f",
     },
     UNI: {
       coingecko: "https://www.coingecko.com/en/coins/uniswap",
-      uniscan: "https://sepolia.uniscan.xyz/token/0x0Cd0CBDade6e130ec432a589b48e9408100b2fE6",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x0Cd0CBDade6e130ec432a589b48e9408100b2fE6",
     },
     MOO_DENG: {
       coingecko: "https://www.coingecko.com/en/coins/moo-deng-2",
-      uniscan: "https://sepolia.uniscan.xyz/token/0x6Cf75cd2eCDB83359Cfc90FA49aDA344f24C6F51",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x6Cf75cd2eCDB83359Cfc90FA49aDA344f24C6F51",
     },
   },
 };
