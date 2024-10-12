@@ -1,6 +1,6 @@
 import { createClient } from "./utils";
 import { SUBGRAPH_URLS } from "config/subgraph";
-import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET } from "config/chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET } from "config/chains";
 
 export const chainlinkClient = createClient(SUBGRAPH_URLS.common.chainLink);
 
