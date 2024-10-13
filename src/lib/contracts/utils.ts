@@ -2,6 +2,7 @@ import { Provider } from "@ethersproject/providers";
 import { Contract, ethers } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP, PEGASUS, PHOENIX, UNICHAINTESTNET } from "config/chains";
 import { bigNumberify } from "../numbers";
+import { BigNumber } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   if(chainId === PEGASUS || chainId === PHOENIX) {
@@ -27,9 +28,10 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
       
       // Set a maximum priority fee for Unichain Testnet
       if (chainId === UNICHAINTESTNET) {
-        const maxPriorityFee = bigNumberify("1000000"); // 1 gwei, adjust as needed
-        txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium).lt(maxPriorityFee)
-          ? feeData.maxPriorityFeePerGas.add(premium)
+        const maxPriorityFee = BigNumber.from("1000000"); // 1 gwei, adjust as needed
+        const calculatedFee = feeData.maxPriorityFeePerGas.add(premium);
+        txnOpts.maxPriorityFeePerGas = calculatedFee.lt(maxPriorityFee)
+          ? calculatedFee
           : maxPriorityFee;
       } else {
         txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
