@@ -1426,14 +1426,13 @@ export function getTradePageUrl() {
   return "https://amped.finance/#/trade";
 }
 
-export function importImage(name) {
-  let tokenImage = null;
+export function importImage(path) {
   try {
-    tokenImage = require("img/" + name);
+    return require(`../../img/${path}`);
   } catch (error) {
-    console.error(error);
+    // If SVG fails, try PNG
+    return require(`../../img/${path.replace('.svg', '.png')}`);
   }
-  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
