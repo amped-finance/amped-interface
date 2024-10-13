@@ -24,7 +24,17 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas) {
       txnOpts.maxFeePerGas = maxGasPrice || gasPrice.add(premium);
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      
+      // Set a maximum priority fee for Unichain Testnet
+      if (chainId === UNICHAINTESTNET) {
+        const maxPriorityFee = bigNumberify("1000000"); // 1 gwei, adjust as needed
+        txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium).lt(maxPriorityFee)
+          ? feeData.maxPriorityFeePerGas.add(premium)
+          : maxPriorityFee;
+      } else {
+        txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      }
+      
       return;
     }
   }
