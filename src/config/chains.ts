@@ -36,7 +36,7 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [PEGASUS]: "2000000000000", // 3 times
   [PHOENIX]: "2000000", // 3 times
   [BSCTESTNET]: "0", // 3 times
-  [UNICHAINTESTNET]: "0", // 3 times
+  [UNICHAINTESTNET]: "1000000", // 3 times
 };
 
 export const MAX_GAS_PRICE_MAP = {
