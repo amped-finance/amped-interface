@@ -1426,12 +1426,19 @@ export function getTradePageUrl() {
   return "https://amped.finance/#/trade";
 }
 
-export function importImage(path) {
+export function importImage(path: string) {
   try {
-    return require(`../../img/${path}`);
+    // Try to import the image directly
+    return require(`../img/${path}`);
   } catch (error) {
-    // If SVG fails, try PNG
-    return require(`../../img/${path.replace('.svg', '.png')}`);
+    try {
+      // If that fails, try without the 'ic_' prefix
+      return require(`../img/${path.replace('ic_', '')}`);
+    } catch (secondError) {
+      // If both attempts fail, return a placeholder or null
+      console.warn(`Failed to load image: ${path}`);
+      return null;
+    }
   }
 }
 
