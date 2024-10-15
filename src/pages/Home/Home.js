@@ -27,6 +27,13 @@ import bg1 from "img/home/bg-1.png";
 import bg2 from "img/home/bg-2.png";
 
 import logoImg from "img/logo_with_name.svg";
+
+import logoLL from "img/home/lightlink.png";
+import logoTypeLight from "img/home/type-light.png";
+import logoLayerZero from "img/home/layerzero.webp";
+import logoBlockapex from "img/home/blockapex.png";
+import logoTheGraph from "img/home/the-graph.png";
+
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -110,6 +117,16 @@ export default function Home() {
         <div className="landing-bg-bottom"></div>
         <div className="landing-bg-left"></div>
         <div className="landing-bg-right"></div>
+        <div className="partners default-container">
+          <div className="partners-title font-kufam">Partnering with</div>
+          <div className="partners-list">
+            <img src={logoLL} alt="" />
+            <img src={logoLayerZero} alt="" />
+            <img src={logoTypeLight} alt="" />
+            <img src={logoTheGraph} alt="" />
+            <img src={logoBlockapex} alt="" />
+          </div>
+        </div>
       </div>
       <div className="landing-video-bottom default-container">
         <img src={logoImg} className="landing-video-bottom-logo" alt="" />
