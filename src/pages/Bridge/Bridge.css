@@ -52,7 +52,7 @@
   align-items: center;
   border-radius: 1rem;
   cursor: pointer;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .bridge .card-bridge .select-chain .box-chain {
@@ -96,7 +96,7 @@
 }
 
 .bridge .txn-history {
-  margin: 3rem 0 2rem 0;
+  margin: 6rem 0 2rem 0;
 }
 
 .bridge .label-input {
@@ -193,6 +193,84 @@
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 50%;
+}
+
+.txn-history-list .td-icon-chain {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+.td-1 span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.td-2 span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.td-1,
+.td-2 {
+  min-width: 250px;
+}
+
+.td-4 {
+  min-width: 100px;
+}
+
+.td-5 {
+  width: 100px;
+}
+
+.no-data {
+  padding: 4rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.0784313725);
+  border-radius: 2rem;
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: var(--color-bg-panel);
+}
+
+.bridge .load-more {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.bridge .load-more button {
+  padding: 2rem;
+  width: 30rem;
+}
+
+@media (max-width: 767px) {
+  .bridge .card-bridge .select-chain {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bridge .card-bridge .select-chain .box-chain {
+    width: 100%;
+  }
+
+  .bridge .card-bridge .select-chain .arrow {
+    margin-bottom: 0;
+    transform: rotate(90deg);
+  }
+  .table-txn-history {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .bridge .txn-history {
+    font-size: 2.8rem;
+  }
+
+  .bridge .load-more button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 400px) {

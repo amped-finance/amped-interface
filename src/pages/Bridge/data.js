@@ -10,7 +10,6 @@ export const switchNetworkbridge = async (chainType, provider) => {
       });
       return true;
     } catch (err) {
-      console.log("1111: ", err);
       if (err?.code === 4902) {
         provider.request({
           method: "wallet_addEthereumChain",

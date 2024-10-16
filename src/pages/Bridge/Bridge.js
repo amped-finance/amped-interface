@@ -17,8 +17,20 @@ import logoLL from "img/bridge/LL.png";
 import logoBNB from "img/bridge/bnb.png";
 import { ABI_ADAPTER, ABI_AMP, switchNetworkbridge } from "./data";
 import { debounce } from "lodash";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ShareSvg } from "./ShareSvg";
+import { helperToast } from "lib/helperToast";
 
-const { DROPDOWN_CHAINS, CONTRACT_ADAPTER_AMP_LL, ADDRESS_AMP_LL, ADDRESS_AMP_BSC, API_LAYERZERO } = APP_ENVIRONMENTS;
+const {
+  DROPDOWN_CHAINS,
+  CONTRACT_ADAPTER_AMP_LL,
+  ADDRESS_AMP_LL,
+  ADDRESS_AMP_BSC,
+  API_LAYERZERO,
+  EXPLORER_LAYERZERO_SCAN,
+} = APP_ENVIRONMENTS;
+
+const pageSize = 10;
 
 export default function Bridge({ setPendingTxns, connectWallet }) {
   const decimals = 18;
@@ -32,27 +44,25 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
   const { walletProvider } = useWeb3ModalProvider();
 
   const { isConnected: active, address: account } = useWeb3ModalAccount();
-  let { chainId } = useWeb3ModalAccount();
 
   const [txnHistory, setTxnHistory] = useState([]);
   const [loadMore, setLoadMore] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const [nextToken, setNextToken] = useState("");
   const [fee, setFee] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   const debouncedFeeBridge = useCallback(
-    debounce(async (amount) => {
-      console.log("1111");
-      // setDebouncedSearchTerm(term);
-      const contractAddress = tokenFrom.chain === "LIGHTLINK" ? ADDRESS_AMP_LL : ADDRESS_AMP_BSC;
+    debounce(async (amount, walletProvider) => {
       const contractAdapter = tokenFrom.chain === "LIGHTLINK" ? CONTRACT_ADAPTER_AMP_LL : ADDRESS_AMP_BSC;
 
       const provider = new ethers.providers.Web3Provider(walletProvider);
+      if (!provider) return;
       const signer = provider.getSigner();
 
       const oftContract = new ethers.Contract(contractAdapter, ABI_ADAPTER, signer);
 
-      const contractToken = new ethers.Contract(contractAddress, ABI_AMP, signer);
-      const amountBridge = ethers.utils.parseUnits(amount, 18);
+      const amountBridge = ethers.utils.parseUnits(String(Number(amount)), 18);
 
       let options = Options.newOptions().addExecutorLzReceiveOption(150000, 0).toBytes();
       const oft = oftContract;
@@ -68,34 +78,30 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       };
 
       const feeQuote = await oft.quoteSend(sendParam, false);
-      console.log("feeQuote: ", feeQuote);
       const nativeFee = feeQuote.nativeFee;
 
       let calFee = ethers.utils.formatEther(nativeFee);
-      console.log("calFee: ", calFee);
       calFee = Math.round(calFee * 1e4) / 1e4;
       setFee(calFee);
     }, 1000),
-    []
+    [walletProvider]
   );
 
   useEffect(() => {
-    if (walletProvider) {
-      debouncedFeeBridge(amount);
+    if (walletProvider && Number(amount)) {
+      debouncedFeeBridge(amount, walletProvider);
     }
   }, [amount, tokenFrom, tokenTo, walletProvider]);
 
   useEffect(() => {
     if (!amount || Number(amount) > Number(balance)) {
       setTextButton("Insufficient funds");
+      setDisabled(true);
     } else {
       setTextButton("Transfer");
+      setDisabled(false);
     }
   }, [amount, balance]);
-
-  useEffect(() => {
-    console.log("chainId: ", chainId);
-  }, [chainId]);
 
   const handleAmountChange = (value) => {
     setAmount(String(value));
@@ -131,9 +137,11 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
   };
 
   const getTxnHistory = async (token) => {
-    await fetch(`${API_LAYERZERO}/v1/messages/wallet/${account}?limit=20${token ? `&nextToken=${token}` : ""}`)
+    setLoadingTable(true);
+    await fetch(`${API_LAYERZERO}/v1/messages/wallet/${account}?limit=${pageSize}${token ? `&nextToken=${token}` : ""}`)
       .then((response) => response.json())
       .then((response) => {
+        setLoadingTable(false);
         if (response?.data) {
           setTxnHistory([...txnHistory, ...response.data]);
         }
@@ -147,13 +155,10 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
         }
       })
       .catch((err) => {
+        setLoadingTable(false);
         setLoadMore(false);
       });
   };
-
-  useEffect(() => {
-    console.log("txnHistory: ", txnHistory);
-  }, [txnHistory]);
 
   const handleBridge = async () => {
     if (!walletProvider) return;
@@ -170,7 +175,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       const oftContract = new ethers.Contract(contractAdapter, ABI_ADAPTER, signer);
 
       const contractToken = new ethers.Contract(contractAddress, ABI_AMP, signer);
-      const amountBridge = ethers.utils.parseUnits(amount, decimals);
+      const amountBridge = ethers.utils.parseUnits(String(Number(amount)), decimals);
 
       let options = Options.newOptions().addExecutorLzReceiveOption(150000, 0).toBytes();
       const oft = oftContract;
@@ -186,11 +191,9 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       };
 
       const feeQuote = await oft.quoteSend(sendParam, false);
-      console.log("feeQuote: ", feeQuote);
       const nativeFee = feeQuote.nativeFee;
 
       let calFee = ethers.utils.formatEther(nativeFee);
-      console.log("2222: ", calFee);
       calFee = Math.round(calFee * 1e4) / 1e4;
       setFee(calFee);
 
@@ -211,15 +214,19 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       //
 
       setTextButton("Transferring...");
-      const etmBridge = await oft.estimateGas.send(sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, account, {
-        value: nativeFee,
-      });
-      console.log("gas: ", Number(etmBridge));
       const r = await oft.send(sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, account, {
         value: nativeFee,
       });
-      console.log("r: ", r);
       await r.wait();
+      helperToast.success(
+        <div>
+          Successful!{" "}
+          <ExternalLink href={`${EXPLORER_LAYERZERO_SCAN}tx/${r?.hash}`}>
+            <Trans>View</Trans>
+          </ExternalLink>
+          <br />
+        </div>
+      );
       setLoading(false);
       getBalance();
     } catch (err) {
@@ -236,6 +243,43 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       }
       case "BSC": {
         return logoBNB;
+      }
+      default:
+        return "";
+    }
+  };
+
+  const getChainFromLayerZero = (chain) => {
+    switch (chain) {
+      case "lightlink-testnet":
+        return (
+          <span>
+            <img className="td-icon-chain" src={logoLL} />
+            Lightlink Pegasus Testnet
+          </span>
+        );
+      case "lightlink": {
+        return (
+          <span>
+            <img className="td-icon-chain" src={logoLL} />
+            Lightlink Phoenix Mainnet
+          </span>
+        );
+      }
+      case "bsc-testnet":
+        return (
+          <span>
+            <img className="td-icon-chain" src={logoBNB} />
+            BNB Smart Chain Testnet
+          </span>
+        );
+      case "bsc": {
+        return (
+          <span>
+            <img className="td-icon-chain" src={logoBNB} />
+            BNB Smart Chain Mainnet
+          </span>
+        );
       }
       default:
         return "";
@@ -360,7 +404,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
               <div className="bridge-action">
                 {active ? (
                   <button
-                    disabled={!amount || loading}
+                    disabled={!amount || loading || disabled}
                     onClick={handleBridge}
                     className="App-cta Exchange-swap-button"
                     type="submit"
@@ -377,54 +421,76 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
             <div className="Page-title font-kufam txn-history">
               <Trans>Transaction History</Trans>
             </div>
-            <table className="Exchange-list Orders App-box">
-              <tbody>
-                <th className="td-from">
-                  <div>
-                    <Trans>From</Trans>
-                  </div>
-                </th>
-                <th className="td-to">
-                  <div>
-                    <Trans>To</Trans>
-                  </div>
-                </th>
-                <th className="td-amount">
+            {txnHistory.length ? (
+              <>
+                <div className="table-txn-history">
+                  <table className="Exchange-list Orders App-box txn-history-list">
+                    <tbody>
+                      <th className="td-1">
+                        <div>
+                          <Trans>From</Trans>
+                        </div>
+                      </th>
+                      <th className="td-2">
+                        <div>
+                          <Trans>To</Trans>
+                        </div>
+                      </th>
+                      {/* <th className="td-amount">
                   <div>
                     <Trans>Amount</Trans>
                   </div>
-                </th>
-                <th className="td-status">
-                  <div>
-                    <Trans>Status</Trans>
-                  </div>
-                </th>
-                <th className="td-view">
-                  <div>
-                    <Trans>View</Trans>
-                  </div>
-                </th>
-                {txnHistory.map((item, index) => (
-                  <tr key={index}>
-                    <td className="">
-                      <Trans>{item?.pathway?.sender?.chain}</Trans>
-                    </td>
-                    <td className="">
-                      <Trans>{item?.pathway?.receiver?.chain}</Trans>
-                    </td>
-                    <td className="">
+                </th> */}
+                      <th className="td-4">
+                        <div>
+                          <Trans>Status</Trans>
+                        </div>
+                      </th>
+                      <th className="td-5">
+                        <div>
+                          <Trans>View</Trans>
+                        </div>
+                      </th>
+                      {txnHistory.map((item, index) => (
+                        <tr key={index}>
+                          <td className="td-1">
+                            <Trans>{getChainFromLayerZero(item?.pathway?.sender?.chain)}</Trans>
+                          </td>
+                          <td className="td-2">
+                            <Trans>{getChainFromLayerZero(item?.pathway?.receiver?.chain)}</Trans>
+                          </td>
+                          {/* <td className="td-3">
                       <Trans>Limit</Trans>
-                    </td>
-                    <td className="">
-                      <Trans>{item?.status?.name}</Trans>
-                    </td>
-                    <td className="">
-                      <Trans>Limit</Trans>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </td> */}
+                          <td className="td-4">
+                            <Trans>{item?.status?.name}</Trans>
+                          </td>
+                          <td className="td-5">
+                            <ExternalLink
+                              className="plain"
+                              href={`${EXPLORER_LAYERZERO_SCAN}tx/${item?.source?.tx?.txHash}`}
+                            >
+                              <ShareSvg />
+                            </ExternalLink>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {loadMore && (
+                  <div className="load-more">
+                    <button onClick={() => getTxnHistory(nextToken)} className="load-more button-secondary">
+                      {loadingTable ? "Loading..." : "Load More"}
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="no-data">
+                <Trans>No transactions data</Trans>
+              </div>
+            )}
           </div>
         </div>
         <Footer />
