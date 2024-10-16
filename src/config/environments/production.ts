@@ -6,8 +6,8 @@ export const PRODUCTION_ENVIRONMENTS = {
   EXPLORER_SCAN_LL: "https://phoenix.lightlink.io/",
   EXPLORER_LAYERZERO_SCAN: "https://layerzeroscan.com/",
   DROPDOWN_CHAINS: [
-    { value: 30309, label: "Lightlink Phoenix Mainnet", chain: "lightlink", chainId: 1890 },
-    { value: 30102, label: "BNB Smart Chain Mainnet", chain: "bnb", chainId: 56 },
+    { value: 30309, label: "Lightlink Phoenix Mainnet", chain: "LIGHTLINK", chainId: 1890 },
+    { value: 30102, label: "BNB Smart Chain Mainnet", chain: "BSC", chainId: 56 },
   ],
   API_LAYERZERO: 'https://scan.layerzero-api.com',
   CHAINS: {
