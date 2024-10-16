@@ -185,13 +185,13 @@ export function getPositions(
       collateral: positionData[i * propsLength + 1],
       averagePrice: positionData[i * propsLength + 2],
       entryFundingRate: positionData[i * propsLength + 3],
-      cumulativeFundingRate: collateralToken.cumulativeFundingRate,
+      cumulativeFundingRate: collateralToken?.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],
       lastIncreasedTime: positionData[i * propsLength + 6].toNumber(),
       hasProfit: positionData[i * propsLength + 7].eq(1),
       delta: positionData[i * propsLength + 8],
-      markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice,
+      markPrice: isLong[i] ? indexToken?.minPrice : indexToken?.maxPrice,
     };
 
     if (

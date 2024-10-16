@@ -27,6 +27,13 @@ import bg1 from "img/home/bg-1.png";
 import bg2 from "img/home/bg-2.png";
 
 import logoImg from "img/logo_with_name.svg";
+
+import logoLL from "img/home/lightlink.png";
+import logoTypeLight from "img/home/type-light.png";
+import logoLayerZero from "img/home/layerzero.webp";
+import logoBlockapex from "img/home/blockapex.png";
+import logoTheGraph from "img/home/the-graph.png";
+
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -39,17 +46,17 @@ export default function Home() {
     {
       title: "Fast",
       icon: benefit2,
-      des: "The cutting-edge technology of the LightLink network guarantees lightning-fast transaction confirmations, making trading exceptionally quick.",
+      des: "The cutting-edge technology of the EVM networks we operate on guarantee lightning-fast transaction confirmations, making trading exceptionally quick.",
     },
     {
       title: "Cost-efficient",
       icon: benefit3,
-      des: "Our gas-free trading environment means more of your investment goes into trading, not fees, making your trading experience cost-efficient and more profitable.",
+      des: "Our trading environment means more of your investment goes into trading, not fees, making your experience cost-efficient and more profitable.",
     },
     {
       title: "Amplify your crypto",
       icon: benefit4,
-      des: "Amplify your trading potential with leveraged trading on Amped Finance. Our platform allows for significant leverage, giving you the power to maximize your trading strategy and potential returns.",
+      des: "Amplify your trading potential with leveraged trading on Amped Finance. Our platform allows you to leverage your tokens, giving you the power to maximize your trading strategy and potential returns.",
     },
   ];
 
@@ -69,7 +76,7 @@ export default function Home() {
     {
       title: "Trade",
       icon: earning3,
-      des: "Engage in perpetual swaps trading with up to 8x leverage, maximizing trading potential and returns on the Amped Finance platform.",
+      des: "Engage in perpetual swaps trading with up to 11x leverage, maximizing trading potential and returns on the Amped Finance platform.",
       link: "/trade",
     },
   ];
@@ -80,12 +87,12 @@ export default function Home() {
         <div className="landing-top default-container">
           <div className="landing-top-join">Join the on-chain trading revolution</div>
           <div className="landing-top-title font-kufam">
-            Instant, Gasless
+            Instant, On-Chain
             <br />
             Decentralised Trading
           </div>
           <div className="landing-top-des">
-            Discover just how easy on-chain trading can be, with ultra-fast transactions and zero gas fees. It's not
+            Discover just how easy on-chain trading can be, with ultra-fast transactions and with leverage. It's not
             just trading – it's a revolution in how perpetual swaps are traded.
           </div>
           <div className="socials default-container">
@@ -110,6 +117,16 @@ export default function Home() {
         <div className="landing-bg-bottom"></div>
         <div className="landing-bg-left"></div>
         <div className="landing-bg-right"></div>
+        <div className="partners default-container">
+          <div className="partners-title font-kufam">Partnering with</div>
+          <div className="partners-list">
+            <img src={logoLL} alt="" />
+            <img src={logoLayerZero} alt="" />
+            <img src={logoTypeLight} alt="" />
+            <img src={logoTheGraph} alt="" />
+            <img src={logoBlockapex} alt="" />
+          </div>
+        </div>
       </div>
       <div className="landing-video-bottom default-container">
         <img src={logoImg} className="landing-video-bottom-logo" alt="" />
@@ -132,7 +149,6 @@ export default function Home() {
         <div className="benefits-title font-kufam">Benefits</div>
         <div className="benefits-des">
           Amped Finance is a decentralised platform offering community-provided liquidity, transparently visible to all.
-          The LightLink network provides a gasless trading experience, maximising the efficiency of your capital.
         </div>
         <div className="benefits-list">
           {dataBenefits.map((item, index) => (
@@ -149,8 +165,7 @@ export default function Home() {
           <div className="gateway-title font-kufam">Your Gateway to Advanced DeFi Trading</div>
           <div className="gateway-des">
             At Amped Finance, we’re not just building a platform; we’re creating a community where traders can thrive in
-            a secure, efficient, and innovative environment. Our alignment with LightLink’s advanced blockchain
-            technology ensures that we stay at the forefront of the DeFi revolution.
+            a secure, efficient, and innovative environment. Our alignment with the most popular tokens and networks ensures that we stay at the forefront of the DeFi revolution.
           </div>
         </div>
         <div className="macbook">

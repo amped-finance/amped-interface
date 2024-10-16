@@ -1,4 +1,4 @@
-import { ARBITRUM, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET } from "./chains";
 
 export const SUBGRAPH_URLS = {
   [ARBITRUM]: {
@@ -25,6 +25,26 @@ export const SUBGRAPH_URLS = {
     raw:"https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",  
     price: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/trades",
     ordernew: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/orders",
+    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
+  },
+
+  [BSCTESTNET]: {
+    stats: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
+    referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
+    trades:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
+    price: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/90987/amped-finance-orders/version/latest",
+    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
+  },
+
+  [UNICHAINTESTNET]: {
+    stats: "https://api.studio.thegraph.com/query/91379/amped-trades/version/latest",
+    referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
+    trades:"https://api.studio.thegraph.com/query/91379/amped-trades/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/91379/amped-trades/version/latest",  
+    price: "https://api.studio.thegraph.com/query/91379/amped-trades/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/91379/amped-orders/version/latest",
     points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
   },
   

@@ -77,12 +77,16 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
         oftCmd: "0x", // ethers.utils.arrayify('0x'), // Assuming no OFT command is needed
       };
 
-      const feeQuote = await oft.quoteSend(sendParam, false);
-      const nativeFee = feeQuote.nativeFee;
+      try {
+        const feeQuote = await oft.quoteSend(sendParam, false);
+        const nativeFee = feeQuote.nativeFee;
 
-      let calFee = ethers.utils.formatEther(nativeFee);
-      calFee = Math.round(calFee * 1e4) / 1e4;
-      setFee(calFee);
+        let calFee = ethers.utils.formatEther(nativeFee);
+        calFee = Math.round(calFee * 1e4) / 1e4;
+        setFee(calFee);
+      } catch (xxx) {
+        console.log("err: ", xxx);
+      }
     }, 1000),
     [walletProvider]
   );

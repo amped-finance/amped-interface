@@ -5,42 +5,53 @@ const { parseEther } = ethers.utils;
 export const ARBITRUM = 42161;
 export const PEGASUS = 1891
 export const PHOENIX = 1890
-
+export const BSCTESTNET = 97
+export const UNICHAINTESTNET = 1301
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = PEGASUS;
+export const DEFAULT_CHAIN_ID = PHOENIX;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
   [PEGASUS]: false,
   [PHOENIX]: false,
+  [BSCTESTNET]: false,
+  [UNICHAINTESTNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
   [PEGASUS]: "Pegasus",
   [PHOENIX]: "Phoenix",
+  [BSCTESTNET]: "BSC Testnet",
+  [UNICHAINTESTNET]: "Unichain Testnet",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [PEGASUS]: "2000000000000", // 3 times
   [PHOENIX]: "2000000", // 3 times
+  [BSCTESTNET]: "0", // 3 times
+  [UNICHAINTESTNET]: "1000000", // 3 times
 };
 
 export const MAX_GAS_PRICE_MAP = {
   [PEGASUS]: "2000000000000000",
   [PHOENIX]: "200000000000",
+  [BSCTESTNET]: "20000000",
+  [UNICHAINTESTNET]: "0",
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 3, // 3 USD
   [PEGASUS]: 10,
   [PHOENIX]: 10,
+  [BSCTESTNET]: 10,
+  [UNICHAINTESTNET]: 10,
 };
 
 const constants = {
@@ -83,6 +94,33 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00011"),
   },
+
+  [BSCTESTNET]: {
+    nativeTokenSymbol: "BNB",
+    wrappedTokenSymbol: "WBNB",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00011"),
+  },
+  [UNICHAINTESTNET]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
+  }
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["amp.io", "app.amp.io"];
@@ -118,16 +156,27 @@ export const PHOENIX_RPC_PROVIDERS = [
   "https://replicator.phoenix.lightlink.io/rpc/v1",
 ];
 
+export const BSC_TESTNET_RPC_PROVIDER = [
+  "https://bsc-testnet.blastapi.io/c9643dfa-4f00-4b9f-82e3-039e3068afa0",  
+];
+export const UNICHAIN_TESTNET_RPC_PROVIDER = [
+  "https://sepolia.unichain.org",
+];
+
 export const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [PEGASUS]: PEGASUS_RPC_PROVIDERS,
   [PHOENIX]: PHOENIX_RPC_PROVIDERS,
+  [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER,
+  [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER
 };
 
 export const FALLBACK_PROVIDERS = {
   [ARBITRUM]: [getAlchemyHttpUrl()],
   [PEGASUS]: [PEGASUS_RPC_PROVIDERS[0]],
   [PHOENIX]: [PHOENIX_RPC_PROVIDERS[0]],
+  [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]],
+  [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]]
 };
 
 export const NETWORK_METADATA = {
@@ -152,6 +201,28 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: PHOENIX_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(PHOENIX)],
+  },
+  [BSCTESTNET]: {
+    chainId: "0x" + BSCTESTNET.toString(16),
+    chainName: "BSC Testnet",
+    nativeCurrency: {
+      name: "tBNB",
+      symbol: "tBNB",
+      decimals: 18,
+    },
+    rpcUrls: BSC_TESTNET_RPC_PROVIDER,
+    blockExplorerUrls: [getExplorerUrl(PHOENIX)],
+  },
+  [UNICHAINTESTNET]: {
+    chainId: "0x" + UNICHAINTESTNET.toString(16),
+    chainName: "Unichain Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: UNICHAIN_TESTNET_RPC_PROVIDER,
+    blockExplorerUrls: [getExplorerUrl(UNICHAINTESTNET)],
   }
 };
 
@@ -196,6 +267,10 @@ export function getExplorerUrl(chainId) {
     return "https://pegasus.lightlink.io/"
   } else if (chainId === PHOENIX) {
     return "https://phoenix.lightlink.io/"
+  } else if (chainId === BSCTESTNET) {
+    return "https://testnet.bscscan.com/"
+  } else if (chainId === UNICHAINTESTNET) {
+    return "https://sepolia.uniscan.xyz/"
   }
   return "https://phoenix.lightlink.io/";
 }

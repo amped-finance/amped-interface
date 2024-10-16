@@ -20,7 +20,7 @@ import Token from "abis/Token.json";
 import PositionRouter from "abis/PositionRouter.json";
 
 import { getContract } from "config/contracts";
-import { ARBITRUM, DEFAULT_CHAIN_ID, getConstant, getHighExecutionFee, PEGASUS, PHOENIX } from "config/chains";
+import { ARBITRUM, DEFAULT_CHAIN_ID, getConstant, getHighExecutionFee, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { groupBy } from "lodash";
@@ -51,8 +51,8 @@ const FIRST_DATE_TS = parseInt(+new Date(2023, 3, 20) / 1000);
 const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
-export const startBlock = 101420000;
-export const endBlock = 105705572;
+export const startBlock = 107411573;
+export const endBlock = 110867573;
 
 
 export const useRefresh = () => {

@@ -1,34 +1,49 @@
 import { Provider } from "@ethersproject/providers";
 import { Contract, ethers } from "ethers";
-import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
+import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP, PEGASUS, PHOENIX, UNICHAINTESTNET } from "config/chains";
 import { bigNumberify } from "../numbers";
+import { BigNumber } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
-  txnOpts.gasPrice = ethers.constants.Zero;
+  if(chainId === PEGASUS || chainId === PHOENIX) {
+    txnOpts.gasPrice = ethers.constants.Zero;
+    return;
+  }
+  let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+
+  const gasPrice = await provider.getGasPrice();
+
+  if (maxGasPrice) {
+    if (gasPrice.gt(maxGasPrice)) {
+      maxGasPrice = gasPrice;
+    }
+
+    const feeData = await provider.getFeeData();
+
+    // the wallet provider might not return maxPriorityFeePerGas in feeData
+    // in which case we should fallback to the usual getGasPrice flow handled below
+    if (feeData && feeData.maxPriorityFeePerGas) {
+      txnOpts.maxFeePerGas = maxGasPrice || gasPrice.add(premium);
+      
+      // Set a maximum priority fee for Unichain Testnet
+      if (chainId === UNICHAINTESTNET) {
+        const maxPriorityFee = BigNumber.from("1000000"); // 1 gwei, adjust as needed
+        const calculatedFee = feeData.maxPriorityFeePerGas.add(premium);
+        txnOpts.maxPriorityFeePerGas = calculatedFee.lt(maxPriorityFee)
+          ? calculatedFee
+          : maxPriorityFee;
+      } else {
+        txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      }
+      
+      return;
+    }
+  }
+
+  // Fallback to legacy gas price if EIP-1559 is not supported
+  txnOpts.gasPrice = (maxGasPrice && gasPrice.gt(maxGasPrice) ? maxGasPrice : gasPrice).add(premium);
   return;
-  // let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
-  // const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
-
-  // const gasPrice = await provider.getGasPrice();
-
-  // if (maxGasPrice) {
-  //   if (gasPrice.gt(maxGasPrice)) {
-  //     maxGasPrice = gasPrice;
-  //   }
-
-  //   const feeData = await provider.getFeeData();
-
-  //   // the wallet provider might not return maxPriorityFeePerGas in feeData
-  //   // in which case we should fallback to the usual getGasPrice flow handled below
-  //   if (feeData && feeData.maxPriorityFeePerGas) {
-  //     txnOpts.maxFeePerGas = maxGasPrice;
-  //     txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
-  //     return;
-  //   }
-  // }
-
-  // txnOpts.gasPrice = gasPrice.add(premium);
-  // return;
 }
 
 export async function getGasLimit(contract: Contract, method, params = [], value) {

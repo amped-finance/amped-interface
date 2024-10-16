@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, PEGASUS, PHOENIX } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET } from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -241,6 +241,122 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     // },
   ],
+  [BSCTESTNET]: [
+    {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/4713/small/weth.png?1624446912",
+    },
+    {
+      name: "Wrapped BNB",
+      symbol: "WBNB",
+      decimals: 18,
+      address: "0x612777eea37a44f7a95e3b101c39e1e2695fa6c2",
+      isWrapped: true,
+      baseSymbol: "BNB",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    {
+      name: "Bitcoin (WBTC)",
+      symbol: "BTC",
+      decimals: 8,
+      address: "0xb19c12715134bee7c4b1ca593ee9e430dabe7b56",
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Tether USD",
+      symbol: "USDT",
+      address: "0x337610d27c682e347c9cd60bd4b3b107c9d34ddd",
+      decimals: 18,
+      isStable: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      address: "0x1958f7c067226c7c8ac310dc994d0cebabfb2b02",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    // {
+    //   name: "DAI",
+    //   symbol: "DAI",
+    //   address: "0x4b6b9b31c72836806b0b1104cf1cdab8a0e3bd66",
+    //   decimals: 18,
+    //   isStable: true,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    // },
+  ],
+  [UNICHAINTESTNET]: [
+    {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/standard/ethereum.png?1696501628",
+    },
+    {
+      name: "WETH",
+      symbol: "WETH",
+      decimals: 18,
+      address: "0x4200000000000000000000000000000000000006",
+      isWrapped: true,
+      baseSymbol: "ETH",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/standard/weth.png?1696503332",
+    },
+    {
+      name: "Bitcoin (WBTC)",
+      symbol: "WBTC",
+      decimals: 18,
+      address: "0x07e571af7cdab6a67468308bac76395132ce2f8f",
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png?1696507857",
+    },
+    {
+      name: "USDC",
+      symbol: "USDC",
+      address: "0x659919d8068b19bd2f352ecc2b1fde2344752c4d",
+      decimals: 18,
+      isStable: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/standard/usdc.png?1696506694",
+    },
+    {
+      name: "Uniswap",
+      symbol: "UNI",
+      address: "0x0cd0cbdade6e130ec432a589b48e9408100b2fe6",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/12504/standard/uniswap-logo.png?1720676669",
+    },
+    {
+      name: "Moodeng",
+      symbol: "MOODENG",
+      address: "0x6cf75cd2ecdb83359cfc90fa49ada344f24c6f51",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/50348/standard/1000000612.jpg?1727248974",
+    },
+    // {
+    //   name: "DAI",
+    //   symbol: "DAI",
+    //   address: "0x4b6b9b31c72836806b0b1104cf1cdab8a0e3bd66",
+    //   decimals: 18,
+    //   isStable: true,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    // },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -288,6 +404,27 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "",
     },
   ],
+  [UNICHAINTESTNET]: [
+    {
+      name: "AMP",
+      symbol: "AMP",
+      address: getContract(UNICHAINTESTNET, "AMP"),
+      decimals: 18,
+      imageUrl: "",
+    },
+    {
+      name: "Escrowed AMP",
+      symbol: "esAMP",
+      address: getContract(UNICHAINTESTNET, "ES_AMP"),
+      decimals: 18,
+    },
+    {
+      name: "AMP LP",
+      symbol: "ALP",
+      address: getContract(UNICHAINTESTNET, "ALP"),
+      decimals: 18,
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -321,6 +458,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "ALP",
       decimals: 18,
       address: getContract(PEGASUS, "StakedAlpTracker"), // address of fsALP token because user only holds fsALP
+      imageUrl: "",
+    },
+  },
+  [UNICHAINTESTNET]: {
+    AMP: {
+      name: "AMP",
+      symbol: "AMP",
+      decimals: 18,
+      address: getContract(UNICHAINTESTNET, "AMP"),
+      imageUrl: "",
+    },
+    ALP: {
+      name: "AMP LP",
+      symbol: "ALP",
+      decimals: 18,
+      address: getContract(UNICHAINTESTNET, "ALP"),
       imageUrl: "",
     },
   },
@@ -435,6 +588,65 @@ export const ICONLINKS = {
       pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
     },
   },
+  [BSCTESTNET]: {
+    AMP: {
+      pagasus: "https://basescan.org/address/0x155BabF44190E2ef3d5EEae6AA261E794de83b23",
+    },
+    ALP: {
+      pagasus: "https://basescan.org/address/0x3c6DEc605311571b67978C6EF2DbfE77A841722d",
+    },
+    CRO: {
+      coingecko: "https://www.coingecko.com/en/coins/base",
+    },
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      pagasus: "https://basescan.org/address/0xe44fd7fcb2b1581822d0c862b68222998a0c299a",
+    },
+   
+    DOGE: {
+      coingecko: "https://www.coingecko.com/en/coins/dogecoin",
+      pagasus: "https://basescan.org/address/0x1a8e39ae59e5556b56b76fcba98d22c9ae557396",
+    },
+    DAI: {
+      coingecko: "https://www.coingecko.com/en/coins/dai",
+      pagasus: "https://basescan.org/address/0xf2001b145b43032aaf5ee2884e456ccd805f677d",
+    },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      pagasus: "https://basescan.org/address/0x66e428c3f67a68878562e79a0234c1f83c208770",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      pagasus: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
+    },
+  },
+  [UNICHAINTESTNET]: {
+    AMP: {
+      pagasus: "https://sepolia.uniscan.xyz/token/0x39e7261F8EF390AC578E89c15b1CeE48787126Ad",
+    },
+    ALP: {
+      pagasus: "https://sepolia.uniscan.xyz/token/0x35630c50eE58BF168c3eC1c65E77f9A635Bbc53d",
+    },
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+    }, 
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x659919D8068B19BD2f352ECC2b1FDe2344752C4D",
+    },
+    WBTC: {
+      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x07e571AF7cDab6a67468308bac76395132cE2F8f",
+    },
+    UNI: {
+      coingecko: "https://www.coingecko.com/en/coins/uniswap",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x0Cd0CBDade6e130ec432a589b48e9408100b2fE6",
+    },
+    MOODENG: {
+      coingecko: "https://www.coingecko.com/en/coins/moo-deng-2",
+      pagasus: "https://sepolia.uniscan.xyz/token/0x6Cf75cd2eCDB83359Cfc90FA49aDA344f24C6F51",
+    },
+  },
 };
 
 export const ALP_POOL_COLORS = {
@@ -448,11 +660,12 @@ export const ALP_POOL_COLORS = {
   MIM: "#9695F8",
   MATIC: "#000",
   DAI: "#FAC044",
-  UNI: "#E9167C",
+  UNI: "#F50DB4",
   AVAX: "#E84142",
   LINK: "#3256D6",
   SOL: "#9845FF",
   LL: "#3256D6",
+  MOODENG: "#E0A882",
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
@@ -460,7 +673,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX];
+const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
