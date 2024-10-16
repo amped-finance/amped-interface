@@ -413,7 +413,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
                     className="App-cta Exchange-swap-button"
                     type="submit"
                   >
-                    <Trans>{textButton}</Trans>
+                    {textButton}
                   </button>
                 ) : (
                   <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
@@ -457,18 +457,12 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
                       </th>
                       {txnHistory.map((item, index) => (
                         <tr key={index}>
-                          <td className="td-1">
-                            <Trans>{getChainFromLayerZero(item?.pathway?.sender?.chain)}</Trans>
-                          </td>
-                          <td className="td-2">
-                            <Trans>{getChainFromLayerZero(item?.pathway?.receiver?.chain)}</Trans>
-                          </td>
+                          <td className="td-1">{getChainFromLayerZero(item?.pathway?.sender?.chain)}</td>
+                          <td className="td-2">{getChainFromLayerZero(item?.pathway?.receiver?.chain)}</td>
                           {/* <td className="td-3">
                       <Trans>Limit</Trans>
                     </td> */}
-                          <td className="td-4">
-                            <Trans>{item?.status?.name}</Trans>
-                          </td>
+                          <td className="td-4">{item?.status?.name}</td>
                           <td className="td-5">
                             <ExternalLink
                               className="plain"
