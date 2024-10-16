@@ -235,6 +235,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
       getBalance();
     } catch (err) {
       console.log("err: ", err);
+      helperToast.error(<div>{err?.message}</div>);
       setLoading(false);
       setTextButton("Transfer");
     }
