@@ -20,6 +20,7 @@ import { debounce } from "lodash";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ShareSvg } from "./ShareSvg";
 import { helperToast } from "lib/helperToast";
+import moment from "moment";
 
 const {
   DROPDOWN_CHAINS,
@@ -51,6 +52,11 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
   const [nextToken, setNextToken] = useState("");
   const [fee, setFee] = useState("");
   const [disabled, setDisabled] = useState(false);
+
+  const getUTCDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return moment.utc(date).format("MM/DD/YYYY, HH:mm");
+  };
 
   const debouncedFeeBridge = useCallback(
     debounce(async (amount, walletProvider) => {
@@ -287,7 +293,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
         );
       }
       default:
-        return "";
+        return <span>{chain}</span>;
     }
   };
 
@@ -441,11 +447,11 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
                           <Trans>To</Trans>
                         </div>
                       </th>
-                      {/* <th className="td-amount">
-                  <div>
-                    <Trans>Amount</Trans>
-                  </div>
-                </th> */}
+                      <th className="td-3">
+                        <div>
+                          <Trans>Time</Trans>
+                        </div>
+                      </th>
                       <th className="td-4">
                         <div>
                           <Trans>Status</Trans>
@@ -460,9 +466,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
                         <tr key={index}>
                           <td className="td-1">{getChainFromLayerZero(item?.pathway?.sender?.chain)}</td>
                           <td className="td-2">{getChainFromLayerZero(item?.pathway?.receiver?.chain)}</td>
-                          {/* <td className="td-3">
-                      <Trans>Limit</Trans>
-                    </td> */}
+                          <td className="td-3">{getUTCDate(item?.created)}</td>
                           <td className="td-4">{item?.status?.name}</td>
                           <td className="td-5">
                             <ExternalLink

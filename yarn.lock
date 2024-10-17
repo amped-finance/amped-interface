@@ -9886,6 +9886,7 @@ __metadata:
     krasulya-lightweight-charts: 3.4.3
     lint-staged: 12.3.4
     lodash: ^4.17.21
+    moment: ^2.30.1
     prettier: 2.5.1
     qrcode.react: ^3.1.0
     rc-slider: 9.7.5
@@ -13149,6 +13150,13 @@ __metadata:
     pkg-types: ^1.2.0
     ufo: ^1.5.4
   checksum: 66a92b0ac4f76cac22d2d6688338fece01f2ac4afd7816cd4224525c1f9032c452075730c54c3ef7558485455d704b7141060e517785c93b276b2faa3bb04199
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.30.1":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
   languageName: node
   linkType: hard
 
