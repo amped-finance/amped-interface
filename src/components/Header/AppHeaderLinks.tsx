@@ -76,11 +76,11 @@ export function AppHeaderLinks({
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
+      <div className="App-header-link-container">
         <HeaderLink to="/bridge" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Bridge</Trans>
         </HeaderLink>
-      </div> */}
+      </div>
       {/* <div className="App-header-link-container">
         <ExternalLink href="https://ido.amped.finance">
           <Trans>IDO</Trans>
