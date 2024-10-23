@@ -44,6 +44,8 @@ import { getToken, getTokenBySymbol } from "config/tokens";
 import { t } from "@lingui/macro";
 import { useChainId } from "lib/chains";
 
+import semver from 'semver';
+
 export * from "./prices";
 
 const NOW_TS = parseInt(Date.now() / 1000);
@@ -1676,9 +1678,19 @@ export function useHasOutdatedUi(chainId = PHOENIX) {
 
   let hasOutdatedUi = false;
 
-  if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
-    hasOutdatedUi = true;
+  if (data) {
+    console.log('Server version:', data);
+    console.log('Current UI version:', UI_VERSION);
+
+    try {
+      // Use semver for robust version comparison
+      hasOutdatedUi = semver.gt(data.trim(), UI_VERSION.trim());
+    } catch (error) {
+      console.error('Error comparing versions:', error);
+    }
   }
+
+  console.log('Has outdated UI:', hasOutdatedUi);
 
   return { data: hasOutdatedUi, mutate };
 }
