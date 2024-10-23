@@ -35,7 +35,7 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [PEGASUS]: "2000000000000", // 3 times
   [PHOENIX]: "2000000", // 3 times
-  [BSCTESTNET]: "0", // 3 times
+  [BSCTESTNET]: "0", // Changed to "0" to use network gas price
   [UNICHAINTESTNET]: "1000000", // 3 times
 };
 
@@ -282,3 +282,13 @@ export function getHighExecutionFee(chainId) {
 export function isSupportedChain(chainId) {
   return SUPPORTED_CHAIN_IDS.includes(chainId);
 }
+
+export const getGasPrice = async (chainId: number) => {
+  if (chainId === BSCTESTNET) {
+    const provider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
+    const gasPrice = await provider.getGasPrice();
+    return gasPrice;
+  }
+  // For other networks, you can add similar logic or return a default value
+  return ethers.BigNumber.from(GAS_PRICE_ADJUSTMENT_MAP[chainId] || "0");
+};
