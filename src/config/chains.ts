@@ -25,8 +25,8 @@ export const IS_NETWORK_DISABLED = {
 
 export const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
-  [PEGASUS]: "Pegasus",
-  [PHOENIX]: "Phoenix",
+  [PHOENIX]: "LightLink Mainnet",
+  [PEGASUS]: "LightLink Testnet",
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
 };
