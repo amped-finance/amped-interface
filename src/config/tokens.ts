@@ -421,7 +421,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "FLOKI",
       symbol: "FLOKI",
       address: "0xfb5b838b6cfeedc2873ab27866079ac55363d37e",
-      decimals: 18,
+      decimals: 9,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/16746/standard/PNG_image.png?1696516318",
     }
