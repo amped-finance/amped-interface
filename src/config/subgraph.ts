@@ -39,12 +39,12 @@ export const SUBGRAPH_URLS = {
   },
 
   [BSC]: {
-    stats: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
-    referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
-    trades:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
-    raw:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
-    price: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
-    ordernew: "https://api.studio.thegraph.com/query/90987/amped-finance-orders/version/latest",
+    stats: "https://api.studio.thegraph.com/query/91379/amped-trades-bsc/version/latest",
+    referrals: "https://api.studio.thegraph.com/query/91379/amped-referrals-bsc/version/latest",
+    trades:"https://api.studio.thegraph.com/query/91379/amped-trades-bsc/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/91379/amped-trades-bsc/version/latest",  
+    price: "https://api.studio.thegraph.com/query/91379/amped-trades-bsc/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/91379/amped-orders-bsc/version/latest",
     points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
   },
 
