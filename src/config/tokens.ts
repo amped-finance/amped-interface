@@ -792,7 +792,7 @@ export const ICONLINKS = {
 export const ALP_POOL_COLORS = {
   ETH: "#6062a6",
   BTC: "#F7931A",
-  BNB: "#F0B90A",
+  BNB: "#F3BA2F",
   WBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
@@ -800,15 +800,15 @@ export const ALP_POOL_COLORS = {
   MIM: "#9695F8",
   MATIC: "#000",
   DAI: "#FAC044",
-  UNI: "#F50DB4",
+  UNI: "#E9167C",
   AVAX: "#E84142",
   LINK: "#3256D6",
   SOL: "#9845FF",
   LL: "#3256D6",
-  MOODENG: "#E0A882",
-  PEPE: "#3256D6",
-  FLOKI: "#3256D6",
-  CAKE: "#9695F8"
+  PEPE: "#3E8130",
+  FLOKI: "#F4A328",
+  MAGA: "#BA133D",
+  CAKE: "#4EDDE7"
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
