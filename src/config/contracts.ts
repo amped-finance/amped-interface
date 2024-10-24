@@ -1,4 +1,4 @@
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC } from "./chains";
 
 export const XGMT_EXCLUDED_ACCOUNTS = [
   "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
@@ -204,6 +204,46 @@ const CONTRACTS = {
     TraderJoeAmpAvaxPool: "0x01E8Fb23957EAabF85211B4D35F2e0C84e904F68",
     ReferralStorage: "0xE5E4D807FC0a9fE98D64910892a257B0669Aa2a0",
     ReferralReader: "0x400e7090e96b110841b86f00A148E612EeDAc853",
+  },
+
+  [BSC]: {
+    Vault: "0xdcFaaf6f3bb71B270404992853588BE9B7fc89EA",
+    Router: "0xE290d0db9C0315437c1816632e7e2cd4eFb433d2",
+    VaultReader: "0x0d3C1FF2207d6dd99564873Fb22B632fBd23d02b",
+    Reader: "0xa7351c38771D07856b53783c7996A8a2d7fe45EF",
+    AlpManager: "0xDe75a5bb293eFA34931f0de45E836a71A3B332eF", // This is GlpManager in the JSON
+    RewardRouter: "0x972E82BC3d8699E51b3a8aDaABC19843C5f12E16", // This is RewardRouterV2 in the JSON
+    RewardReader: "0xc46B804d4c992C0465319E289dAC5A9030cEfaA5",
+    NATIVE_TOKEN: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    ALP: "0x79bcec5bfE279756b83828e9DA79fC2c447c59b9", // This is GLP in the JSON
+    AMP: "0x16DF3d8978d17fE725Dc307aD14FdE3B12E6Da75", // This is GMX in the JSON
+    ES_AMP: "0xEf7883c4DCe555F6508dd832569E5CC653Ff5FBF", // This is EsGMX in the JSON
+    BN_AMP: "0x8FF910B8A655159c3365B0f4180Da25B1b8C87A4", // This is BonusGMX in the JSON
+    USDG: "0xCBf1c333f16CEf14368e04f08FEfB70CBe77763A",
+    ES_AMP_IOU: "0x720A5ead0A21c05d20B39092cF8d6B71fb2f6cfC", // This is EsGMXIOU in the JSON
+
+    StakedAmpTracker: "0x9fe50b66fc34cA06BbC684fF13242d61c860F190", // This is RewardTrackerStakedGMX in the JSON
+    BonusAmpTracker: "0xdFcdb0f016fce1403B5C7EEed48dC3401Dec7569", // This is RewardTrackerStakedBonusGMX in the JSON
+    FeeAmpTracker: "0x87afD5ebBb27F83066766945B5DBe23E70C2b040", // This is RewardTrackerStakedBonusFeeGMX in the JSON
+    StakedAlpTracker: "0x9bc767311E5a0131C4198911AB574E55adab2F60", // This is RewardTrackerFeeStakedGLP in the JSON
+    FeeAlpTracker: "0x13161e1fFE546922F8fcEAA9a2A9acd4Fb14fE5e", // This is RewardTrackerFeeGLP in the JSON
+
+    StakedAmpDistributor: "0xF3aeEdf015a56dCC02884b5CA58B0fB2A708EFC5", // This is RewardDistributorStakedGMX in the JSON
+    StakedAlpDistributor: "0x6cB9ba1Ff59ec58bb2a7b397bC552a72E93eb18E", // This is RewardDistributorFeeStakedGLP in the JSON
+
+    AmpVester: "0x6C00026F8E11886E85ee3e3B88e664B4E821777a", // This is VesterGMX in the JSON
+    AlpVester: "0x8f2d98771E7B37771C16a7c12cFF009dC49b425a", // This is VesterGLP in the JSON
+
+    OrderBook: "0x92E269E363EED8bd58c2e630712423638783A75d",
+    OrderExecutor: "0xf17b5A7Fe677B705f6Dc27d6D2B0079e305dE78f", // Unchanged as it's not in the JSON
+    OrderBookReader: "0x1dAbcadEC4a52e8223288fe30DEF356A00D0054A",
+
+    PositionRouter: "0xd46f1b2533ad544174E1BA18B63593Aa94084579",
+    PositionManager: "0xe1dcFE5976f54BC9866704Bf78004dD19fb9e888",
+
+    TraderJoeAmpAvaxPool: "0xE80B4F755417FB4baF4dbd23C029db3F62786523", // Unchanged as it's not in the JSON
+    ReferralStorage: "0xbdfD0c41EB6d3d8D020FB4B2D70e3858AeFAf0a7",
+    ReferralReader: "0xBF32930369602F0edBcA4Fe8C5d3A0D42Ab41718",
   },
 };
 

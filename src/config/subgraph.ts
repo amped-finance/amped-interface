@@ -1,4 +1,4 @@
-import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET } from "./chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC } from "./chains";
 
 export const SUBGRAPH_URLS = {
   [ARBITRUM]: {
@@ -29,6 +29,16 @@ export const SUBGRAPH_URLS = {
   },
 
   [BSCTESTNET]: {
+    stats: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
+    referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
+    trades:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
+    price: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/90987/amped-finance-orders/version/latest",
+    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/tradespointsnew2"
+  },
+
+  [BSC]: {
     stats: "https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",
     referrals: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/referrals",
     trades:"https://api.studio.thegraph.com/query/90987/amped-finance-trades/version/latest",  
