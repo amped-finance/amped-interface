@@ -806,6 +806,9 @@ export const ALP_POOL_COLORS = {
   SOL: "#9845FF",
   LL: "#3256D6",
   MOODENG: "#E0A882",
+  PEPE: "#3256D6",
+  FLOKI: "#3256D6",
+  CAKE: "#9695F8"
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
