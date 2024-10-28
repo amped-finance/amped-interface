@@ -31,7 +31,7 @@ export const CHAIN_NAMES_MAP = {
   [PEGASUS]: "LightLink Testnet",
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
-  [BSC]: "Binance Smart Chain"
+  [BSC]: "BNB Smart Chain"
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
