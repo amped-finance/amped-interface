@@ -1193,7 +1193,7 @@ export default function AlpSwap(props) {
                       </div>
                     </div>
                   </td>
-                  <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                  <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, token.symbol.includes("FLOKI") || token.symbol.includes("PEPE") ? 6 : 2, true)}</td>
                   <td>
                     {isBuying && (
                       <div>
