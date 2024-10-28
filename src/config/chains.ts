@@ -5,15 +5,16 @@ const { parseEther } = ethers.utils;
 export const ARBITRUM = 42161;
 export const PEGASUS = 1891
 export const PHOENIX = 1890
+export const BSC = 56
 export const BSCTESTNET = 97
 export const UNICHAINTESTNET = 1301
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = PHOENIX;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -21,6 +22,7 @@ export const IS_NETWORK_DISABLED = {
   [PHOENIX]: false,
   [BSCTESTNET]: false,
   [UNICHAINTESTNET]: false,
+  [BSC]: false
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -29,6 +31,7 @@ export const CHAIN_NAMES_MAP = {
   [PEGASUS]: "LightLink Testnet",
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
+  [BSC]: "BNB Smart Chain"
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -37,6 +40,7 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [PHOENIX]: "2000000", // 3 times
   [BSCTESTNET]: "0", // Changed to "0" to use network gas price
   [UNICHAINTESTNET]: "1000000", // 3 times
+  [BSC]: "1000000", // 3 times
 };
 
 export const MAX_GAS_PRICE_MAP = {
@@ -44,6 +48,7 @@ export const MAX_GAS_PRICE_MAP = {
   [PHOENIX]: "200000000000",
   [BSCTESTNET]: "20000000",
   [UNICHAINTESTNET]: "0",
+  [BSC]: "0",
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -52,6 +57,7 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [PHOENIX]: 10,
   [BSCTESTNET]: 10,
   [UNICHAINTESTNET]: 10,
+  [BSC]: 10
 };
 
 const constants = {
@@ -108,6 +114,21 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.00011"),
   },
+
+  [BSC]: {
+    nativeTokenSymbol: "BNB",
+    wrappedTokenSymbol: "WBNB",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
+  },
+
   [UNICHAINTESTNET]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
@@ -168,7 +189,8 @@ export const RPC_PROVIDERS = {
   [PEGASUS]: PEGASUS_RPC_PROVIDERS,
   [PHOENIX]: PHOENIX_RPC_PROVIDERS,
   [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER,
-  [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER
+  [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER,
+  [BSC]: BSC_RPC_PROVIDERS
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -176,7 +198,8 @@ export const FALLBACK_PROVIDERS = {
   [PEGASUS]: [PEGASUS_RPC_PROVIDERS[0]],
   [PHOENIX]: [PHOENIX_RPC_PROVIDERS[0]],
   [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]],
-  [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]]
+  [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]],
+  [BSC]: [BSC_RPC_PROVIDERS[0]]
 };
 
 export const NETWORK_METADATA = {
@@ -212,6 +235,17 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: BSC_TESTNET_RPC_PROVIDER,
     blockExplorerUrls: [getExplorerUrl(PHOENIX)],
+  },
+  [BSC]: {
+    chainId: "0x" + BSC.toString(16),
+    chainName: "Binance Smart Chain",
+    nativeCurrency: {
+      name: "BNB",
+      symbol: "BNB",
+      decimals: 18,
+    },
+    rpcUrls: BSC_RPC_PROVIDERS,
+    blockExplorerUrls: [getExplorerUrl(BSC)],
   },
   [UNICHAINTESTNET]: {
     chainId: "0x" + UNICHAINTESTNET.toString(16),
@@ -271,6 +305,8 @@ export function getExplorerUrl(chainId) {
     return "https://testnet.bscscan.com/"
   } else if (chainId === UNICHAINTESTNET) {
     return "https://sepolia.uniscan.xyz/"
+  } else if (chainId === BSC) {
+    return "https://bscscan.com/"
   }
   return "https://phoenix.lightlink.io/";
 }
@@ -284,7 +320,7 @@ export function isSupportedChain(chainId) {
 }
 
 export const getGasPrice = async (chainId: number) => {
-  if (chainId === BSCTESTNET) {
+  if (chainId === BSCTESTNET || chainId === BSC) {
     const provider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
     const gasPrice = await provider.getGasPrice();
     return gasPrice;

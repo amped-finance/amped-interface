@@ -7,15 +7,15 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, PEGASUS, PHOENIX } from "config/chains";
-import { arbitrumReferralsGraphClient, pegasusReferralsGraphClient, phoenixReferralsGraphClient } from "lib/subgraph/clients";
+import { ARBITRUM, PEGASUS, PHOENIX, BSC } from "config/chains";
+import { arbitrumReferralsGraphClient, pegasusReferralsGraphClient, phoenixReferralsGraphClient, bscReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
 import { bigNumberify } from "lib/numbers";
 
-const ACTIVE_CHAINS = [PEGASUS, PHOENIX];
+const ACTIVE_CHAINS = [PEGASUS, PHOENIX, BSC];
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -26,6 +26,8 @@ function getGraphClient(chainId) {
     return pegasusReferralsGraphClient;
   }  else if (chainId === PHOENIX) {
     return phoenixReferralsGraphClient;
+  } else if (chainId === BSC) {
+    return bscReferralsGraphClient
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -95,7 +97,7 @@ export function useUserCodesOnAllChain(account) {
   `;
   useEffect(() => {
     async function main() {
-      const [pegasusCodes, phoenixCodes] = await Promise.all(
+      const [pegasusCodes, phoenixCodes, bscCodes] = await Promise.all(
         ACTIVE_CHAINS.map((chainId) => {
           return getGraphClient(chainId)
             .query({ query, variables: { account: (account || "").toLowerCase() } })
@@ -104,9 +106,10 @@ export function useUserCodesOnAllChain(account) {
             });
         })
       );
-      const [codeOwnersOnPegasus = [], codeOwnersOnPhoenix = []] = await Promise.all([
+      const [codeOwnersOnPegasus = [], codeOwnersOnPhoenix = [], codeOwnersOnBSC = []] = await Promise.all([
         getCodeOwnersData(PEGASUS, account, pegasusCodes),
         getCodeOwnersData(PHOENIX, account, phoenixCodes),
+        getCodeOwnersData(BSC, account, bscCodes),
       ]);
 
       setData({
@@ -115,6 +118,10 @@ export function useUserCodesOnAllChain(account) {
           return acc;
         }, {}),
         [PHOENIX]: codeOwnersOnPhoenix.reduce((acc, cv) => {
+          acc[cv.code] = cv;
+          return acc;
+        }, {}),
+        [BSC]: codeOwnersOnBSC.reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
         }, {}),

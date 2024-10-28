@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BSCTESTNET, UNICHAINTESTNET, getChainName } from "config/chains";
+import { BSCTESTNET, UNICHAINTESTNET, BSC, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
@@ -251,7 +251,7 @@ export default function DashboardV2() {
   // const { data: feesSummaryByChain } = useFeesSummary();
   // const feesSummary = feesSummaryByChain[chainId];
   let eth
-  if (chainId === BSCTESTNET)
+  if (chainId === BSCTESTNET || chainId === BSC)
     eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
   else 
     eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
@@ -1044,7 +1044,7 @@ export default function DashboardV2() {
                             tokenInfo,
                             "minPrice",
                             USD_DECIMALS,
-                            token.symbol.includes("CRO") ? 4 : 2,
+                            token.symbol.includes("FLOKI") || token.symbol.includes("PEPE") ? 6 : 2,
                             true
                           )}
                         </td>
@@ -1123,7 +1123,7 @@ export default function DashboardV2() {
                             tokenInfo,
                             "minPrice",
                             USD_DECIMALS,
-                            token.symbol.includes("CRO") ? 4 : 2,
+                            token.symbol.includes("FLOKI") || token.symbol.includes("PEPE") ? 6 : 2,
                             true
                           )}
                         </div>
