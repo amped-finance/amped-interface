@@ -88,7 +88,7 @@ export function AppHeaderLinks({
       </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://stats.amped.finance">
-          <Trans>Analytics</Trans>
+          <Trans>Stats</Trans>
         </ExternalLink>
       </div>
       {/* <div className="App-header-link-container">
@@ -102,7 +102,7 @@ export function AppHeaderLinks({
       </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://amped.gitbook.io/amped/">
-          <Trans>Documentation</Trans>
+          <Trans>Docs</Trans>
         </ExternalLink>
       </div>
       {small && !isHomeSite() && (
