@@ -3,7 +3,7 @@ import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
-import {RefreshContextProvider} from '../Context/RefreshContext'
+import { RefreshContextProvider } from "../Context/RefreshContext";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -72,7 +72,8 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, PEGASUS, PEGASUS_RPC_PROVIDERS, PHOENIX, PHOENIX_RPC_PROVIDERS, getAlchemyWsUrl, getExplorerUrl, BSCTESTNET, BSC_RPC_PROVIDERS, BSC_TESTNET_RPC_PROVIDER, UNICHAINTESTNET, UNICHAINTESTNET_RPC_PROVIDERS, UNICHAIN_TESTNET_RPC_PROVIDER } from "config/chains";
+import { ARBITRUM, PEGASUS, PEGASUS_RPC_PROVIDERS, PHOENIX, PHOENIX_RPC_PROVIDERS, getAlchemyWsUrl, getExplorerUrl, BSCTESTNET, BSC,  BSC_RPC_PROVIDERS, BSC_TESTNET_RPC_PROVIDER, UNICHAINTESTNET, UNICHAINTESTNET_RPC_PROVIDERS, UNICHAIN_TESTNET_RPC_PROVIDER } from "config/chains";
+
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import {
@@ -104,11 +105,12 @@ import {
   useWeb3ModalProvider,
   useDisconnect,
   createWeb3Modal,
-  defaultConfig
+  defaultConfig,
 } from "@web3modal/ethers5/react";
 
 import { map, mapValues } from "lodash";
 import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
+import Bridge from "pages/Bridge/Bridge";
 
 // import IDO from "pages/IDO/IDO";
 
@@ -135,6 +137,8 @@ const bsctestnetProvider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_
 
 const unichaintestnetProvider = new ethers.providers.JsonRpcProvider(UNICHAIN_TESTNET_RPC_PROVIDER[0]);
 
+const bscProvider = new ethers.providers.JsonRpcProvider(BSC_RPC_PROVIDERS[0]);
+
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
@@ -149,11 +153,15 @@ function getWsProvider(active, chainId) {
     return phoenixProvider;
   }
 
-  if(chainId === BSCTESTNET) {
+  if (chainId === BSCTESTNET) {
     return bsctestnetProvider;
   }
   if (chainId === UNICHAINTESTNET) {
     return unichaintestnetProvider;
+  }
+
+  if (chainId === BSC) {
+    return bscProvider;
   }
 }
 
@@ -162,7 +170,7 @@ const metadata = {
   description:
     "LightLink Bridge facilitates seamless communication between blockchains, enabling the transfer of information and assets with heightened security and efficiency.`",
   url: window.location.hostname,
-  icons: []
+  icons: [],
 };
 
 const _chains = map(ACTIVE_CHAIN_IDS, (chainId) => ({
@@ -170,7 +178,7 @@ const _chains = map(ACTIVE_CHAIN_IDS, (chainId) => ({
   explorerUrl: NETWORK_METADATA[chainId].blockExplorerUrls[0],
   currency: NETWORK_METADATA[chainId].nativeCurrency.name,
   name: NETWORK_METADATA[chainId].chainName,
-  chainId: parseInt(NETWORK_METADATA[chainId].chainId)
+  chainId: parseInt(NETWORK_METADATA[chainId].chainId),
 }));
 
 createWeb3Modal({
@@ -186,18 +194,18 @@ createWeb3Modal({
   projectId: "b6587c240d0d3c291075db2d8424aa71",
 
   themeVariables: {
-    "--w3m-z-index": 9999
+    "--w3m-z-index": 9999,
   },
-  chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`))
+  chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
 });
 
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { disconnect } = useDisconnect()
+  const { disconnect } = useDisconnect();
   const { walletProvider } = useWeb3ModalProvider();
-  const { isConnected } = useWeb3ModalAccount()
-  const { open, close} = useWeb3Modal()
+  const { isConnected } = useWeb3ModalAccount();
+  const { open, close } = useWeb3Modal();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -398,9 +406,9 @@ function FullApp() {
   useEffect(() => {
     const checkPendingTxns = async () => {
       if (!walletProvider) {
-        return
+        return;
       }
-      
+
       const provider = new ethers.providers.Web3Provider(walletProvider);
 
       const updatedPendingTxns = [];
@@ -451,7 +459,9 @@ function FullApp() {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
-    const wsVaultAbi = (chainId === PEGASUS || chainId === PHOENIX || chainId === BSCTESTNET || chainId === UNICHAINTESTNET) ? Vault.abi : VaultV2b.abi;
+
+    const wsVaultAbi = (chainId === PEGASUS || chainId === PHOENIX || chainId === BSCTESTNET || chainId === UNICHAINTESTNET || chainId === BSC) ? Vault.abi : VaultV2b.abi;
+
     const wsProvider = getWsProvider(isConnected, chainId);
     if (!wsProvider) {
       return;
@@ -577,6 +587,9 @@ function FullApp() {
               {/* <Route exact path="/ecosystem">
                 <Ecosystem />
               </Route> */}
+              <Route exact path="/bridge">
+                <Bridge setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
@@ -702,15 +715,15 @@ function App() {
   }, []);
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
-        <RefreshContextProvider>
-          <SEO>
-            <Router>
-              <I18nProvider i18n={i18n}>
-                <FullApp />
-              </I18nProvider>
-            </Router>
-          </SEO>
-        </RefreshContextProvider>
+      <RefreshContextProvider>
+        <SEO>
+          <Router>
+            <I18nProvider i18n={i18n}>
+              <FullApp />
+            </I18nProvider>
+          </Router>
+        </SEO>
+      </RefreshContextProvider>
     </SWRConfig>
   );
 }

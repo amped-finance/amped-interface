@@ -1,6 +1,6 @@
 import { Provider } from "@ethersproject/providers";
 import { Contract, ethers } from "ethers";
-import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP, PEGASUS, PHOENIX, UNICHAINTESTNET } from "config/chains";
+import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC } from "config/chains";
 import { bigNumberify } from "../numbers";
 import { BigNumber } from "ethers";
 
@@ -24,7 +24,8 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
     // the wallet provider might not return maxPriorityFeePerGas in feeData
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas) {
-      txnOpts.maxFeePerGas = maxGasPrice || gasPrice.add(premium);
+      // Calculate initial maxFeePerGas
+      let maxFee = maxGasPrice || gasPrice.add(premium);
       
       // Set a maximum priority fee for Unichain Testnet
       if (chainId === UNICHAINTESTNET) {
@@ -33,10 +34,18 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
         txnOpts.maxPriorityFeePerGas = calculatedFee.lt(maxPriorityFee)
           ? calculatedFee
           : maxPriorityFee;
+      } else if (chainId === BSC) {
+        // For BSC, ensure maxPriorityFeePerGas includes premium
+        txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+        // Ensure maxFeePerGas is at least equal to maxPriorityFeePerGas
+        maxFee = BigNumber.from(maxFee).gte(txnOpts.maxPriorityFeePerGas)
+          ? maxFee
+          : txnOpts.maxPriorityFeePerGas;
       } else {
         txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
       }
       
+      txnOpts.maxFeePerGas = maxFee;
       return;
     }
   }
