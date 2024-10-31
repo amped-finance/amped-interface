@@ -92,6 +92,7 @@ export default function ExchangeTVChartPyth(props) {
           style: "1",
           locale: "en",
           toolbar_bg: "rgba(21, 21, 21, 1)",
+          hide_side_toolbar: false,
           enable_publishing: false,
           allow_symbol_change: true,
           container_id: "tradingview",
