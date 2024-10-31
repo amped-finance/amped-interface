@@ -54,7 +54,7 @@ const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
 export const startBlock = 107411573;
-export const endBlock = 110867573;
+export const endBlock = 110666255;
 
 
 export const useRefresh = () => {
