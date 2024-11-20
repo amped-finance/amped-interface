@@ -119,7 +119,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
 
   useEffect(() => {
     if (account) {
-      getTxnHistory("");
+      getTxnHistory();
     }
   }, [account]);
 
@@ -146,14 +146,20 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
     setbalance(ethers.utils.formatUnits(balanceOf, decimals));
   };
 
-  const getTxnHistory = async (token) => {
+  const getTxnHistory = async () => {
     setLoadingTable(true);
-    await fetch(`${API_LAYERZERO}/v1/messages/wallet/${account}?limit=${pageSize}${token ? `&nextToken=${token}` : ""}`)
+    await fetch(`${API_LAYERZERO}/v1/messages/wallet/${account}`)
       .then((response) => response.json())
       .then((response) => {
         setLoadingTable(false);
         if (response?.data) {
-          setTxnHistory([...txnHistory, ...response.data]);
+          setTxnHistory(
+            response.data.filter(
+              (item) =>
+                item?.pathway?.receiver?.address === ADDRESS_AMP_BSC.toLocaleLowerCase() ||
+                item?.pathway?.sender?.address === ADDRESS_AMP_BSC.toLocaleLowerCase()
+            )
+          );
         }
 
         if (response?.nextToken) {
@@ -481,13 +487,13 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
                     </tbody>
                   </table>
                 </div>
-                {loadMore && (
+                {/* {loadMore && (
                   <div className="load-more">
                     <button onClick={() => getTxnHistory(nextToken)} className="load-more button-secondary">
                       {loadingTable ? "Loading..." : "Load More"}
                     </button>
                   </div>
-                )}
+                )} */}
               </>
             ) : (
               <div className="no-data">
