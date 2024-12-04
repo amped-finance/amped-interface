@@ -105,6 +105,11 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+          <Trans>Meme Indices</Trans>
+        </HeaderLink>
+      </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
