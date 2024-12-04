@@ -1,0 +1,17 @@
+.mif-page {
+  height: 100%;
+  display: block;
+  padding-bottom: 0px;
+  position: relative;
+}
+
+.mif-iframe {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: none;
+  box-sizing: border-box;
+  border: none;
+  min-height: calc(100vh - 62px);
+  z-index: 1;
+}

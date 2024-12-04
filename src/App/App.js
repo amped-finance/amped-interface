@@ -72,7 +72,22 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, PEGASUS, PEGASUS_RPC_PROVIDERS, PHOENIX, PHOENIX_RPC_PROVIDERS, getAlchemyWsUrl, getExplorerUrl, BSCTESTNET, BSC,  BSC_RPC_PROVIDERS, BSC_TESTNET_RPC_PROVIDER, UNICHAINTESTNET, UNICHAINTESTNET_RPC_PROVIDERS, UNICHAIN_TESTNET_RPC_PROVIDER } from "config/chains";
+import {
+  ARBITRUM,
+  PEGASUS,
+  PEGASUS_RPC_PROVIDERS,
+  PHOENIX,
+  PHOENIX_RPC_PROVIDERS,
+  getAlchemyWsUrl,
+  getExplorerUrl,
+  BSCTESTNET,
+  BSC,
+  BSC_RPC_PROVIDERS,
+  BSC_TESTNET_RPC_PROVIDER,
+  UNICHAINTESTNET,
+  UNICHAINTESTNET_RPC_PROVIDERS,
+  UNICHAIN_TESTNET_RPC_PROVIDER,
+} from "config/chains";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
@@ -111,6 +126,7 @@ import {
 import { map, mapValues } from "lodash";
 import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
 import Bridge from "pages/Bridge/Bridge";
+import Mif from "pages/Mif/Mif";
 
 // import IDO from "pages/IDO/IDO";
 
@@ -459,8 +475,14 @@ function FullApp() {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
-
-    const wsVaultAbi = (chainId === PEGASUS || chainId === PHOENIX || chainId === BSCTESTNET || chainId === UNICHAINTESTNET || chainId === BSC) ? Vault.abi : VaultV2b.abi;
+    const wsVaultAbi =
+      chainId === PEGASUS ||
+      chainId === PHOENIX ||
+      chainId === BSCTESTNET ||
+      chainId === UNICHAINTESTNET ||
+      chainId === BSC
+        ? Vault.abi
+        : VaultV2b.abi;
 
     const wsProvider = getWsProvider(isConnected, chainId);
     if (!wsProvider) {
@@ -589,6 +611,9 @@ function FullApp() {
               </Route> */}
               <Route exact path="/bridge">
                 <Bridge setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/mif">
+                <Mif />
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
