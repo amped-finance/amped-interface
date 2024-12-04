@@ -94,8 +94,14 @@ export default function NetworkDropdown(props) {
 
 function NavIcons({ selectorLabel }) {
   const networkImage = useMemo(() => {
+    if (!selectorLabel) return baseIcon;
     const imageName = selectorLabel === "Base" ? "favicon.ico" : `ic_${selectorLabel.toLowerCase()}.png`;
-    return importImage(imageName);
+    try {
+      return importImage(imageName);
+    } catch (error) {
+      console.warn(`Failed to load network image for ${selectorLabel}`, error);
+      return baseIcon;
+    }
   }, [selectorLabel]);
 
   return (
@@ -103,8 +109,12 @@ function NavIcons({ selectorLabel }) {
       <button className={cx("btn-primary small transparent")}>
         <img
           className="network-dropdown-icon"
-          src={networkImage || baseIcon}
+          src={networkImage}
           alt={selectorLabel}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = baseIcon;
+          }}
         />
       </button>
       <div className="network-dropdown-seperator" />
@@ -169,7 +179,11 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
 
 function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
   async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
+    try {
+      await onNetworkSelect(option);
+    } catch (error) {
+      console.error("Failed to switch network:", error);
+    }
   }
   return networkOptions.map((network) => {
     const networkIcon = importImage(network.icon);
@@ -221,7 +235,12 @@ function LanguageModalContent({ currentLanguage, onLanguageChange }) {
 }
 function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, setActiveModal, openSettings }) {
   async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
+    try {
+      await onNetworkSelect(option);
+      setActiveModal(null);
+    } catch (error) {
+      console.error("Failed to switch network:", error);
+    }
   }
   return (
     <div className="network-dropdown-items">
