@@ -2921,9 +2921,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@layerzerolabs/lz-v2-utilities@npm:^3.0.1":
-  version: 3.0.3
-  resolution: "@layerzerolabs/lz-v2-utilities@npm:3.0.3"
+"@layerzerolabs/lz-v2-utilities@npm:^3.0.25":
+  version: 3.0.25
+  resolution: "@layerzerolabs/lz-v2-utilities@npm:3.0.25"
   dependencies:
     "@ethersproject/abi": ^5.7.0
     "@ethersproject/address": ^5.7.0
@@ -2933,7 +2933,7 @@ __metadata:
     "@ethersproject/solidity": ^5.7.0
     bs58: ^5.0.0
     tiny-invariant: ^1.3.1
-  checksum: 58b2b4b8ce2aac733da3255c45cad6b1fc0d3e5ecde9be50908265831408b4aadb29a0009420f17f57979106b2bbcb5837ed36bf392132bf313e670e2090523b
+  checksum: 5b8fe92ae4ec380bc578aa450fe034ecd3b0b357a2bea9b809e54a2b7c12a6a1a1d99bf3f676423c7dcba03c929f87678f597deff1c6f0ccc28c4480145af55d
   languageName: node
   linkType: hard
 
@@ -3770,6 +3770,50 @@ __metadata:
     magic-string: ^0.25.0
     string.prototype.matchall: ^4.0.6
   checksum: 2c021349442e2e2cec96bb50fd82ec8bf8514d909bc73594f6cfc89b3b68f2feed909a8161d7d307d9455585c97e6b66853ce334db432626c7596836d4549c0c
+  languageName: node
+  linkType: hard
+
+"@svgdotjs/svg.draggable.js@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@svgdotjs/svg.draggable.js@npm:3.0.4"
+  peerDependencies:
+    "@svgdotjs/svg.js": ^3.2.4
+  checksum: bf3bef36e64fe5857c35a9f6756306cb30f03425a4aa84e8e4c2d850ba8691076adf7792710f93dab7fa5c00aa3b6a5eb8f9f9cef9415b654de76ae308a68055
+  languageName: node
+  linkType: hard
+
+"@svgdotjs/svg.filter.js@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "@svgdotjs/svg.filter.js@npm:3.0.8"
+  dependencies:
+    "@svgdotjs/svg.js": ^3.1.1
+  checksum: 1fe4c604329a65a95b12d37919caaabb2e9216157693a0bc92331de2de59883e37baa44e70bc31b8b91425d2f5708bf4a4b7b3dd934ac92184c8c1ee06cfdd29
+  languageName: node
+  linkType: hard
+
+"@svgdotjs/svg.js@npm:^3.1.1, @svgdotjs/svg.js@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "@svgdotjs/svg.js@npm:3.2.4"
+  checksum: e583a10a921cfad19f7785c878fd8a8f3ee7f3340d402d3e7995df46fa966a173357f5262ebcbf604780928183080aed165c7a0f016f45cce7809735db95508e
+  languageName: node
+  linkType: hard
+
+"@svgdotjs/svg.resize.js@npm:^2.0.2":
+  version: 2.0.5
+  resolution: "@svgdotjs/svg.resize.js@npm:2.0.5"
+  peerDependencies:
+    "@svgdotjs/svg.js": ^3.2.4
+    "@svgdotjs/svg.select.js": ^4.0.1
+  checksum: 3a1c7247ca9c03b6248d612ed807f6b4161a21118d78eaafce6feb8e60c9a76f7a50c568edf952793bc77416b7d46ee7627e37951cbde344b18f7e1061a76d8c
+  languageName: node
+  linkType: hard
+
+"@svgdotjs/svg.select.js@npm:^4.0.1":
+  version: 4.0.2
+  resolution: "@svgdotjs/svg.select.js@npm:4.0.2"
+  peerDependencies:
+    "@svgdotjs/svg.js": ^3.2.4
+  checksum: 5fedaf83468a207bf585dcae07ac16be5ea43eb74c96db74f0dde079567f29f1a9adfde6dc649dc680e03c7f6633cf3528defa7a496976c6c87387bb44d0b3fd
   languageName: node
   linkType: hard
 
@@ -5533,6 +5577,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yr/monotone-cubic-spline@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@yr/monotone-cubic-spline@npm:1.0.3"
+  checksum: ebc75e4d84d5b97d1d715452088ffe3cf6b3d71943433118116a2e90f17aed654b6f726868e913a49aef28645bb8afcc28580349de1ac77ad0c7dab3d991843e
+  languageName: node
+  linkType: hard
+
 "abab@npm:^2.0.3, abab@npm:^2.0.5":
   version: 2.0.6
   resolution: "abab@npm:2.0.6"
@@ -5814,6 +5865,20 @@ __metadata:
     normalize-path: ^3.0.0
     picomatch: ^2.0.4
   checksum: 3e044fd6d1d26545f235a9fe4d7a534e2029d8e59fa7fd9f2a6eb21230f6b5380ea1eaf55136e60cbf8e613544b3b766e7a6fa2102e2a3a117505466e3025dc2
+  languageName: node
+  linkType: hard
+
+"apexcharts@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "apexcharts@npm:4.1.0"
+  dependencies:
+    "@svgdotjs/svg.draggable.js": ^3.0.4
+    "@svgdotjs/svg.filter.js": ^3.0.8
+    "@svgdotjs/svg.js": ^3.2.4
+    "@svgdotjs/svg.resize.js": ^2.0.2
+    "@svgdotjs/svg.select.js": ^4.0.1
+    "@yr/monotone-cubic-spline": ^1.0.3
+  checksum: f1281773eaa5537458c20e726f1fa4d0446703e8b32769f61035493ba2643209b0b923e0af7f6bacb43250e10dc5f66dd7d79051872862e1856be785bd5c3ec1
   languageName: node
   linkType: hard
 
@@ -9852,7 +9917,7 @@ __metadata:
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
     "@headlessui/react": 1.6.1
-    "@layerzerolabs/lz-v2-utilities": ^3.0.1
+    "@layerzerolabs/lz-v2-utilities": ^3.0.25
     "@layerzerolabs/scan-client": ^0.0.8
     "@lingui/cli": ^3.13.3
     "@lingui/core": ^4.7.1
@@ -9869,6 +9934,7 @@ __metadata:
     "@uniswap/sdk-core": 3.0.1
     "@uniswap/v3-sdk": ^3.10.2
     "@web3modal/ethers5": ^4.0.1
+    apexcharts: ^4.1.0
     axios: ^1.7.7
     bigdecimal: 0.6.1
     body-scroll-lock: 4.0.0-beta.0
@@ -9891,6 +9957,7 @@ __metadata:
     qrcode.react: ^3.1.0
     rc-slider: 9.7.5
     react: ^18
+    react-apexcharts: ^1.7.0
     react-dom: ^18
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
@@ -15381,6 +15448,18 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 48c10afb5886aed86d1f5241883f972b2b16235b0cc4867a05d061324f107aa113260c34eeb13ad18f4b66d1264dbcb3baf725c8ea34fbdaa504410d4e71b3ce
+  languageName: node
+  linkType: hard
+
+"react-apexcharts@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "react-apexcharts@npm:1.7.0"
+  dependencies:
+    prop-types: ^15.8.1
+  peerDependencies:
+    apexcharts: ">=4.0.0"
+    react: ">=0.13"
+  checksum: 2f1576d559b9572e6b100a91f961535c008527bae167e6e63e9d871356c110982e04dd264d603c4eb088a24d777f56334a55c19b98551b5805c1185cd0e2e8ba
   languageName: node
   linkType: hard
 

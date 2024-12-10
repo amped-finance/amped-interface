@@ -304,7 +304,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
   };
 
   return (
-    <SEO title={getPageTitle("bridge AMP")}>
+    <SEO title={getPageTitle("AMP Bridge")}>
       <div className="bridge default-container page-layout">
         <div className="bridge-container">
           <div className="section-title-content">
@@ -438,7 +438,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
             <div className="Page-title font-kufam txn-history">
               <Trans>Transaction History</Trans>
             </div>
-            {txnHistory.length ? (
+            {!txnHistory.length ? (
               <>
                 <div className="table-txn-history">
                   <table className="Exchange-list Orders App-box txn-history-list">
