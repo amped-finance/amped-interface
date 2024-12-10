@@ -107,7 +107,7 @@ export function AppHeaderLinks({
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>Meme Indices</Trans>
+          <Trans>MIF</Trans>
         </HeaderLink>
       </div>
       {small && !isHomeSite() && (

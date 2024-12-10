@@ -1,17 +1,101 @@
-.mif-page {
-  height: 100%;
-  display: block;
-  padding-bottom: 0px;
-  position: relative;
+.mif {
 }
 
-.mif-iframe {
-  display: block;
-  height: 100%;
+.mif-container {
+  padding: 0 0 3.1rem 0;
   width: 100%;
-  overflow: none;
+}
+
+.mif-top-page {
+  margin-bottom: 3rem;
+}
+
+.mif-detail {
+  display: flex;
+  flex-direction: row;
+  gap: 4%;
+  align-items: flex-start;
+}
+
+.mif-chart {
+  margin-top: 2rem;
+}
+
+.list-tabs {
+  display: flex;
+}
+
+.tabs-action {
+  margin-bottom: 2rem;
+}
+
+.mif-detail-left {
+  width: 48%;
+}
+
+.mif-detail-right {
+  width: 48%;
+}
+
+.mif-detail-right .input-amount {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1.5rem;
+  width: 100%;
   box-sizing: border-box;
-  border: none;
-  min-height: calc(100vh - 62px);
-  z-index: 1;
+  margin: 2rem 0;
+}
+
+.mif-detail-right .mif-action {
+  margin-top: 2rem;
+}
+
+.mif-fund-glance .list-contract .item-contract {
+  display: flex;
+}
+
+.mif-fund-glance .list-contract .item-contract span {
+  width: 20rem;
+  margin-bottom: 0.4rem;
+}
+
+.mif-pool {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mif-fund-glance .total-tokens {
+  display: flex;
+}
+
+.mif-fund-glance .total-tokens span {
+  width: 20rem;
+}
+
+.mif-txn-history {
+  margin: 6rem 0 2rem 0;
+}
+
+.mif-table .text-red {
+  color: #ff3a33;
+}
+
+.mif-table .text-green {
+  color: #32ca5b;
+}
+
+@media (max-width: 819px) {
+  .mif-detail {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .mif-detail-left {
+    width: 100%;
+  }
+
+  .mif-detail-right {
+    width: 100%;
+  }
 }

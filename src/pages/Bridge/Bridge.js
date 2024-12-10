@@ -432,7 +432,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
             <div className="Page-title font-kufam txn-history">
               <Trans>Transaction History</Trans>
             </div>
-            {txnHistory.length ? (
+            {!txnHistory.length ? (
               <>
                 <div className="table-txn-history">
                   <table className="Exchange-list Orders App-box txn-history-list">
