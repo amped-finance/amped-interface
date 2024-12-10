@@ -205,7 +205,7 @@ export default function Mif() {
       helperToast.success(
         <div>
           Successful!{" "}
-          <ExternalLink href={`${APP_ENVIRONMENTS.LAYERZERO.SCAN}tx/${r?.hash}`}>
+          <ExternalLink href={`${APP_ENVIRONMENTS.LAYERZERO.SCAN}/tx/${r?.hash}`}>
             <Trans>View</Trans>
           </ExternalLink>
           <br />
@@ -280,7 +280,7 @@ export default function Mif() {
       helperToast.success(
         <div>
           Successful!{" "}
-          <ExternalLink href={`${APP_ENVIRONMENTS.LAYERZERO.SCAN}tx/${r?.hash}`}>
+          <ExternalLink href={`${APP_ENVIRONMENTS.LAYERZERO.SCAN}/tx/${r?.hash}`}>
             <Trans>View</Trans>
           </ExternalLink>
           <br />
