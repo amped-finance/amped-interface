@@ -408,7 +408,7 @@ export default function Mif() {
                     <div className="App-card-content">
                       <div className="App-card-row">
                         <div className="label">Receive (Estimated)</div>
-                        <div>{formatNumber(amountBuy / mifPrice)} MIF</div>
+                        <div>{0 || formatNumber(amountBuy / mifPrice)} MIF</div>
                       </div>
                     </div>
                     <div className="mif-action">
@@ -447,7 +447,7 @@ export default function Mif() {
                     <div className="App-card-content">
                       <div className="App-card-row">
                         <div className="label">Receive (Estimated)</div>
-                        <div>{formatNumber(mifPrice * amountSell)} USDT</div>
+                        <div>{0 || formatNumber(mifPrice * amountSell)} USDT</div>
                       </div>
                     </div>
                     <div className="mif-action">
