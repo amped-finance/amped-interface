@@ -298,7 +298,7 @@ export default function Bridge({ setPendingTxns, connectWallet }) {
   };
 
   return (
-    <SEO title={getPageTitle("bridge AMP")}>
+    <SEO title={getPageTitle("AMP Bridge")}>
       <div className="bridge default-container page-layout">
         <div className="bridge-container">
           <div className="section-title-content">

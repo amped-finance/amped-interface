@@ -86,6 +86,11 @@ export function AppHeaderLinks({
           <Trans>IDO</Trans>
         </ExternalLink>
       </div> */}
+        <div className="App-header-link-container">
+        <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+          <Trans>MIF</Trans>
+        </HeaderLink>
+      </div>
       <div className="App-header-link-container">
         <ExternalLink href="https://stats.amped.finance">
           <Trans>Stats</Trans>
@@ -105,11 +110,7 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>MIF</Trans>
-        </HeaderLink>
-      </div>
+
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}

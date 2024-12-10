@@ -305,25 +305,25 @@ export default function Mif() {
   }, [refetchMasterData]);
 
   return (
-    <SEO title={getPageTitle("MIF Page")}>
+    <SEO title={getPageTitle("Meme Index Fund")}>
       <div className="mif default-container page-layout">
         <div className="mif-container">
           <div className="section-title-content">
             <div className="mif-top-page">
               <div className="Page-title font-kufam">
                 <Trans>
-                  <b className="text-main">MIF</b> - Meme Coin Index Token
+                  <b className="text-main">MIF</b> - Meme Index Fund
                 </Trans>
               </div>
               <div className="App-card-title font-kufam">
-                <Trans>Automated meme coin index fund</Trans>
+                <Trans>Meme Coin Index Fund</Trans>
               </div>
               <div className="Page-description">
                 <ul>
                   <Trans>
-                    <li>All tokens are held in the smart contract</li>
-                    <li>The MIF token represents your token holding</li>
-                    <li>Multi chain support</li>
+                    <li>Tokens purchased are held in in smart contracts on the source chain</li>
+                    <li>Your purchased MIF token is redeemable for the underlying tokens on the destination chain</li>
+                    <li>This initial release is only available on BSC Mainnet</li>
                   </Trans>
                 </ul>
               </div>
@@ -333,7 +333,7 @@ export default function Mif() {
               <div className="mif-detail-left">
                 <div className="Page-title font-kufam">
                   <Trans>
-                    Ticker: <b className="text-main">MIF</b>
+                    Ticker: <b className="text-main">MI</b>
                   </Trans>
                 </div>
                 <table className="mif-table Exchange-list App-box">
