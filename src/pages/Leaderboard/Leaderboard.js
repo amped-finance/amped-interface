@@ -29,7 +29,7 @@ const TAB_OPTIONS = [TOTAL, TRADERS, ALP];
 // Add these constants at the top
 const POINTS_DECIMALS = 10 ** 30;
 const TRADE_POINTS_MULTIPLIER = 1;
-const ALP_POINTS_MULTIPLIER = 0.5;
+const ALP_POINTS_MULTIPLIER = 2;
 const BLOCKS_PER_PERIOD = 7200;
 
 function Leaderboard() {
