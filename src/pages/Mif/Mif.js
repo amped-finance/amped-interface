@@ -147,9 +147,9 @@ export default function Mif() {
 
   useEffect(() => {
     if (miContract) {
-      getBalanceMi();
+      getDecimalsMi();
       if (active) {
-        getDecimalsMi();
+        getBalanceMi();
       }
     }
   }, [miContract, active]);
