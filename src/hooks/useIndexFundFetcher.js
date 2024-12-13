@@ -4,7 +4,7 @@ import { map, reduce } from "lodash";
 import { APP_ENVIRONMENTS } from "config/env";
 import { convertSqrtPriceX96PairToTokenPrice } from "config/helper";
 
-export const getIndexFundMasterData = async (chain, refetchSeed = 1, library) => {
+export const getIndexFundMasterData = async (chain) => {
   const defaultMasterData = {
     totalToken: "0",
     pools: [],

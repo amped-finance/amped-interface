@@ -19,6 +19,7 @@ import { getIndexFundMasterData, useIndexFundMasterData } from "hooks/useIndexFu
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { helperToast } from "lib/helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { switchNetworkbridge } from "pages/Bridge/data";
 
 const TAB_OPTIONS_CHART = ["day", "week", "month", "year"];
 const TAB_OPTION_CHART_LABELS = {
@@ -49,19 +50,20 @@ export default function Mif() {
   const [amountBuy, setAmountBuy] = useState("");
   const [amountSell, setAmountSell] = useState("");
 
-  const [sourceChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF["LIGHTLINK"]);
-  const [destChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF["BSC"]);
+  const [sourceChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF[ChainSupported.Lightlink]);
+  const [destChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF[ChainSupported.Bsc]);
 
   const { walletProvider } = useWeb3ModalProvider();
   const { isConnected: active, address: account } = useWeb3ModalAccount();
 
-  const [refetchMasterData, setRefetchMasterData] = useState(1);
-  const [signer, setSigner] = useState();
+  const [providerSourceChain, setProviderSourceChain] = useState(
+    new ethers.providers.JsonRpcProvider(APP_ENVIRONMENTS.CHAINS[sourceChain.KEY].RPC)
+  );
 
-  const usdtContract = useUsdtContract(sourceChain.KEY, signer);
-  const usdtLzContract = useUsdtLzContract(sourceChain.KEY, signer);
-  const miContract = useMIContract(sourceChain.KEY, signer);
-  const miLzContract = useMILzContract(sourceChain.KEY, signer);
+  const usdtContract = useUsdtContract(sourceChain.KEY, providerSourceChain);
+  const usdtLzContract = useUsdtLzContract(sourceChain.KEY, providerSourceChain);
+  const miContract = useMIContract(sourceChain.KEY, providerSourceChain);
+  const miLzContract = useMILzContract(sourceChain.KEY, providerSourceChain);
 
   const [balanceUsdt, setBalanceUsdt] = useState(0);
   const [balanceMi, setBalanceMi] = useState(0);
@@ -77,20 +79,34 @@ export default function Mif() {
     poolSize: 0,
   });
 
-  const library = useMemo(() => {
+  useEffect(() => {
+    if (active && walletProvider) {
+      getConfig();
+    }
+  }, [active, walletProvider]);
+
+  const getConfig = async () => {
+    const provider = new ethers.providers.Web3Provider(walletProvider);
+    setProviderSourceChain(provider.getSigner());
+  };
+
+  useEffect(() => {
     if (walletProvider) {
-      return new ethers.providers.Web3Provider(walletProvider);
+      switchNetwork();
     }
   }, [walletProvider]);
 
+  const switchNetwork = async () => {
+    if (!walletProvider) return;
+    await switchNetworkbridge(ChainSupported.Lightlink, walletProvider);
+  };
+
   useEffect(() => {
-    if (library) {
-      getMasterData();
-    }
-  }, [library]);
+    getMasterData();
+  }, []);
 
   const getMasterData = async () => {
-    const data = await getIndexFundMasterData(ChainSupported.Bsc, refetchMasterData);
+    const data = await getIndexFundMasterData(ChainSupported.Bsc);
     setMifMasterData(data);
   };
 
@@ -108,10 +124,12 @@ export default function Mif() {
 
   useEffect(() => {
     if (usdtContract) {
-      getBalanceUsdt();
       getDecimalsUsdt();
+      if (active) {
+        getBalanceUsdt();
+      }
     }
-  }, [usdtContract]);
+  }, [usdtContract, active]);
 
   const getBalanceMi = async () => {
     const data = await miContract.balanceOf(account);
@@ -119,33 +137,27 @@ export default function Mif() {
   };
 
   const getDecimalsMi = async () => {
-    const decimals = await miContract.decimals();
-    setDecimalsMi(decimals);
+    try {
+      const decimals = await miContract.decimals();
+      setDecimalsMi(decimals);
+    } catch (err) {
+      console.log("err: ", err);
+    }
   };
 
   useEffect(() => {
     if (miContract) {
       getBalanceMi();
-      getDecimalsMi();
+      if (active) {
+        getDecimalsMi();
+      }
     }
-  }, [miContract]);
-
-  useEffect(() => {
-    if (walletProvider) {
-      getConfig();
-    }
-  }, [walletProvider]);
-
-  const getConfig = () => {
-    const provider = new ethers.providers.Web3Provider(walletProvider);
-    setSigner(provider.getSigner());
-  };
-
-  // const { data: usdtRawBalance } = useSWR([active, chainId, ampVesterAddress, "balanceOf", account], {
-  //   fetcher: contractFetcher(library, Token),
-  // });
+  }, [miContract, active]);
 
   const buy = async () => {
+    if (!walletProvider) return;
+    let check = await switchNetworkbridge(ChainSupported.Lightlink, walletProvider);
+    if (!check) return;
     setIsLoadingBuy(true);
     try {
       const options = Options.newOptions()
@@ -162,7 +174,9 @@ export default function Mif() {
       const amountToSend = ethers.utils.parseUnits(amountBuy.toString(), Number(decimalsUsdt)).toBigInt();
 
       if (allowance < amountToSend) {
-        const tx = await usdtContract.connect(signer).approve(usdtLzContract.address, ethers.constants.MaxUint256);
+        const tx = await usdtContract
+          .connect(providerSourceChain)
+          .approve(usdtLzContract.address, ethers.constants.MaxUint256);
 
         await tx.wait(1);
       }
@@ -220,6 +234,9 @@ export default function Mif() {
   };
 
   const sell = async () => {
+    if (!walletProvider) return;
+    let check = await switchNetworkbridge(ChainSupported.Lightlink, walletProvider);
+    if (!check) return;
     setIsLoadingSell(true);
     try {
       const options = Options.newOptions()
@@ -289,7 +306,7 @@ export default function Mif() {
 
       setTriggerFetch(Math.random());
     } catch (error) {
-      console.log(error);
+      console.log("error: ", error);
     } finally {
       setIsLoadingSell(false);
     }
@@ -302,7 +319,7 @@ export default function Mif() {
 
     //Clearing the interval
     return () => clearInterval(interval);
-  }, [refetchMasterData]);
+  }, []);
 
   return (
     <SEO title={getPageTitle("Meme Index Fund")}>
