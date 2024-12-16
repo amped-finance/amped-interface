@@ -5,7 +5,7 @@ import { getPageTitle } from "lib/legacy";
 import ChartPrice from "./Chart";
 import TxnHistories from "./TxnHistories";
 import { APP_ENVIRONMENTS } from "config/env";
-import { map, isNaN } from "lodash";
+import { map, isNaN, size } from "lodash";
 import { ChainSupported, computePrice, formatAddress, formatBalance, formatNumber } from "config/helper";
 import Tab from "components/Tab/Tab";
 import { useEffect, useMemo, useState } from "react";
@@ -13,13 +13,13 @@ import { CurrencyInput } from "components/CurrencyInput/CurrencyInput";
 import { ethers } from "ethers";
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/react";
 import { useMIContract, useMILzContract, useUsdtContract, useUsdtLzContract } from "hooks/useContract";
-import useSWR from "swr";
-import { useChainId } from "lib/chains";
 import { getIndexFundMasterData, useIndexFundMasterData } from "hooks/useIndexFundFetcher";
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { helperToast } from "lib/helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { switchNetworkbridge } from "pages/Bridge/data";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
 
 const TAB_OPTIONS_CHART = ["day", "week", "month", "year"];
 const TAB_OPTION_CHART_LABELS = {
@@ -40,6 +40,8 @@ const MIF_PRICE_DECIMALS = 6;
 const UNIT_PRICE_TRADING = "0.0002";
 
 const BASE_DIVIDER = 10_000;
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 export default function Mif() {
   const [activeTabChart, setActiveTabChart] = useState(TAB_OPTIONS_CHART[0]);
@@ -321,6 +323,38 @@ export default function Mif() {
     return () => clearInterval(interval);
   }, []);
 
+  const generateRandomColors = (num) => {
+    const colors = [];
+    for (let i = 0; i < num; i++) {
+      colors.push(`rgba(${255 * Math.random()}, ${255 * Math.random()}, ${255 * Math.random()}, 1)`);
+    }
+
+    return colors;
+  };
+
+  const listColors = ["#f89422", "#bba033", "#ff2300", "#4c9642"];
+
+  const colors = useMemo(() => {
+    if (size(mifMasterData?.pools) > 4) {
+      return [...listColors, ...generateRandomColors(size(mifMasterData?.pools) - 4)];
+    }
+    return listColors;
+  }, [mifMasterData]);
+
+  const pieData = useMemo(() => {
+    return {
+      labels: [],
+      datasets: [
+        {
+          label: "Percentage(%)",
+          data: map(mifMasterData.pools, (pool) => formatNumber((pool.poolInfo.weight / BASE_DIVIDER) * 100, 2)),
+          backgroundColor: colors,
+          borderColor: colors.map((color) => "transparent"),
+        },
+      ],
+    };
+  }, [mifMasterData]);
+
   return (
     <SEO title={getPageTitle("Meme Index Fund")}>
       <div className="mif default-container page-layout">
@@ -348,178 +382,203 @@ export default function Mif() {
 
             <div className="mif-detail">
               <div className="mif-detail-left">
-                <div className="Page-title font-kufam">
-                  <Trans>
-                    Ticker: <b className="text-main">MI</b>
-                  </Trans>
+                <div className="App-card">
+                  <div className="App-card-title font-kufam">Price chart</div>
+                  <div className="mif-chart">
+                    <div className="list-tabs">
+                      <Tab
+                        options={TAB_OPTIONS_CHART}
+                        optionLabels={TAB_OPTION_CHART_LABELS}
+                        option={activeTabChart}
+                        setOption={setActiveTabChart}
+                        onChange={setActiveTabChart}
+                      />
+                    </div>
+                    <ChartPrice type={activeTabChart} />
+                  </div>
                 </div>
-                <table className="mif-table Exchange-list App-box">
-                  <thead>
-                    <tr>
-                      <th>
-                        <Trans>Chain</Trans>
-                      </th>
-                      <th>
-                        <Trans>Pool</Trans>
-                      </th>
-                      <th>
-                        <Trans>Percentage</Trans>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {map(mifMasterData.pools, (pool, index) => (
-                      <tr key={index}>
-                        <td>{destChain.KEY}</td>
-                        <td>{pool.name}</td>
-                        <td> {formatNumber((pool.poolInfo.weight / BASE_DIVIDER) * 100, 2)} %</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="mif-chart">
-                  <div className="list-tabs">
+                <div className="App-card">
+                  <div className="App-card-title font-kufam">Portfolio Allocation</div>
+                  <div className="chart-pie">
+                    <div className="pie-label">
+                      {map(mifMasterData.pools, (pool, index) => (
+                        <div key={index} className="label">
+                          <div className="pie-legend" style={{ backgroundColor: colors[index] }}></div>
+                          <div>{pool.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pie-circle">
+                      <Pie data={pieData} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mif-detail-right">
+                <div className="App-card">
+                  <div className="list-tabs tabs-action">
                     <Tab
-                      options={TAB_OPTIONS_CHART}
-                      optionLabels={TAB_OPTION_CHART_LABELS}
-                      option={activeTabChart}
-                      setOption={setActiveTabChart}
-                      onChange={setActiveTabChart}
+                      options={TAB_OPTIONS_ACTION}
+                      optionLabels={TAB_OPTION_ACTION_LABELS}
+                      option={activeTabAction}
+                      setOption={setActiveTabAction}
+                      onChange={setActiveTabAction}
                     />
                   </div>
-                  <ChartPrice type={activeTabChart} />
+                  {activeTabAction === TAB_OPTIONS_ACTION[0] ? (
+                    <>
+                      <div className="App-card-content">
+                        <div className="App-card-row">
+                          <div className="label">Price</div>
+                          <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
+                        </div>
+                        <div className="App-card-row">
+                          <div className="label">USDT Balance</div>
+                          <div>{formatBalance(balanceUsdt, decimalsUsdt)}</div>
+                        </div>
+                      </div>
+                      <div className="link-bridge-usdt">
+                        <ExternalLink href={APP_ENVIRONMENTS.URL_BRIDGE_USDT_TO_LL}>
+                          Bridge USDT to LightLink
+                        </ExternalLink>
+                      </div>
+                      <CurrencyInput
+                        className="input-amount"
+                        value={amountBuy}
+                        onChange={(e) => {
+                          if (isNaN(Number(e))) {
+                            return;
+                          }
+                          setAmountBuy(e);
+                        }}
+                      />
+                      <div className="App-card-content">
+                        <div className="App-card-row">
+                          <div className="label">Receive (Estimated)</div>
+                          <div>{0 || formatNumber(amountBuy / mifPrice)} MIF</div>
+                        </div>
+                      </div>
+                      <div className="mif-action">
+                        <button
+                          disabled={isLoadingBuy || amountBuy <= 0}
+                          onClick={buy}
+                          className="App-cta Exchange-swap-button"
+                          type="submit"
+                        >
+                          {isLoadingBuy ? "BUYING..." : "BUY"}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="App-card-content">
+                        <div className="App-card-row">
+                          <div className="label">Price</div>
+                          <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
+                        </div>
+                        <div className="App-card-row">
+                          <div className="label">MI Balance</div>
+                          <div>{formatBalance(balanceMi, decimalsMi)}</div>
+                        </div>
+                      </div>
+                      <div className="link-bridge-usdt">
+                        <ExternalLink href={APP_ENVIRONMENTS.URL_BRIDGE_USDT_TO_LL}>
+                          Bridge USDT to LightLink
+                        </ExternalLink>
+                      </div>
+                      <CurrencyInput
+                        className="input-amount"
+                        value={amountSell}
+                        onChange={(e) => {
+                          if (isNaN(Number(e))) {
+                            return;
+                          }
+                          setAmountSell(e);
+                        }}
+                      />
+                      <div className="App-card-content">
+                        <div className="App-card-row">
+                          <div className="label">Receive (Estimated)</div>
+                          <div>{0 || formatNumber(mifPrice * amountSell)} USDT</div>
+                        </div>
+                      </div>
+                      <div className="mif-action">
+                        <button
+                          disabled={isLoadingSell || amountSell <= 0}
+                          onClick={sell}
+                          className="App-cta Exchange-swap-button"
+                          type="submit"
+                        >
+                          {isLoadingSell ? "SELLING..." : "SELL"}
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
-              <div className="mif-detail-right App-card">
-                <div className="list-tabs tabs-action">
-                  <Tab
-                    options={TAB_OPTIONS_ACTION}
-                    optionLabels={TAB_OPTION_ACTION_LABELS}
-                    option={activeTabAction}
-                    setOption={setActiveTabAction}
-                    onChange={setActiveTabAction}
-                  />
+                <div className="App-card">
+                  <div className="mif-fund-glance">
+                    <div className="App-card-title font-kufam">
+                      <b className="text-main">MIF</b> funds at a glance
+                    </div>
+
+                    <div className="list-contract">
+                      {map(APP_ENVIRONMENTS.CHAINS_MIF, (chain) => {
+                        return (
+                          <div key={chain.KEY} className="item-contract">
+                            <span className="label">{chain.KEY}</span>
+                            <a
+                              className="text-main"
+                              target="_blank"
+                              rel="noreferrer"
+                              href={`${chain.SCAN}/address/${chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS}`}
+                            >
+                              {formatAddress(chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS)}
+                            </a>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mif-pool">
+                      {map(mifMasterData.pools, (pool) => {
+                        return (
+                          <div key={pool.address}>
+                            <div className="text-main item-token">
+                              <span className="label-name">{pool.name}</span>
+                              {formatBalance(pool.totalHolding, pool.decimals)}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* <table className="mif-table Exchange-list App-box">
+                      <thead>
+                        <tr>
+                          <th>
+                            <Trans>Token Name</Trans>
+                          </th>
+                          <th>
+                            <Trans>Quantity</Trans>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {map(mifMasterData.pools, (pool, index) => (
+                          <tr key={index}>
+                            <td>{pool.name}</td>
+                            <td>{formatBalance(pool.totalHolding, pool.decimals)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table> */}
+
+                    <div className="total-tokens">
+                      <span className="label">Total Tokens Issued:</span>
+                      <div className="text-main">{formatBalance(mifMasterData.totalToken, decimalsMi)} MIF</div>
+                    </div>
+                  </div>
                 </div>
-                {activeTabAction === TAB_OPTIONS_ACTION[0] ? (
-                  <>
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Price</div>
-                        <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">USDT Balance</div>
-                        <div>{formatBalance(balanceUsdt, decimalsUsdt)}</div>
-                      </div>
-                    </div>
-                    <CurrencyInput
-                      className="input-amount"
-                      value={amountBuy}
-                      onChange={(e) => {
-                        if (isNaN(Number(e))) {
-                          return;
-                        }
-                        setAmountBuy(e);
-                      }}
-                    />
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Receive (Estimated)</div>
-                        <div>{0 || formatNumber(amountBuy / mifPrice)} MIF</div>
-                      </div>
-                    </div>
-                    <div className="mif-action">
-                      <button
-                        disabled={isLoadingBuy || amountBuy <= 0}
-                        onClick={buy}
-                        className="App-cta Exchange-swap-button"
-                        type="submit"
-                      >
-                        {isLoadingBuy ? "BUYING..." : "BUY"}
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Price</div>
-                        <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">MI Balance</div>
-                        <div>{formatBalance(balanceMi, decimalsMi)}</div>
-                      </div>
-                    </div>
-                    <CurrencyInput
-                      className="input-amount"
-                      value={amountSell}
-                      onChange={(e) => {
-                        if (isNaN(Number(e))) {
-                          return;
-                        }
-                        setAmountSell(e);
-                      }}
-                    />
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Receive (Estimated)</div>
-                        <div>{0 || formatNumber(mifPrice * amountSell)} USDT</div>
-                      </div>
-                    </div>
-                    <div className="mif-action">
-                      <button
-                        disabled={isLoadingSell || amountSell <= 0}
-                        onClick={sell}
-                        className="App-cta Exchange-swap-button"
-                        type="submit"
-                      >
-                        {isLoadingSell ? "SELLING..." : "SELL"}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="mif-fund-glance">
-              <div className="Page-title font-kufam">
-                <b className="text-main">MIF</b> funds at a glance
-              </div>
-
-              <div className="list-contract">
-                {map(APP_ENVIRONMENTS.CHAINS_MIF, (chain) => {
-                  return (
-                    <div key={chain.KEY} className="item-contract">
-                      <span className="label">{chain.KEY}</span>
-                      <a
-                        className="text-main"
-                        target="_blank"
-                        rel="noreferrer"
-                        href={`${chain.SCAN}/address/${chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS}`}
-                      >
-                        {formatAddress(chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS)}
-                      </a>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mif-pool">
-                {map(mifMasterData.pools, (pool) => {
-                  return (
-                    <div key={pool.address}>
-                      <span className="text-main">
-                        {formatBalance(pool.totalHolding, pool.decimals)} {pool.name}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="total-tokens">
-                <span className="label">Total Tokens Issued:</span>
-                <div className="text-main">{formatBalance(mifMasterData.totalToken, decimalsMi)} MIF</div>
               </div>
             </div>
 

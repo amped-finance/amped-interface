@@ -849,7 +849,7 @@ export default function DashboardV2() {
                         cy={100}
                         innerRadius={73}
                         outerRadius={80}
-                        fill="#8884d8"
+                        fill="red"
                         dataKey="value"
                         startAngle={90}
                         endAngle={-270}
