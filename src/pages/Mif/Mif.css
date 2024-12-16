@@ -13,7 +13,7 @@
 .mif-detail {
   display: flex;
   flex-direction: row;
-  gap: 4%;
+  gap: 3%;
   align-items: flex-start;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .mif-detail-left {
-  width: 48%;
+  width: 63%;
   display: flex;
   flex-direction: column;
   gap: 3.6rem;
@@ -107,7 +107,7 @@
 }
 
 .mif-detail-right {
-  width: 48%;
+  width: 34%;
   display: flex;
   flex-direction: column;
   gap: 3.6rem;
@@ -135,11 +135,11 @@
 
 .mif-fund-glance .list-contract .item-contract {
   display: flex;
+  justify-content: space-between;
 }
 
 .mif-fund-glance .list-contract .item-contract span {
-  width: 20rem;
-  min-width: 20rem;
+  width: 16rem;
   margin-bottom: 0.8rem;
 }
 
@@ -152,20 +152,20 @@
 
 .mif-pool .item-token {
   display: flex;
+  justify-content: space-between;
 }
 
 .mif-pool .item-token .label-name {
-  width: 20rem;
-  min-width: 20rem;
+  width: 16rem;
 }
 
 .mif-fund-glance .total-tokens {
   display: flex;
+  justify-content: space-between;
 }
 
 .mif-fund-glance .total-tokens span {
-  width: 20rem;
-  min-width: 20rem;
+  width: 16rem;
 }
 
 .mif-txn-history {
