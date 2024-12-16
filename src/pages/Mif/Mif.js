@@ -45,7 +45,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 export default function Mif() {
   const [activeTabChart, setActiveTabChart] = useState(TAB_OPTIONS_CHART[0]);
-  const [activeTabAction, setActiveTabAction] = useState(TAB_OPTIONS_ACTION[0]);
+  const [activeTabAction, setActiveTabAction] = useState(1);
 
   const [isLoadingBuy, setIsLoadingBuy] = useState(false);
   const [isLoadingSell, setIsLoadingSell] = useState(false);
@@ -360,7 +360,7 @@ export default function Mif() {
       <div className="mif default-container page-layout">
         <div className="mif-container">
           <div className="section-title-content">
-            <div className="mif-top-page">
+            <div className="mif-top-page App-card">
               <div className="Page-title font-kufam">
                 <Trans>
                   <b className="text-main">MIF</b> - Meme Index Fund
@@ -385,16 +385,25 @@ export default function Mif() {
                 <div className="App-card">
                   <div className="App-card-title font-kufam">Price chart</div>
                   <div className="mif-chart">
-                    <div className="list-tabs">
-                      <Tab
+                    <ChartPrice type={activeTabChart} />
+                    <div className="list-tabs tabs-chart">
+                      {map(TAB_OPTIONS_CHART, (item, index) => (
+                        <div
+                          className={`option-tab-chart ${activeTabChart === item ? "active" : ""}`}
+                          key={index}
+                          onClick={() => setActiveTabChart(item)}
+                        >
+                          {TAB_OPTION_CHART_LABELS[item]}
+                        </div>
+                      ))}
+                      {/* <Tab
                         options={TAB_OPTIONS_CHART}
                         optionLabels={TAB_OPTION_CHART_LABELS}
                         option={activeTabChart}
                         setOption={setActiveTabChart}
                         onChange={setActiveTabChart}
-                      />
+                      /> */}
                     </div>
-                    <ChartPrice type={activeTabChart} />
                   </div>
                 </div>
                 <div className="App-card">
@@ -417,15 +426,27 @@ export default function Mif() {
               <div className="mif-detail-right">
                 <div className="App-card">
                   <div className="list-tabs tabs-action">
-                    <Tab
+                    {/* <Tab
                       options={TAB_OPTIONS_ACTION}
                       optionLabels={TAB_OPTION_ACTION_LABELS}
                       option={activeTabAction}
                       setOption={setActiveTabAction}
                       onChange={setActiveTabAction}
-                    />
+                    /> */}
+                    <div
+                      className={`option-tab-action ${activeTabAction === 1 ? "active" : ""}`}
+                      onClick={() => setActiveTabAction(1)}
+                    >
+                      BUY
+                    </div>
+                    <div
+                      className={`option-tab-action ${activeTabAction === 2 ? "active" : ""}`}
+                      onClick={() => setActiveTabAction(2)}
+                    >
+                      SELL
+                    </div>
                   </div>
-                  {activeTabAction === TAB_OPTIONS_ACTION[0] ? (
+                  {activeTabAction === 1 ? (
                     <>
                       <div className="App-card-content">
                         <div className="App-card-row">

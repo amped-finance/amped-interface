@@ -18,7 +18,25 @@
 }
 
 .mif-chart {
-  margin-top: 2rem;
+  margin-top: 1rem;
+}
+
+.mif-chart .tabs-chart {
+  display: flex;
+  gap: 1.6rem;
+  background-color: var(--dark-blue-bg);
+  margin-top: 1rem;
+}
+
+.mif-chart .tabs-chart .option-tab-chart {
+  cursor: pointer;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.mif-chart .tabs-chart .option-tab-chart.active {
+  color: var(--color-pink);
 }
 
 .list-tabs {
@@ -26,7 +44,28 @@
 }
 
 .tabs-action {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.tabs-action .option-tab-action {
+  width: calc(50% - 1rem);
+  display: flex;
+  justify-content: center;
+  background-color: var(--dark-blue-bg);
+  border-radius: 1rem;
+  font-weight: bold;
+  padding: 1.6rem;
+  cursor: pointer;
+}
+
+.tabs-action .option-tab-action:hover {
+  background-color: #5e404b;
+}
+
+.tabs-action .option-tab-action.active {
+  background-color: var(--color-pink);
 }
 
 .mif-detail-left {
@@ -87,7 +126,7 @@
 }
 
 .mif-detail-right .mif-action {
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
 
 .mif-fund-glance .App-card-title {

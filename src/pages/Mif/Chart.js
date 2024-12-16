@@ -48,8 +48,13 @@ const ChartPrice = ({ type }) => {
     const prices = map(reversedData, (item) => {
       return item[1];
     });
-    setMaxPrice(Number(max(prices)) * 1.03);
-    setMinPrice(Number(min(prices)) * 0.97);
+    if (Number(min(prices))) {
+      setMaxPrice(Number(max(prices)) * 1.03);
+      setMinPrice(Number(min(prices)) * 0.97);
+    } else {
+      setMaxPrice(Number(max(prices)) * 1.25);
+      setMinPrice(0);
+    }
     setDataChart(res);
     setLoading(false);
   };
