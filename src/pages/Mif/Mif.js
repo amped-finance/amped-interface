@@ -543,9 +543,9 @@ export default function Mif() {
                       {map(mifMasterData.pools, (pool) => {
                         return (
                           <div key={pool.address}>
-                            <div className="text-main item-token">
-                              <span className="label-name">{pool.name}</span>
-                              {formatBalance(pool.totalHolding, pool.decimals)}
+                            <div className="item-token">
+                              <span className="label-name label">{pool.name}</span>
+                              <span className="text-main">{formatBalance(pool.totalHolding, pool.decimals)}</span>
                             </div>
                           </div>
                         );
