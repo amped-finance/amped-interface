@@ -407,7 +407,7 @@ export default function Mif() {
                   </div>
                 </div>
                 <div className="App-card">
-                  <div className="App-card-title font-kufam">Portfolio Allocation</div>
+                  <div className="App-card-title font-kufam">MI Token Composition</div>
                   <div className="chart-pie">
                     <div className="pie-label">
                       {map(mifMasterData.pools, (pool, index) => (
@@ -450,7 +450,7 @@ export default function Mif() {
                     <>
                       <div className="App-card-content">
                         <div className="App-card-row">
-                          <div className="label">Price</div>
+                          <div className="label">MI Price</div>
                           <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
                         </div>
                         <div className="App-card-row">
@@ -539,7 +539,7 @@ export default function Mif() {
                 <div className="App-card">
                   <div className="mif-fund-glance">
                     <div className="App-card-title font-kufam">
-                      <b className="text-main">MIF</b> funds at a glance
+                      <b className="text-main">MI</b> funds at a glance
                     </div>
 
                     <div className="list-contract">
@@ -596,7 +596,7 @@ export default function Mif() {
 
                     <div className="total-tokens">
                       <span className="label">Total Tokens Issued:</span>
-                      <div className="text-main">{formatBalance(mifMasterData.totalToken, decimalsMi)} MIF</div>
+                      <div className="text-main">{formatBalance(mifMasterData.totalToken, decimalsMi)} MI</div>
                     </div>
                   </div>
                 </div>
