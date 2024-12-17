@@ -19,6 +19,8 @@ export const STAGE_ENVIRONMENTS = {
     ROOT_URL: "https://services-stage.pellar.io/api/v1/index-fund",
     API_KEY: "08835380-ceba-490e-a72c-9f083191220a",
   },
+  URL_BRIDGE_USDT_TO_LL:
+    "https://stargate.finance/bridge?dstChain=lightlink&dstToken=0x808d7c71ad2ba3FA531b068a2417C63106BC0949",
   CHAINS: {
     BSC: {
       SHORT_NAME: "BSC Testnet",

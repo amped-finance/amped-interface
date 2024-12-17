@@ -1,4 +1,4 @@
-import { head, isEmpty, last, map, max, reverse } from "lodash";
+import { head, isEmpty, last, map, max, min, reverse } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import Chart from "react-apexcharts";
@@ -14,6 +14,7 @@ const ChartPrice = ({ type }) => {
 
   const [minTime, setMinTime] = useState(moment.utc().unix() * 1000);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState(0.9);
   const [loading, setLoading] = useState(true);
 
   const timeRequest = 60 * 1000;
@@ -47,7 +48,13 @@ const ChartPrice = ({ type }) => {
     const prices = map(reversedData, (item) => {
       return item[1];
     });
-    setMaxPrice(Number(max(prices)) * 1.5);
+    if (Number(min(prices))) {
+      setMaxPrice(Number(max(prices)) * 1.03);
+      setMinPrice(Number(min(prices)) * 0.97);
+    } else {
+      setMaxPrice(Number(max(prices)) * 1.25);
+      setMinPrice(0);
+    }
     setDataChart(res);
     setLoading(false);
   };
@@ -103,7 +110,7 @@ const ChartPrice = ({ type }) => {
         min: minTime * 1000,
       },
       yaxis: {
-        min: 0,
+        min: minPrice,
         max: maxPrice,
         labels: {
           formatter: (val) => {

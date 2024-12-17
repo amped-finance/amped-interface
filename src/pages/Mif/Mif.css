@@ -13,12 +13,30 @@
 .mif-detail {
   display: flex;
   flex-direction: row;
-  gap: 4%;
+  gap: 3%;
   align-items: flex-start;
 }
 
 .mif-chart {
-  margin-top: 2rem;
+  margin-top: 1rem;
+}
+
+.mif-chart .tabs-chart {
+  display: flex;
+  gap: 1.6rem;
+  background-color: var(--dark-blue-bg);
+  margin-top: 1rem;
+}
+
+.mif-chart .tabs-chart .option-tab-chart {
+  cursor: pointer;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.mif-chart .tabs-chart .option-tab-chart.active {
+  color: var(--color-pink);
 }
 
 .list-tabs {
@@ -26,15 +44,73 @@
 }
 
 .tabs-action {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  display: flex;
+  gap: 2rem;
+}
+
+.tabs-action .option-tab-action {
+  width: calc(50% - 1rem);
+  display: flex;
+  justify-content: center;
+  background-color: var(--dark-blue-bg);
+  border-radius: 1rem;
+  font-weight: bold;
+  padding: 1.6rem;
+  cursor: pointer;
+}
+
+.tabs-action .option-tab-action:hover {
+  background-color: #5e404b;
+}
+
+.tabs-action .option-tab-action.active {
+  background-color: var(--color-pink);
 }
 
 .mif-detail-left {
-  width: 48%;
+  width: 63%;
+  display: flex;
+  flex-direction: column;
+  gap: 3.6rem;
+}
+
+.chart-pie {
+  display: flex;
+  gap: 3rem;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-pie .pie-label {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.chart-pie .pie-label .label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chart-pie .pie-label .label .pie-legend {
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  border-radius: 100%;
+}
+
+.chart-pie canvas {
+  max-width: 300px !important;
+  max-height: 300px !important;
 }
 
 .mif-detail-right {
-  width: 48%;
+  width: 34%;
+  display: flex;
+  flex-direction: column;
+  gap: 3.6rem;
 }
 
 .mif-detail-right .input-amount {
@@ -42,35 +118,54 @@
   font-size: 1.5rem;
   width: 100%;
   box-sizing: border-box;
-  margin: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.mif-detail-right .link-bridge-usdt {
+  margin: 2rem 0 1rem;
 }
 
 .mif-detail-right .mif-action {
-  margin-top: 2rem;
+  margin-top: 3rem;
+}
+
+.mif-fund-glance .App-card-title {
+  display: block;
 }
 
 .mif-fund-glance .list-contract .item-contract {
   display: flex;
+  justify-content: space-between;
 }
 
 .mif-fund-glance .list-contract .item-contract span {
-  width: 20rem;
-  margin-bottom: 0.4rem;
+  width: 16rem;
+  margin-bottom: 0.8rem;
 }
 
 .mif-pool {
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.8rem;
+}
+
+.mif-pool .item-token {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mif-pool .item-token .label-name {
+  width: 16rem;
 }
 
 .mif-fund-glance .total-tokens {
   display: flex;
+  justify-content: space-between;
 }
 
 .mif-fund-glance .total-tokens span {
-  width: 20rem;
+  width: 16rem;
 }
 
 .mif-txn-history {
@@ -97,5 +192,10 @@
 
   .mif-detail-right {
     width: 100%;
+  }
+
+  .chart-pie canvas {
+    max-width: 250px !important;
+    max-height: 250px !important;
   }
 }

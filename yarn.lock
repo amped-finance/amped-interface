@@ -2921,6 +2921,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.4
+  resolution: "@kurkle/color@npm:0.3.4"
+  checksum: b95c6abe0241ba1745b3c84de3b464296b95ce577110b54f46e6c6dcc9a0966491533df43812bd6c66f92cf818e385d1390b280cd5851d4afb52fc37f8a6c0b9
+  languageName: node
+  linkType: hard
+
 "@layerzerolabs/lz-v2-utilities@npm:^3.0.25":
   version: 3.0.25
   resolution: "@layerzerolabs/lz-v2-utilities@npm:3.0.25"
@@ -6800,6 +6807,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chart.js@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "chart.js@npm:4.4.7"
+  dependencies:
+    "@kurkle/color": ^0.3.0
+  checksum: c0f0e9efd935b21a37286d1544046277bb607c08fb3e012b4c501104187a42a0c6541c8d7575782c7f1f3e0a91537b7d6a2eb9cd57122eb176609493838a9543
+  languageName: node
+  linkType: hard
+
 "check-types@npm:^11.2.3":
   version: 11.2.3
   resolution: "check-types@npm:11.2.3"
@@ -9938,6 +9954,7 @@ __metadata:
     axios: ^1.7.7
     bigdecimal: 0.6.1
     body-scroll-lock: 4.0.0-beta.0
+    chart.js: ^4.4.7
     classnames: 2.3.1
     date-fns: 2.27.0
     env-cmd: ^10.1.0
@@ -9958,6 +9975,7 @@ __metadata:
     rc-slider: 9.7.5
     react: ^18
     react-apexcharts: ^1.7.0
+    react-chartjs-2: ^5.2.0
     react-dom: ^18
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
@@ -15485,6 +15503,16 @@ __metadata:
   peerDependencies:
     react: ">=15.0.0"
   checksum: 87139fc2cc682d34ff8633c58ce96f89826cc3127499b623fb1d8c99dd8e1fe21055750a051933ffc500ca9c88aa017930deae963ffc635135c02907e5d75e22
+  languageName: node
+  linkType: hard
+
+"react-chartjs-2@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "react-chartjs-2@npm:5.2.0"
+  peerDependencies:
+    chart.js: ^4.1.1
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: ace702185be1450e5888a8bcd8b5fc1995067e3b11d236764a67f5567a3d7c32ff16923b8d48d3d39bda6e45135da6c044c9b43fbe8e1978f95aca9d2c0ce348
   languageName: node
   linkType: hard
 
