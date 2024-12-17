@@ -26,6 +26,12 @@ const ALP = "ALP";
 // const TAB_OPTIONS = [TOTAL, TRADERS, AFFILIATES, ALP];
 const TAB_OPTIONS = [TOTAL, TRADERS, ALP];
 
+// Add these constants at the top
+const POINTS_DECIMALS = 10 ** 30;
+const TRADE_POINTS_MULTIPLIER = 1;
+const ALP_POINTS_MULTIPLIER = 2;
+const BLOCKS_PER_PERIOD = 7200;
+
 function Leaderboard() {
   const { chainId } = useChainId();
   const alpPoints = useAlpPoints(chainId);
@@ -37,14 +43,15 @@ function Leaderboard() {
 
   useEffect(() => {
     const provider = new ethers.providers.JsonRpcProvider("https://replicator.phoenix.lightlink.io/rpc/v1");
-    provider.getBlockNumber()
-      .then(blockNumber => {
-        console.log("current block no", blockNumber);
-        setBlockNumber(blockNumber);
-      })
-      .catch(error => {
+    const getBlockNumber = async () => {
+      try {
+        const number = await provider.getBlockNumber();
+        setBlockNumber(number);
+      } catch (error) {
         console.error("Error fetching block number:", error);
-      });
+      }
+    };
+    getBlockNumber();
   }, []);
 
   const allALpPoints = alpPoints?.concat(alpPointsRemoval);
@@ -54,12 +61,13 @@ function Leaderboard() {
       if (!groupedALpPoints[item.account]) {
         groupedALpPoints[item.account] = 0;
       }
+      const blockDiff = (blockNumber - item.blockNumber) / BLOCKS_PER_PERIOD;
+      const points = (Number(item.points) / POINTS_DECIMALS) * (ALP_POINTS_MULTIPLIER * blockDiff);
+      
       if (item.type === 1) {
-        console.log((blockNumber - item.blockNumber) / 7200)
-        groupedALpPoints[item.account] += (Number(item.points) / 10 ** 30) * (0.2 * ((blockNumber - item.blockNumber) / 7200));
-      }
-      else if (item.type === 2) {
-        groupedALpPoints[item.account] -= (Number(item.points) / 10 ** 30) * (0.2 * ((blockNumber - item.blockNumber) / 7200));
+        groupedALpPoints[item.account] += points;
+      } else if (item.type === 2) {
+        groupedALpPoints[item.account] -= points;
       }
     }
   });
@@ -74,7 +82,7 @@ function Leaderboard() {
       if (!groupedTradePoints[item.account]) {
         groupedTradePoints[item.account] = 0;
       }
-      groupedTradePoints[item.account] += Number(item.points) / 10 ** 30 * 2.5;
+      groupedTradePoints[item.account] += (Number(item.points) / POINTS_DECIMALS) * TRADE_POINTS_MULTIPLIER;
     }
   });
   const groupedTradePointsArray = Object.entries(groupedTradePoints);
@@ -147,7 +155,7 @@ function Leaderboard() {
                   <ExternalLink href="https://medium.com/@ampedfinance/user-guide-for-trading-leaderboard-dc380228cdc4">Leaderboard Guide</ExternalLink> for details.
                 </div>
                 <div style={{ marginBottom: "16px" }}>
-                  Season 2 will commence on Monday the 14th of October and conclude at 00:00 UTC on Friday the 1st of November.
+                  Season 3 will commence on Tuesday the 17th of December and conclude on Friday the 17th of January, 2025.
                 </div>
                 <div>
                   There are 50,000 LL tokens to be distributed among participants who make the leaderboard! The higher your rank, the more you will receive.
