@@ -155,7 +155,7 @@ function Leaderboard() {
                   <ExternalLink href="https://medium.com/@ampedfinance/user-guide-for-trading-leaderboard-dc380228cdc4">Leaderboard Guide</ExternalLink> for details.
                 </div>
                 <div style={{ marginBottom: "16px" }}>
-                  Season 2 will commence on Monday the 14th of October and conclude at 00:00 UTC on Friday the 1st of November.
+                  Season 3 will commence on Tuesday the 17th of December and conclude on Friday the 17th of January, 2025.
                 </div>
                 <div>
                   There are 50,000 LL tokens to be distributed among participants who make the leaderboard! The higher your rank, the more you will receive.
