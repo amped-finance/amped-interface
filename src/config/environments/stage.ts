@@ -16,7 +16,7 @@ export const STAGE_ENVIRONMENTS = {
   ],
   API_LAYERZERO: "https://scan-testnet.layerzero-api.com",
   API: {
-    ROOT_URL: "https://services-stage.pellar.io/api/v1/index-fund",
+    ROOT_URL: "https://services-stage.pellar.io/api/v1/mif",
     API_KEY: "08835380-ceba-490e-a72c-9f083191220a",
   },
   URL_BRIDGE_USDT_TO_LL:
