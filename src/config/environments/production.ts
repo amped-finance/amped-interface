@@ -16,7 +16,7 @@ export const PRODUCTION_ENVIRONMENTS = {
   ],
   API_LAYERZERO: "https://scan.layerzero-api.com",
   API: {
-    ROOT_URL: "https://services.pellar.io/api/v1/index-fund",
+    ROOT_URL: "https://services.pellar.io/api/v1/mif",
     API_KEY: "28f60562-699e-4886-bb29-0693c92035c8",
   },
   URL_BRIDGE_USDT_TO_LL:
