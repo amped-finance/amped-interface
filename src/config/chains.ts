@@ -90,7 +90,7 @@ const constants = {
   [PHOENIX]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDT",
+    defaultCollateralSymbol: "USDC.SG",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,
     v2: true,
