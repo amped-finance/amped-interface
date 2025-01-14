@@ -226,7 +226,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USDT (Stargate)",
       symbol: "USDT.SG",
-      address: "0x808d7c71ad2ba3FA531b068a2417C63106BC0949",
+      address: "0x808d7c71ad2ba3fa531b068a2417c63106bc0949",
       decimals: 6,
       isStable: true,
       isShortable: true,
@@ -235,7 +235,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USDC (Stargate)",
       symbol: "USDC.SG",
-      address: "0xbCF8C1B03bBDDA88D579330BDF236B58F8bb2cFd",
+      address: "0xbcf8c1b03bbdda88d579330bdf236b58f8bb2cfd",
       decimals: 6,
       isStable: true,
       isShortable: true,
