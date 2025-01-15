@@ -245,6 +245,45 @@ const CONTRACTS = {
     ReferralStorage: "0xbdfD0c41EB6d3d8D020FB4B2D70e3858AeFAf0a7",
     ReferralReader: "0xBF32930369602F0edBcA4Fe8C5d3A0D42Ab41718",
   },
+  [SONIC]: {
+    Vault: "0x34ecA0877cb75FAc25d785518b3238458F82733e",
+    Router: "0xCFDD691AD7E89CC0d8051ea55B00B199984D2Af9",
+    VaultReader: "0xdE4445598a153BE6f5E81ab980d250aB1D63579d",
+    Reader: "0x5325e9B9903fc5fAf78a6B1B993EBEB0345bb7db",
+    AlpManager: "0x98FA4745d7fD949Cd9307aE03cF77DDa7a68C676", // Was GlpManager in JSON
+    RewardRouter: "0x7a7E6Df9Ccb3797414886583c770c5EF6335Aa91", // Was RewardRouterV2 in JSON
+    RewardReader: "0xE78Df1ecCf40a13993cdBe8D8B684833f136C2e6",
+    NATIVE_TOKEN: "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38", // Was ws in JSON
+    ALP: "0x97768832591175dC754ef02c2538D37829C608b5", // Was GLP in JSON
+    AMP: "0xAc611438AE5F3953DeDB47c2ea8d6650D601C1B4", // Was GMX in JSON
+    ES_AMP: "0x80d3991B63CD605C208F50fC450fE428d9Ca6A44", // Was EsGMX in JSON
+    BN_AMP: "0x656cd80b801d5832EeD45AcACdDF01eC5FcbF215", // Was BonusGMX in JSON
+    USDG: "0x9de91F06940B168675fd21641b114a6965ad7E1f",
+    ES_AMP_IOU: "0xcb801E0910ED297C75db2e0c9f7E99b9d9174f93", // Was EsGMXIOU in JSON
+
+    StakedAmpTracker: "0xADf3a9dCD71020EE2ab38b6634EEBb6455DCb879", // Was RewardTrackerStakedGMX in JSON
+    BonusAmpTracker: "0xD82447E208cf8667b3BE1f42D648A9C6B75907eD", // Was RewardTrackerStakedBonusGMX in JSON
+    FeeAmpTracker: "0xF6849639Cda60E5FFc76baA2936fBc86C7E335d0", // Was RewardTrackerStakedBonusFeeGMX in JSON
+    StakedAlpTracker: "0x29130fa9107b1F62Ed55d9193b373768cE4F131f", // Was RewardTrackerFeeStakedGLP in JSON
+    FeeAlpTracker: "0x54018Dd393c7017e84CE5E2dECe6Fc8Ce04D3bd9", // Was RewardTrackerFeeGLP in JSON
+
+    StakedAmpDistributor: "0x1d411f91602ffee82a277d2199092CCdd690b42F", // Was RewardDistributorStakedGMX in JSON
+    StakedAlpDistributor: "0x2bC54C33EA51a9120E59d1dB0d68AC15c7755757", // Was RewardDistributorFeeStakedGLP in JSON
+
+    AmpVester: "0xDa88Cfde649f60d1C51EbA650ACa5F61Ddce5b3e", // Was VesterGMX in JSON
+    AlpVester: "0xFd982D9d40af5C338B42967d28132Aa06C42ef20", // Was VesterGLP in JSON
+
+    OrderBook: "0x178390248830D3a30d610a719A94eAe8e7480b8A",
+    OrderExecutor: "0xd795C3E9DccA7d3Fe9A6C9149e756cE06ed5e380", // Unchanged as it's not in the JSON
+    OrderBookReader: "0xD7202B921effe4dEae4c551CE262337D6D317314",
+
+    PositionRouter: "0x73716E1BAB7E2AeB9ee4b38F5F90B515502BAd35",
+    PositionManager: "0xBed8F7eF779cEED5208486C791D004D6A13FC3D1",
+
+    TraderJoeAmpAvaxPool: "0xE80B4F755417FB4baF4dbd23C029db3F62786523", // Unchanged as it's not in the JSON
+    ReferralStorage: "0x95797B3Ad19d5482574Ed996293CAfef4f87E25B",
+    ReferralReader: "0x74657273cf511228696d152f35b5873C90cFA575",
+  },
 };
 
 export function getContract(chainId: number, name: string): string {

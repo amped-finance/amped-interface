@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC } from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -444,6 +444,44 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/16746/standard/PNG_image.png?1696516318",
     }
   ],
+  [SONIC]: [
+    {
+      name: "S",
+      symbol: "S",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/38108/standard/200x200_Sonic_Logo.png?1734679256",
+    },
+    {
+      name: "Wrapped Sonic",
+      symbol: "wS",
+      decimals: 18,
+      address: "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38",
+      isWrapped: true,
+      baseSymbol: "wS",
+      imageUrl: "https://assets.coingecko.com/coins/images/52857/standard/wrapped_sonic.png?1734536585",
+    },
+    {
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
+      isStable: true,
+      isShortable: false,
+      imageUrl: "https://sonicscan.org/token/images/usdc_32.png",
+    },
+    {
+      name: "EURC",
+      symbol: "EURC",
+      address: "0xe715cbA7B5cCb33790ceBFF1436809d36cb17E57",
+      decimals: 6,
+      isStable: true,
+      isShortable: false,
+      imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
+    }
+  ]
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -683,7 +721,7 @@ export const ICONLINKS = {
   },
   [PHOENIX]: {
     AMP: {
-      pagasus: "https://basescan.org/address/0x155BabF44190E2ef3d5EEae6AA261E794de83b23",
+      phoenix: "https://phoenix.lightlink.io/token/0xca7F14F14d975bEFfEe190Cd3cD232a3a988Ab9C",
     },
     ALP: {
       pagasus: "https://basescan.org/address/0x3c6DEc605311571b67978C6EF2DbfE77A841722d",
@@ -805,6 +843,24 @@ export const ICONLINKS = {
       bsc: "https://basescan.org/address/0xc21223249ca28397b4b6541dffaecc539bff0c59",
     },
   },
+  [SONIC]: {
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      sonic: "https://sonicscan.org/token/0x29219dd400f2bf60e5a23d13be72b486d4038894",
+    },
+    EURC: {
+      coingecko: "https://www.coingecko.com/en/coins/eurc",
+      sonic: "https://sonicscan.org/token/0xe715cba7b5ccb33790cebff1436809d36cb17e57",
+    },
+    WS: {
+      coingecko: "https://www.coingecko.com/en/coins/wrapped-sonic",
+      sonic: "https://sonicscan.org/token/0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+    },
+    WETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      sonic: "https://sonicscan.org/token/0x50c42deacd8fc9773493ed674b675be577f2634b",
+    },
+  },
 };
 
 export const ALP_POOL_COLORS = {
@@ -828,7 +884,10 @@ export const ALP_POOL_COLORS = {
   PEPE: "#3E8130",
   FLOKI: "#F4A328",
   MAGA: "#BA133D",
-  CAKE: "#4EDDE7"
+  CAKE: "#4EDDE7",
+  S: "#FE9A4C",
+  EURC: "#2775CA",
+  WETH: "#6062a6",
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};

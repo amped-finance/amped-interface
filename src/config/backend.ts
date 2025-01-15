@@ -14,6 +14,7 @@ const BACKEND_URLS = {
   [BSCTESTNET]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [UNICHAINTESTNET]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [BSC]: "https://gmx-server-mainnet.uw.r.appspot.com",
+  [SONIC]: "https://gmx-server-mainnet.uw.r.appspot.com"
 };
 
 export function getServerBaseUrl(chainId: number) {

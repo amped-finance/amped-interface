@@ -8,13 +8,14 @@ export const PHOENIX = 1890
 export const BSC = 56
 export const BSCTESTNET = 97
 export const UNICHAINTESTNET = 1301
+export const SONIC = 146
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = PHOENIX;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -22,7 +23,8 @@ export const IS_NETWORK_DISABLED = {
   [PHOENIX]: false,
   [BSCTESTNET]: false,
   [UNICHAINTESTNET]: false,
-  [BSC]: false
+  [BSC]: false,
+  [SONIC]: false
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -31,7 +33,8 @@ export const CHAIN_NAMES_MAP = {
   [PEGASUS]: "LightLink Testnet",
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
-  [BSC]: "BNB Smart Chain"
+  [BSC]: "BNB Smart Chain",
+  [SONIC]: "Sonic"
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -41,6 +44,7 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [BSCTESTNET]: "0", // Changed to "0" to use network gas price
   [UNICHAINTESTNET]: "1000000", // 3 times
   [BSC]: "1000000", // 3 times
+  [SONIC]: "1000000"
 };
 
 export const MAX_GAS_PRICE_MAP = {
@@ -49,6 +53,7 @@ export const MAX_GAS_PRICE_MAP = {
   [BSCTESTNET]: "20000000",
   [UNICHAINTESTNET]: "0",
   [BSC]: "0",
+  [SONIC]: "1000000"
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -57,7 +62,8 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [PHOENIX]: 10,
   [BSCTESTNET]: 10,
   [UNICHAINTESTNET]: 10,
-  [BSC]: 10
+  [BSC]: 10,
+  [SONIC]: 10
 };
 
 const constants = {
@@ -141,6 +147,19 @@ const constants = {
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
+  },
+  [SONIC]: {
+    nativeTokenSymbol: "S",
+    wrappedTokenSymbol: "wS",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
   }
 };
 
@@ -184,13 +203,18 @@ export const UNICHAIN_TESTNET_RPC_PROVIDER = [
   "https://sepolia.unichain.org",
 ];
 
+export const SONIC_RPC_PROVIDER = [
+  "https://rpc.soniclabs.com",
+];
+
 export const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [PEGASUS]: PEGASUS_RPC_PROVIDERS,
   [PHOENIX]: PHOENIX_RPC_PROVIDERS,
   [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER,
   [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER,
-  [BSC]: BSC_RPC_PROVIDERS
+  [BSC]: BSC_RPC_PROVIDERS,
+  [SONIC]: SONIC_RPC_PROVIDER
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -199,7 +223,8 @@ export const FALLBACK_PROVIDERS = {
   [PHOENIX]: [PHOENIX_RPC_PROVIDERS[0]],
   [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]],
   [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]],
-  [BSC]: [BSC_RPC_PROVIDERS[0]]
+  [BSC]: [BSC_RPC_PROVIDERS[0]],
+  [SONIC]: [SONIC_RPC_PROVIDER[0]]
 };
 
 export const NETWORK_METADATA = {
@@ -257,6 +282,17 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: UNICHAIN_TESTNET_RPC_PROVIDER,
     blockExplorerUrls: [getExplorerUrl(UNICHAINTESTNET)],
+  },
+  [SONIC]: {
+    chainId: "0x" + SONIC.toString(16),
+    chainName: "Sonic",
+    nativeCurrency: {
+      name: "S",
+      symbol: "S",
+      decimals: 18,
+    },
+    rpcUrls: SONIC_RPC_PROVIDER,
+    blockExplorerUrls: [getExplorerUrl(SONIC)],
   }
 };
 
@@ -307,6 +343,8 @@ export function getExplorerUrl(chainId) {
     return "https://sepolia.uniscan.xyz/"
   } else if (chainId === BSC) {
     return "https://bscscan.com/"
+  } else if (chainId === SONIC) {
+    return "https://sonicscan.org/"
   }
   return "https://phoenix.lightlink.io/";
 }
