@@ -274,7 +274,7 @@ const CONTRACTS = {
     AlpVester: "0x96F78d2996886F201d69B1b191e868393Db2fb5d", // Was VesterGLP in JSON
 
     OrderBook: "0xbAF1D8F42651e10B33Dcc8a9C33af4F6f01Bd14B",
-    OrderExecutor: "0xd795C3E9DccA7d3Fe9A6C9149e756cE06ed5e380", // From MultiSigner1 in JSON
+    OrderExecutor: "0x2390b12FA119d0D10cd97C64e76DA986B4E8394c", // From MultiSigner1 in JSON
     OrderBookReader: "0x9484e52D20D89F5722065b1ECaba0ef65894C994",
 
     PositionRouter: "0x2275ED27Dd5235560b0730953950F7e0A9c97C33",
