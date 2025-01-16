@@ -1,4 +1,4 @@
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC } from "./chains";
 
 export const AMP_STATS_API_URL = "https://stats.gmx.io/api";
 
