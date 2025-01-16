@@ -251,8 +251,10 @@ export default function DashboardV2() {
   // const { data: feesSummaryByChain } = useFeesSummary();
   // const feesSummary = feesSummaryByChain[chainId];
   let eth
-  if (chainId === BSCTESTNET || chainId === BSC || chainId === SONIC)
+  if (chainId === BSCTESTNET || chainId === BSC)
     eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
+  else if (chainId === SONIC)
+    eth = infoTokens[getTokenBySymbol(chainId, "WS").address];
   else 
     eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
 
