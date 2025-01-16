@@ -246,43 +246,43 @@ const CONTRACTS = {
     ReferralReader: "0xBF32930369602F0edBcA4Fe8C5d3A0D42Ab41718",
   },
   [SONIC]: {
-    Vault: "0x91b615296b7ea45740C2f3095BbCb43a487ceC92",
-    Router: "0xD6baDB97fc5D0170E0A79c0bEE515D82B7E0F925",
-    VaultReader: "0x489084624F5965d9978a87D5cdED918510754041",
-    Reader: "0xAfE810a364D2843E368067637A583635Bad59d6C",
-    AlpManager: "0x23fAA66e473a6970E4443d8d930810f8284f9e2e", // Was GlpManager in JSON
-    RewardRouter: "0xf97e5953757d42b8dc456De97c124AFB7C1003cC", // Was RewardRouterV2 in JSON
-    RewardReader: "0xDE1F25f6c0C7849accdE15ACc9c0F5C80adC9EAA",
+    Vault: "0x11944027D4eDC1C17db2D5E9020530dcEcEfb85b",
+    Router: "0x96EFEcB86b3408de4F92454E30a0c99E58299F35",
+    VaultReader: "0xdB622c18627c1538A1140bFb1E721B1AAF6c6cdf",
+    Reader: "0x8896265f319815bF43758b552c39CA9bef4f1766",
+    AlpManager: "0xA16FaBE630E75981b03b31AAD20F5BDDE581acDF", // Was GlpManager in JSON
+    RewardRouter: "0xA0411BBefDC6d896615d1ece1C3212353842C2dF", // Was RewardRouterV2 in JSON
+    RewardReader: "0xeb80C515FD8B39E5377e21ba83Ab17523a353a55",
     NATIVE_TOKEN: "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
-    ALP: "0xDcE49dB901e668a508592B193B167475Cd87aca3", // Was GLP in JSON
+    ALP: "0x5d51a52D952A61D5d1fc19F90a8244b995877bd9", // Was GLP in JSON
     AMP: "0xAc611438AE5F3953DeDB47c2ea8d6650D601C1B4", // Was GMX in JSON
-    ES_AMP: "0x7394759548c4BaF4c3e977CD257Fcf3d557d95c4", // Was EsGMX in JSON
-    BN_AMP: "0xa9831f3A88bbDc4b2d626CA12172c3cAD8238F42", // Was BonusGMX in JSON
-    USDG: "0xFDc7E71599dFcfbAA5043ef68FaF97672F7fB2cb",
-    ES_AMP_IOU: "0xccA62eb5cDE99b506283Ec69DF201F38a89be9ea", // Was EsGMXIOU in JSON
+    ES_AMP: "0x77e1Ca0f15C52E50d5Fdb596C8a58A1147F9073F", // Was EsGMX in JSON
+    BN_AMP: "0x5a6F3A3EE92A9F194016EA81b56171DE3EFd755f", // Was BonusGMX in JSON
+    USDG: "0x53Fe0A073f26981155383EcE4D34bEba2c88C483",
+    ES_AMP_IOU: "0xB3B97dD00cAb10AD7FBA87125da49c77992fD264", // Was EsGMXIOU in JSON
 
-    StakedAmpTracker: "0x4aa04852ca90282Aa3BE5011A8Bff689789555DD", // Was RewardTrackerStakedGMX in JSON
-    BonusAmpTracker: "0x9162B989c2D30BA84A178Aeb7B8CD8Aef8e926E3", // Was RewardTrackerStakedBonusGMX in JSON
-    FeeAmpTracker: "0xd089bEF3F462934857AF66fd641f114E981Bca59", // Was RewardTrackerStakedBonusFeeGMX in JSON
-    StakedAlpTracker: "0x40CCeacb1a3457fdA26e91a3068c41754FDd5b93", // Was RewardTrackerFeeStakedGLP in JSON
-    FeeAlpTracker: "0x8cd1639bc97681De3A3C40fDdF6ABE66Af1Ae6D2", // Was RewardTrackerFeeGLP in JSON
+    StakedAmpTracker: "0xb382901Ff357afb612e3E239656fc5F2FDe250dc", // Was RewardTrackerStakedGMX in JSON
+    BonusAmpTracker: "0x11F92bE6CEF03fe8a3C96c161482eec2732FF6A5", // Was RewardTrackerStakedBonusGMX in JSON
+    FeeAmpTracker: "0x9A4878DfAAFf4df8C640eCDCF661Bd6aF5aAFb08", // Was RewardTrackerStakedBonusFeeGMX in JSON
+    StakedAlpTracker: "0xfb0e5AAbFac2f946d6F45fcd4303fF721A4e3237", // Was RewardTrackerFeeStakedGLP in JSON
+    FeeAlpTracker: "0x21Efb5680d6127d6C39AE0d62D80cb9fc8935887", // Was RewardTrackerFeeGLP in JSON
 
-    StakedAmpDistributor: "0x0F16E58D09072CF6cF27361882106BC65a1aFd19", // Was RewardDistributorStakedGMX in JSON
-    StakedAlpDistributor: "0xc3b6f20b05c8A9c0d62249B883Db768c0E6FDBBC", // Was RewardDistributorFeeStakedGLP in JSON
+    StakedAmpDistributor: "0x921eC8dac46C42dE63705AB91e4Ef5dE0A2cd732", // Was RewardDistributorStakedGMX in JSON
+    StakedAlpDistributor: "0x9467a227a2697873Fc5226ceC3ae94B319D93CfE", // Was RewardDistributorFeeStakedGLP in JSON
 
-    AmpVester: "0x6D6C3517c7c27aa98abC999F5461baCe2652fE00", // Was VesterGMX in JSON
-    AlpVester: "0x96F78d2996886F201d69B1b191e868393Db2fb5d", // Was VesterGLP in JSON
+    AmpVester: "0xBB529CF19d69Bb2321CE5EFD3df3cf311e2D47B6", // Was VesterGMX in JSON
+    AlpVester: "0xE3C124f417bE01e4fA373892CFdcd1b0c4b8996F", // Was VesterGLP in JSON
 
-    OrderBook: "0xbAF1D8F42651e10B33Dcc8a9C33af4F6f01Bd14B",
-    OrderExecutor: "0x2390b12FA119d0D10cd97C64e76DA986B4E8394c", // From MultiSigner1 in JSON
-    OrderBookReader: "0x9484e52D20D89F5722065b1ECaba0ef65894C994",
+    OrderBook: "0x5Ec625389c3c1E76fE0C7D864b62A7C2A52C4b05",
+    OrderExecutor: "0x2390b12FA119d0D10cd97C64e76DA986B4E8394c", // Using MultiSigner2 from JSON
+    OrderBookReader: "0xAd3adde5102fa2B04298BDa6aFAcBD96652D05c3",
 
-    PositionRouter: "0x2275ED27Dd5235560b0730953950F7e0A9c97C33",
-    PositionManager: "0x916280d8B0435d0577BedA7e9d8b6Ad776Bd6910",
+    PositionRouter: "0x82546eCf796C28882d98FfF8aB9FC109DC86221a",
+    PositionManager: "0x69656C09f952ad2A074b37416ab8873c7A789080",
 
-    TraderJoeAmpAvaxPool: "0xE7464547D92635D2a927637a2807dc71eC606dFe", // Using FastPriceFeed address as placeholder
-    ReferralStorage: "0x6300df1AE59a02D27eCf7d5E1546E7eF0a472515",
-    ReferralReader: "0x3FBB812E23E4f9b9307e16Acdd83876E5BC7677d",
+    TraderJoeAmpAvaxPool: "0x41131234C08E2c0AAc6C4d201807a17b22B06e9E", // Using FastPriceFeed address from JSON
+    ReferralStorage: "0x1f575253106f5F5e1E58189793b19822BE43495C",
+    ReferralReader: "0x94ECB7B913F473D102f4A9E9ab2bC282BA46F58D",
   },
 };
 
