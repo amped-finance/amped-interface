@@ -150,7 +150,7 @@ const constants = {
   },
   [SONIC]: {
     nativeTokenSymbol: "S",
-    wrappedTokenSymbol: "wS",
+    wrappedTokenSymbol: "WS",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,
