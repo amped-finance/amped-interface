@@ -446,7 +446,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
   [SONIC]: [
     {
-      name: "S",
+      name: "Sonic",
       symbol: "S",
       decimals: 18,
       address: ethers.constants.AddressZero,

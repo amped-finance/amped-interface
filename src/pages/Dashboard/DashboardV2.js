@@ -254,7 +254,7 @@ export default function DashboardV2() {
   if (chainId === BSCTESTNET || chainId === BSC)
     eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
   else if (chainId === SONIC)
-    eth = infoTokens[getTokenBySymbol(chainId, "WS").address];
+    eth = infoTokens[getTokenBySymbol(chainId, "wS").address];
   else 
     eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
 
