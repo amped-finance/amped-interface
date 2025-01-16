@@ -7,7 +7,7 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, PEGASUS, PHOENIX, BSC } from "config/chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSC, SONIC } from "config/chains";
 import { arbitrumReferralsGraphClient, pegasusReferralsGraphClient, phoenixReferralsGraphClient, bscReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -15,7 +15,7 @@ import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
 import { bigNumberify } from "lib/numbers";
 
-const ACTIVE_CHAINS = [PEGASUS, PHOENIX, BSC];
+const ACTIVE_CHAINS = [PEGASUS, PHOENIX, BSC, SONIC];
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -28,6 +28,8 @@ function getGraphClient(chainId) {
     return phoenixReferralsGraphClient;
   } else if (chainId === BSC) {
     return bscReferralsGraphClient
+  } else if (chainId === SONIC) {
+    return sonicReferralsGraphClient
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -97,7 +99,7 @@ export function useUserCodesOnAllChain(account) {
   `;
   useEffect(() => {
     async function main() {
-      const [pegasusCodes, phoenixCodes, bscCodes] = await Promise.all(
+      const [pegasusCodes, phoenixCodes, bscCodes, sonicCodes] = await Promise.all(
         ACTIVE_CHAINS.map((chainId) => {
           return getGraphClient(chainId)
             .query({ query, variables: { account: (account || "").toLowerCase() } })
@@ -106,10 +108,11 @@ export function useUserCodesOnAllChain(account) {
             });
         })
       );
-      const [codeOwnersOnPegasus = [], codeOwnersOnPhoenix = [], codeOwnersOnBSC = []] = await Promise.all([
+      const [codeOwnersOnPegasus = [], codeOwnersOnPhoenix = [], codeOwnersOnBSC = [], codeOwnersOnSonic = []] = await Promise.all([
         getCodeOwnersData(PEGASUS, account, pegasusCodes),
         getCodeOwnersData(PHOENIX, account, phoenixCodes),
         getCodeOwnersData(BSC, account, bscCodes),
+        getCodeOwnersData(SONIC, account, sonicCodes),
       ]);
 
       setData({
@@ -125,6 +128,10 @@ export function useUserCodesOnAllChain(account) {
           acc[cv.code] = cv;
           return acc;
         }, {}),
+        [SONIC]: codeOwnersOnSonic.reduce((acc, cv) => {
+          acc[cv.code] = cv;
+          return acc;
+        }, {}),
       });
     }
 
@@ -137,6 +144,7 @@ export function useReferralsData(chainId, account) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const ownerOnOtherChain = useUserCodesOnAllChain(account);
+  const ownerOnSonic = useUserCodesOnAllChain(account, SONIC);
   useEffect(() => {
     if (!chainId || !account) {
       setLoading(false);

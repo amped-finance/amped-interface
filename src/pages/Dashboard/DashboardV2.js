@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BSCTESTNET, UNICHAINTESTNET, BSC, getChainName } from "config/chains";
+import { BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
@@ -253,6 +253,8 @@ export default function DashboardV2() {
   let eth
   if (chainId === BSCTESTNET || chainId === BSC)
     eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
+  else if (chainId === SONIC)
+    eth = infoTokens[getTokenBySymbol(chainId, "wS").address];
   else 
     eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
 
