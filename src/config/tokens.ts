@@ -469,7 +469,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       address: "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
       isStable: true,
-      isShortable: false,
+      isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/usdc_32.png",
     },
     {
@@ -478,7 +478,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xe715cbA7B5cCb33790ceBFF1436809d36cb17E57",
       decimals: 6,
       isStable: true,
-      isShortable: false,
+      isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
     }
   ]
@@ -571,6 +571,27 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
     },
   ],
+  [SONIC]: [
+    {
+      name: "AMP",
+      symbol: "AMP",
+      address: getContract(SONIC, "AMP"),
+      decimals: 18,
+      imageUrl: "",
+    },
+    {
+      name: "Escrowed AMP",
+      symbol: "esAMP",
+      address: getContract(SONIC, "ES_AMP"),
+      decimals: 18,
+    },
+    {
+      name: "AMP LP",
+      symbol: "ALP",
+      address: getContract(SONIC, "ALP"),
+      decimals: 18,
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -640,6 +661,23 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       imageUrl: "",
     },
   },
+  [SONIC]: {
+    AMP: {
+      name: "AMP",
+      symbol: "AMP",
+      decimals: 18,
+      address: getContract(SONIC, "AMP"),
+      imageUrl: "",
+    },
+    ALP: {
+      name: "AMP LP",
+      symbol: "ALP",
+      decimals: 18,
+      address: getContract(SONIC, "ALP"),
+      imageUrl: "",
+    },
+  },
+
 };
 
 export const ICONLINKS = {
