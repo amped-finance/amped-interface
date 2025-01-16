@@ -464,6 +464,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/52857/standard/wrapped_sonic.png?1734536585",
     },
     {
+      name: "Wrapped Ether",
+      symbol: "WETH",
+      decimals: 18,
+      isShortable: true,
+      address: "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      imageUrl: "https://assets.coingecko.com/coins/images/52857/standard/wrapped_sonic.png?1734536585",
+    },
+    {
       name: "USDC",
       symbol: "USDC",
       decimals: 6,
