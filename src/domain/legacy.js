@@ -54,7 +54,7 @@ const MOVING_AVERAGE_DAYS = 7;
 const MOVING_AVERAGE_PERIOD = 86400 * MOVING_AVERAGE_DAYS;
 const { AddressZero } = ethers.constants;
 export const startBlock = 118447211;
-export const endBlock = 124804011;
+export const endBlock = 124534133;
 
 
 export const useRefresh = () => {
@@ -1051,7 +1051,7 @@ export function useAllTradesHistory(chainId, account) {
         params: {
           order: {
             type: item.type,
-            // "createdAtBlock":22518920,
+            createdAtBlock:22518920,
             updatedAt: 1668747661257,
             account: item.account,
             orderIndex: {
