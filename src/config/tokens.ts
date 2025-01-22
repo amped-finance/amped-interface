@@ -490,7 +490,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
     },
     {
-      name: "ANON",
+      name: "HeyAnon",
       symbol: "ANON",
       address: "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
       decimals: 18,
