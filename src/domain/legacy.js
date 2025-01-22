@@ -57,6 +57,7 @@ export const startBlock = 118447211;
 export const endBlock = 124108074;
 
 
+
 export const useRefresh = () => {
   const { fast, slow } = useContext(RefreshContext);
   return { fastRefresh: fast, fastRefresh: slow };
@@ -1051,7 +1052,7 @@ export function useAllTradesHistory(chainId, account) {
         params: {
           order: {
             type: item.type,
-            // "createdAtBlock":22518920,
+            createdAtBlock:22518920,
             updatedAt: 1668747661257,
             account: item.account,
             orderIndex: {
