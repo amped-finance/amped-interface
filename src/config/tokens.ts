@@ -488,6 +488,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
+    },
+    {
+      name: "ANON",
+      symbol: "ANON",
+      address: "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://sonicscan.org/token/images/heyanon_64.png",
     }
   ]
 };
@@ -906,6 +914,9 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       sonic: "https://sonicscan.org/token/0x50c42deacd8fc9773493ed674b675be577f2634b",
     },
+    ANON: {
+      sonic: "https://sonicscan.org/token/0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c"
+    },
   },
 };
 
@@ -934,6 +945,7 @@ export const ALP_POOL_COLORS = {
   S: "#FE9A4C",
   EURC: "#2775CA",
   WETH: "#6062a6",
+  ANON: "#C2330F"
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
