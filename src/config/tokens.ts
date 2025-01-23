@@ -464,6 +464,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/52857/standard/wrapped_sonic.png?1734536585",
     },
     {
+      name: "HeyAnon",
+      symbol: "ANON",
+      address: "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://sonicscan.org/token/images/heyanon_64.png",
+    },
+    {
       name: "Wrapped Ether",
       symbol: "WETH",
       decimals: 18,
@@ -488,15 +496,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
-    },
-    {
-      name: "HeyAnon",
-      symbol: "ANON",
-      address: "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
-      decimals: 18,
-      isShortable: true,
-      imageUrl: "https://sonicscan.org/token/images/heyanon_64.png",
-    }
+    }    
   ]
 };
 
