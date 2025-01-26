@@ -347,31 +347,28 @@ export default function DashboardV2() {
     if (
       !tokenInfo.weight ||
       !adjustedUsdgSupply ||
-      adjustedUsdgSupply.eq(0) ||
       !totalTokenWeights
     ) {
       return "...";
     }
 
-    // Calculate current weight based on actual USDG amount
-    const currentWeightBps = tokenInfo.usdgAmount
-      ? tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
-      : bigNumberify(0);
-
-    // Calculate target weight
     const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+    const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
 
-    // Format weights with appropriate precision based on size
-    const currentWeightText = currentWeightBps.lt(100) // If weight is less than 1%
+    // Calculate current weight based on actual pool amount
+    let currentWeightBps = bigNumberify(0);
+    if (tokenInfo.managedUsd && adjustedUsdgSupply.gt(0)) {
+      currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
+    }
+
+    // Format current weight with appropriate precision
+    const currentWeightText = currentWeightBps.lt(100)
       ? formatAmount(currentWeightBps, 4, 4, false)
       : formatAmount(currentWeightBps, 2, 2, false);
 
-    const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
-    const weightText = `${currentWeightText}% / ${targetWeightText}%`;
-
     return (
       <TooltipComponent
-        handle={weightText}
+        handle={`${currentWeightText}% / ${targetWeightText}%`}
         position="right-bottom"
         renderContent={() => {
           return (
@@ -387,13 +384,13 @@ export default function DashboardV2() {
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={t`USDG Amount`}
-                value={formatAmount(tokenInfo.usdgAmount, 18, 4, true)}
+                label={t`Pool Amount`}
+                value={formatAmount(tokenInfo.managedUsd || 0, USD_DECIMALS, 2, true)}
                 showDollar={true}
               />
               <StatsTooltipRow
-                label={t`Total USDG`}
-                value={formatAmount(adjustedUsdgSupply, 18, 2, true)}
+                label={t`Total Pool`}
+                value={formatAmount(aum || 0, USD_DECIMALS, 2, true)}
                 showDollar={true}
               />
             </>
@@ -440,8 +437,8 @@ export default function DashboardV2() {
 
   let alpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
-    if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+    if (tokenInfo.managedUsd && aum && aum.gt(0)) {
+      const currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
       if (tokenInfo.isStable) {
         stableAlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
       }
