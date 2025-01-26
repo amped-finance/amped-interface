@@ -346,7 +346,6 @@ export default function DashboardV2() {
   const getWeightText = (tokenInfo) => {
     if (
       !tokenInfo.weight ||
-      !tokenInfo.usdgAmount ||
       !adjustedUsdgSupply ||
       adjustedUsdgSupply.eq(0) ||
       !totalTokenWeights
@@ -354,16 +353,21 @@ export default function DashboardV2() {
       return "...";
     }
 
-    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    // use add(1).div(10).mul(10) to round numbers up
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
+    // Calculate current weight based on actual USDG amount
+    const currentWeightBps = tokenInfo.usdgAmount
+      ? tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
+      : bigNumberify(0);
 
-    const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
-      targetWeightBps,
-      2,
-      2,
-      false
-    )}%`;
+    // Calculate target weight
+    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+
+    // Format weights with appropriate precision based on size
+    const currentWeightText = currentWeightBps.lt(100) // If weight is less than 1%
+      ? formatAmount(currentWeightBps, 4, 4, false)
+      : formatAmount(currentWeightBps, 2, 2, false);
+
+    const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
+    const weightText = `${currentWeightText}% / ${targetWeightText}%`;
 
     return (
       <TooltipComponent
@@ -374,53 +378,24 @@ export default function DashboardV2() {
             <>
               <StatsTooltipRow
                 label={t`Current Weight`}
-                value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
+                value={`${currentWeightText}%`}
                 showDollar={false}
               />
               <StatsTooltipRow
                 label={t`Target Weight`}
-                value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
+                value={`${targetWeightText}%`}
                 showDollar={false}
               />
-              <br />
-              {currentWeightBps.lt(targetWeightBps) && (
-                <div className="text-black">
-                  <Trans>
-                    {tokenInfo.symbol} is below its target weight.
-                    <br />
-                    <br />
-                    Get lower fees to{" "}
-                    <Link to="/buy_alp" target="_blank" rel="noopener noreferrer">
-                      buy ALP
-                    </Link>{" "}
-                    with {tokenInfo.symbol},&nbsp; and to{" "}
-                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                      swap
-                    </Link>{" "}
-                    {tokenInfo.symbol} for other tokens.
-                  </Trans>
-                </div>
-              )}
-              {currentWeightBps.gt(targetWeightBps) && (
-                <div className="text-black">
-                  <Trans>
-                    {tokenInfo.symbol} is above its target weight.
-                    <br />
-                    <br />
-                    Get lower fees to{" "}
-                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                      swap
-                    </Link>{" "}
-                    tokens for {tokenInfo.symbol}.
-                  </Trans>
-                </div>
-              )}
-              <br />
-              <div>
-                <ExternalLink href="https://amped.gitbook.io/amped/">
-                  <Trans>More Info</Trans>
-                </ExternalLink>
-              </div>
+              <StatsTooltipRow
+                label={t`USDG Amount`}
+                value={formatAmount(tokenInfo.usdgAmount, 18, 4, true)}
+                showDollar={true}
+              />
+              <StatsTooltipRow
+                label={t`Total USDG`}
+                value={formatAmount(adjustedUsdgSupply, 18, 2, true)}
+                showDollar={true}
+              />
             </>
           );
         }}
