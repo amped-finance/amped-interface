@@ -12,6 +12,8 @@
     "@layerzerolabs/scan-client": "^0.0.8",
     "@lingui/core": "^4.7.1",
     "@lingui/react": "^4.7.1",
+    "@safe-global/safe-apps-provider": "^0.18.5",
+    "@safe-global/safe-apps-sdk": "^9.1.0",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "12.8.3",
