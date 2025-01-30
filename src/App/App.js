@@ -130,6 +130,8 @@ import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
 import Bridge from "pages/Bridge/Bridge";
 import Mif from "pages/Mif/Mif";
 
+import { initSafeSDK, isSafeApp } from '../lib/safe/SafeAppProvider';
+
 // import IDO from "pages/IDO/IDO";
 
 if ("ethereum" in window) {
@@ -234,14 +236,17 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   useEventToast();
-  // const [activatingConnector, setActivatingConnector] = useState();
-  // useEffect(() => {
-  //   if (activatingConnector && activatingConnector === connector) {
-  //     setActivatingConnector(undefined);
-  //   }
-  // }, [activatingConnector, connector, chainId]);
-  // const triedEager = useEagerConnect(setActivatingConnector);
-  // useInactiveListener(!triedEager || !!activatingConnector);
+
+  // Initialize Safe SDK
+  useEffect(() => {
+    const initSafe = async () => {
+      const safeInfo = await initSafeSDK();
+      if (safeInfo) {
+        console.log('Running as Safe App:', safeInfo);
+      }
+    };
+    initSafe();
+  }, []);
 
   const query = useRouteQuery();
 
@@ -348,7 +353,11 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
     useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
-  const connectWallet = () => open();
+  const connectWallet = async () => {
+    if (!isSafeApp()) {
+      open();
+    }
+  };
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
