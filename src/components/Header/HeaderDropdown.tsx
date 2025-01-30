@@ -4,12 +4,12 @@ import { Trans } from "@lingui/macro";
 import "./Header.css";
 
 type DropdownItem = {
-  label: string;
+  label: ReactNode;
   to: string;
 };
 
 type Props = {
-  label: string;
+  label: ReactNode;
   items: DropdownItem[];
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
@@ -19,7 +19,7 @@ export function HeaderDropdown({ label, items, redirectPopupTimestamp, showRedir
   return (
     <div className="App-header-dropdown">
       <div className="App-header-dropdown-label" role="button" aria-haspopup="true">
-        <Trans>{label}</Trans>
+        {label}
       </div>
       <div className="App-header-dropdown-content" role="menu">
         {items.map((item) => (
@@ -29,7 +29,7 @@ export function HeaderDropdown({ label, items, redirectPopupTimestamp, showRedir
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
           >
-            <Trans>{item.label}</Trans>
+            {item.label}
           </HeaderLink>
         ))}
       </div>

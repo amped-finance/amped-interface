@@ -50,19 +50,19 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <HeaderDropdown
-        label="Earn"
+        label={<Trans>Earn</Trans>}
         items={[
-          { label: "Earn", to: "/earn" },
-          { label: "Buy", to: "/buy" },
+          { label: <Trans>Earn</Trans>, to: "/earn" },
+          { label: <Trans>Buy</Trans>, to: "/buy" },
         ]}
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       />
       <HeaderDropdown
-        label="Community"
+        label={<Trans>Community</Trans>}
         items={[
-          { label: "Leaderboard", to: "/leaderboard" },
-          { label: "Referrals", to: "/referrals" },
+          { label: <Trans>Leaderboard</Trans>, to: "/leaderboard" },
+          { label: <Trans>Referrals</Trans>, to: "/referrals" },
         ]}
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
