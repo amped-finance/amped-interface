@@ -335,3 +335,62 @@
     background: #0e0f1f;
   }
 }
+
+/* Dropdown styles */
+.App-header-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.App-header-dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #17182c;
+  min-width: 16rem;
+  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
+  border-radius: 0.4rem;
+  z-index: 1000;
+  border: 1px solid #ffffff10;
+}
+
+.App-header-dropdown:hover .App-header-dropdown-content {
+  display: block;
+}
+
+.App-header-dropdown-content a,
+.App-header-dropdown-content .a {
+  padding: 1.2rem 1.6rem;
+  white-space: nowrap;
+  display: block;
+  color: #a0a3c4;
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+  font-weight: normal;
+}
+
+.App-header-dropdown-content a:hover,
+.App-header-dropdown-content .a:hover {
+  background: #303fd024;
+  color: white;
+}
+
+.App-header-dropdown-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.App-header-dropdown-label::after {
+  content: "▼";
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
+}
+
+/* Reduce Trade button width */
+.btn-trade.btn-header {
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  min-width: auto;
+}

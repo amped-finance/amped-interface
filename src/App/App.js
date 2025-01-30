@@ -149,7 +149,9 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const pegasusProvider = new ethers.providers.JsonRpcProvider(PEGASUS_RPC_PROVIDERS[0]);
 
-const phoenixProvider = new ethers.providers.JsonRpcProvider(PHOENIX_RPC_PROVIDERS[0]);
+const phoenixProvider = new ethers.providers.FallbackProvider(
+  PHOENIX_RPC_PROVIDERS.map((url, index) => new ethers.providers.JsonRpcProvider(url))
+);
 
 const bsctestnetProvider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
 

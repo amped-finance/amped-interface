@@ -194,6 +194,7 @@ export const PEGASUS_RPC_PROVIDERS = [
 ];
 export const PHOENIX_RPC_PROVIDERS = [
   "https://replicator.phoenix.lightlink.io/rpc/v1",
+  "https://endpoints.omniatech.io/v1/lightlink/phoenix/public"
 ];
 
 export const BSC_TESTNET_RPC_PROVIDER = [
