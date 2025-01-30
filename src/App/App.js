@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
 import { RefreshContextProvider } from "../Context/RefreshContext";
+import { initSafeSDK, isSafeApp, getSafeProvider } from "../lib/safe/SafeAppProvider";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -130,8 +131,6 @@ import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
 import Bridge from "pages/Bridge/Bridge";
 import Mif from "pages/Mif/Mif";
 
-import { initSafeSDK, isSafeApp } from '../lib/safe/SafeAppProvider';
-
 // import IDO from "pages/IDO/IDO";
 
 if ("ethereum" in window) {
@@ -236,6 +235,7 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   useEventToast();
+  const [safeAppInitialized, setSafeAppInitialized] = useState(false);
 
   // Initialize Safe SDK
   useEffect(() => {
@@ -246,10 +246,7 @@ function FullApp() {
           const safeInfo = await initSafeSDK();
           if (safeInfo) {
             console.log('Safe App initialized:', safeInfo);
-            // If we're in a Safe app, we want to use the Safe provider
-            if (safeInfo.provider) {
-              console.log('Using Safe provider');
-            }
+            setSafeAppInitialized(true);
           } else {
             console.log('Not a Safe app or initialization failed');
           }
@@ -263,7 +260,7 @@ function FullApp() {
 
   // Get the appropriate provider
   const getProvider = useCallback(() => {
-    if (isSafeApp()) {
+    if (isSafeApp() && safeAppInitialized) {
       const safeProvider = getSafeProvider();
       if (safeProvider) {
         console.log('Using Safe provider for transactions');
@@ -274,7 +271,7 @@ function FullApp() {
       return new ethers.providers.Web3Provider(walletProvider);
     }
     return null;
-  }, [walletProvider]);
+  }, [walletProvider, safeAppInitialized]);
 
   // Use this provider for all contract interactions
   const provider = useMemo(() => getProvider(), [getProvider]);
@@ -290,7 +287,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodeReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
