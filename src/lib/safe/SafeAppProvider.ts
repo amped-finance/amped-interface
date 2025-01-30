@@ -45,6 +45,12 @@ export const initSafeSDK = async () => {
     try {
       provider = new SafeAppProvider(safe, safeAppsSdk)
       console.log('Safe provider created');
+
+      // Initialize provider methods
+      provider.getSigner = () => {
+        return new ethers.providers.JsonRpcSigner(provider as any, safe.safeAddress);
+      };
+      
     } catch (error) {
       console.error('Error creating Safe provider:', error);
       return null;
@@ -62,6 +68,11 @@ export const initSafeSDK = async () => {
       // Verify network connection
       const network = await ethersProvider.getNetwork()
       console.log('Connected to network:', network);
+
+      // Add custom methods to ethersProvider
+      ethersProvider.getSigner = () => {
+        return new ethers.providers.JsonRpcSigner(provider as any, safe.safeAddress);
+      };
       
     } catch (error) {
       console.error('Error setting up ethers provider:', error);
