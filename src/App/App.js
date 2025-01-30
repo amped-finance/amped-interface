@@ -238,6 +238,14 @@ function FullApp() {
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
   const [safeInfo, setSafeInfo] = useState(null);
 
+  // Check if we're connected to a wallet
+  const active = useMemo(() => {
+    if (isSafeApp()) {
+      return safeAppInitialized;
+    }
+    return isConnected;
+  }, [isConnected, safeAppInitialized]);
+
   // Get the appropriate provider
   const getProvider = useCallback(() => {
     if (isSafeApp() && safeAppInitialized) {
@@ -259,7 +267,8 @@ function FullApp() {
     if (currentProvider) {
       console.log('Provider initialized:', {
         isSafe: isSafeApp() && safeAppInitialized,
-        hasWallet: !!walletProvider
+        hasWallet: !!walletProvider,
+        provider: currentProvider
       });
     }
     return currentProvider;
@@ -268,8 +277,9 @@ function FullApp() {
   // Get the appropriate chainId
   const chainId = useMemo(() => {
     if (isSafeApp() && safeInfo) {
-      console.log('Using Safe chainId:', safeInfo.chainId);
-      return safeInfo.chainId;
+      const chainId = safeInfo.chainId;
+      console.log('Using Safe chainId:', chainId);
+      return chainId;
     }
     return web3ModalChainId;
   }, [web3ModalChainId, safeInfo]);
@@ -277,23 +287,12 @@ function FullApp() {
   // Get the appropriate account address
   const account = useMemo(() => {
     if (isSafeApp() && safeInfo) {
-      console.log('Using Safe address:', safeInfo.safeAddress);
-      return safeInfo.safeAddress;
+      const address = safeInfo.safeAddress;
+      console.log('Using Safe address:', address);
+      return address;
     }
     return web3ModalAddress;
   }, [web3ModalAddress, safeInfo]);
-
-  // Check if we're connected to a wallet
-  const active = useMemo(() => {
-    const isActive = isSafeApp() ? safeAppInitialized : isConnected;
-    console.log('Wallet connection status:', {
-      isSafeApp: isSafeApp(),
-      safeAppInitialized,
-      isConnected,
-      isActive
-    });
-    return isActive;
-  }, [isConnected, safeAppInitialized]);
 
   // Initialize Safe SDK
   useEffect(() => {
@@ -422,11 +421,20 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
     useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
-  const connectWallet = async () => {
-    if (!isSafeApp()) {
+  const connectWallet = useCallback(async () => {
+    if (isSafeApp()) {
+      if (!safeAppInitialized) {
+        console.log('Reinitializing Safe SDK...');
+        const info = await initSafeSDK();
+        if (info && info.safe) {
+          setSafeInfo(info.safe);
+          setSafeAppInitialized(true);
+        }
+      }
+    } else {
       open();
     }
-  };
+  }, [open, safeAppInitialized]);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
