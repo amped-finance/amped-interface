@@ -238,28 +238,6 @@ function FullApp() {
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
   const [safeInfo, setSafeInfo] = useState(null);
 
-  // Initialize Safe SDK
-  useEffect(() => {
-    const initSafe = async () => {
-      try {
-        if (isSafeApp()) {
-          console.log('Initializing Safe SDK...');
-          const info = await initSafeSDK();
-          if (info && info.safe) {
-            console.log('Safe App initialized:', info);
-            setSafeInfo(info.safe);
-            setSafeAppInitialized(true);
-          } else {
-            console.log('Not a Safe app or initialization failed');
-          }
-        }
-      } catch (error) {
-        console.error('Error initializing Safe:', error);
-      }
-    };
-    initSafe();
-  }, []);
-
   // Get the appropriate provider
   const getProvider = useCallback(() => {
     if (isSafeApp() && safeAppInitialized) {
@@ -276,11 +254,21 @@ function FullApp() {
   }, [walletProvider, safeAppInitialized]);
 
   // Use this provider for all contract interactions
-  const provider = useMemo(() => getProvider(), [getProvider]);
+  const provider = useMemo(() => {
+    const currentProvider = getProvider();
+    if (currentProvider) {
+      console.log('Provider initialized:', {
+        isSafe: isSafeApp() && safeAppInitialized,
+        hasWallet: !!walletProvider
+      });
+    }
+    return currentProvider;
+  }, [getProvider, safeAppInitialized, walletProvider]);
 
   // Get the appropriate chainId
   const chainId = useMemo(() => {
     if (isSafeApp() && safeInfo) {
+      console.log('Using Safe chainId:', safeInfo.chainId);
       return safeInfo.chainId;
     }
     return web3ModalChainId;
@@ -289,6 +277,7 @@ function FullApp() {
   // Get the appropriate account address
   const account = useMemo(() => {
     if (isSafeApp() && safeInfo) {
+      console.log('Using Safe address:', safeInfo.safeAddress);
       return safeInfo.safeAddress;
     }
     return web3ModalAddress;
@@ -296,11 +285,37 @@ function FullApp() {
 
   // Check if we're connected to a wallet
   const active = useMemo(() => {
-    if (isSafeApp()) {
-      return safeAppInitialized;
-    }
-    return isConnected;
+    const isActive = isSafeApp() ? safeAppInitialized : isConnected;
+    console.log('Wallet connection status:', {
+      isSafeApp: isSafeApp(),
+      safeAppInitialized,
+      isConnected,
+      isActive
+    });
+    return isActive;
   }, [isConnected, safeAppInitialized]);
+
+  // Initialize Safe SDK
+  useEffect(() => {
+    const initSafe = async () => {
+      try {
+        if (isSafeApp()) {
+          console.log('Initializing Safe SDK...');
+          const info = await initSafeSDK();
+          if (info && info.safe) {
+            console.log('Safe App initialized:', info);
+            setSafeInfo(info.safe);
+            setSafeAppInitialized(true);
+          } else {
+            console.error('Safe initialization failed or returned no info');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing Safe:', error);
+      }
+    };
+    initSafe();
+  }, []);
 
   const query = useRouteQuery();
 
