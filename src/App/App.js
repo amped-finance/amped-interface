@@ -240,14 +240,22 @@ function FullApp() {
   // Initialize Safe SDK
   useEffect(() => {
     const initSafe = async () => {
-      const safeInfo = await initSafeSDK();
-      if (safeInfo) {
-        console.log('Running as Safe App:', safeInfo);
-        // If we're in a Safe app, we want to use the Safe provider
-        if (safeInfo.provider) {
-          // The Safe provider is already connected, so we can use it directly
-          console.log('Using Safe provider');
+      try {
+        if (isSafeApp()) {
+          console.log('Initializing Safe SDK...');
+          const safeInfo = await initSafeSDK();
+          if (safeInfo) {
+            console.log('Safe App initialized:', safeInfo);
+            // If we're in a Safe app, we want to use the Safe provider
+            if (safeInfo.provider) {
+              console.log('Using Safe provider');
+            }
+          } else {
+            console.log('Not a Safe app or initialization failed');
+          }
         }
+      } catch (error) {
+        console.error('Error initializing Safe:', error);
       }
     };
     initSafe();
@@ -256,7 +264,11 @@ function FullApp() {
   // Get the appropriate provider
   const getProvider = useCallback(() => {
     if (isSafeApp()) {
-      return getSafeProvider();
+      const safeProvider = getSafeProvider();
+      if (safeProvider) {
+        console.log('Using Safe provider for transactions');
+        return safeProvider;
+      }
     }
     if (walletProvider) {
       return new ethers.providers.Web3Provider(walletProvider);

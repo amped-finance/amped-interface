@@ -9,13 +9,18 @@ let ethersProvider: ethers.providers.Web3Provider | undefined
 
 export const initSafeSDK = async () => {
   try {
-    // Initialize the SDK without default options
-    safeAppsSdk = new SafeAppsSDK()
+    // Initialize the SDK with proper options
+    safeAppsSdk = new SafeAppsSDK({
+      allowedDomains: [/gnosis-safe.io/, /app.safe.global/, /safe.lightlink.io/],
+      debug: false
+    });
     
     // Get Safe Info
     safe = await safeAppsSdk.safe.getInfo()
     
     if (safe) {
+      console.log('Safe detected:', safe);
+      
       // Create Safe Provider
       provider = new SafeAppProvider(safe, safeAppsSdk)
       
@@ -30,12 +35,17 @@ export const initSafeSDK = async () => {
     }
   } catch (error) {
     console.error('Error initializing Safe SDK:', error)
+    return null
   }
   return null
 }
 
 export const isSafeApp = () => {
-  return !!safe
+  try {
+    return window.parent !== window;
+  } catch (e) {
+    return false;
+  }
 }
 
 export const getSafeInfo = () => {
