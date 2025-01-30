@@ -238,14 +238,6 @@ function FullApp() {
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
   const [safeInfo, setSafeInfo] = useState(null);
 
-  // Check if we're connected to a wallet
-  const active = useMemo(() => {
-    if (isSafeApp()) {
-      return safeAppInitialized;
-    }
-    return isConnected;
-  }, [isConnected, safeAppInitialized]);
-
   // Get the appropriate provider
   const getProvider = useCallback(() => {
     if (isSafeApp() && safeAppInitialized) {
@@ -267,7 +259,7 @@ function FullApp() {
     if (currentProvider) {
       console.log('Provider initialized:', {
         isSafe: isSafeApp() && safeAppInitialized,
-        hasWallet: !!walletProvider,
+        hasWallet: isSafeApp() ? safeAppInitialized : !!walletProvider,
         provider: currentProvider
       });
     }
@@ -294,6 +286,20 @@ function FullApp() {
     return web3ModalAddress;
   }, [web3ModalAddress, safeInfo]);
 
+  // Check if we're connected to a wallet
+  const active = useMemo(() => {
+    const isSafe = isSafeApp();
+    const isActive = isSafe ? safeAppInitialized : isConnected;
+    console.log('Wallet connection status:', {
+      isSafeApp: isSafe,
+      safeAppInitialized,
+      isConnected: isSafe ? safeAppInitialized : isConnected,
+      isActive,
+      account: isSafe ? safeInfo?.safeAddress : web3ModalAddress
+    });
+    return isActive;
+  }, [isConnected, safeAppInitialized, safeInfo, web3ModalAddress]);
+
   // Initialize Safe SDK
   useEffect(() => {
     const initSafe = async () => {
@@ -315,6 +321,24 @@ function FullApp() {
     };
     initSafe();
   }, []);
+
+  // Handle provider changes
+  useEffect(() => {
+    if (provider) {
+      const handleAccountsChanged = (accounts) => {
+        console.log('Accounts changed:', accounts);
+        if (isSafeApp() && safeInfo) {
+          // For Safe apps, we use the Safe address
+          return;
+        }
+      };
+
+      provider.on('accountsChanged', handleAccountsChanged);
+      return () => {
+        provider.off('accountsChanged', handleAccountsChanged);
+      };
+    }
+  }, [provider, safeInfo]);
 
   const query = useRouteQuery();
 
