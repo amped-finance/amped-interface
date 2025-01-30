@@ -12,5 +12,17 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "safe": {
+    "allowedFeatures": ["SAFE_APPS_SDK"],
+    "environments": {
+      "production": {
+        "whitelistedDomains": [
+          "gnosis-safe.io",
+          "app.safe.global",
+          "safe.lightlink.io"
+        ]
+      }
+    }
+  }
 } 
