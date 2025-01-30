@@ -3589,7 +3589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@safe-global/safe-apps-provider@npm:^0.18.5":
+"@safe-global/safe-apps-provider@npm:^0.18.3, @safe-global/safe-apps-provider@npm:^0.18.5":
   version: 0.18.5
   resolution: "@safe-global/safe-apps-provider@npm:0.18.5"
   dependencies:
@@ -3606,6 +3606,18 @@ __metadata:
     "@safe-global/safe-gateway-typescript-sdk": ^3.5.3
     viem: ^2.1.1
   checksum: e56c3fe83f52667b370072807468b011e9f3e6d690126af4cc5b13ee1544dd5a91b4b3e962d45d2dab065fc4401ef57c350896a9f43c70a9fb3269249f265d72
+  languageName: node
+  linkType: hard
+
+"@safe-global/safe-apps-web3modal@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@safe-global/safe-apps-web3modal@npm:23.0.0"
+  dependencies:
+    "@safe-global/safe-apps-provider": ^0.18.3
+  peerDependencies:
+    "@safe-global/safe-apps-sdk": ^9.1.0
+    web3modal: ^1.9.9
+  checksum: f7beae0f96b77419e31d012d799f94d1a834535b09d5207d6f01643d61b206d615fa1a53670113252815fec633f765d84b17d829802ff63bfb09cc0ef709bb18
   languageName: node
   linkType: hard
 
@@ -10035,6 +10047,7 @@ __metadata:
     "@lingui/react": ^4.7.1
     "@safe-global/safe-apps-provider": ^0.18.5
     "@safe-global/safe-apps-sdk": ^9.1.0
+    "@safe-global/safe-apps-web3modal": ^23.0.0
     "@testing-library/jest-dom": 5.16.1
     "@testing-library/react": 11.2.7
     "@testing-library/user-event": 12.8.3

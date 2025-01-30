@@ -1,12 +1,23 @@
 {
+  "short_name": "Amped Finance",
   "name": "Amped Finance",
-  "description": "Amped Finance - Decentralized Perpetual Exchange",
+  "description": "Decentralized Perpetual Exchange",
   "iconPath": "favicon.ico",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
@@ -14,15 +25,13 @@
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "safe": {
-    "allowedFeatures": ["SAFE_APPS_SDK"],
+    "allowedFeatures": ["camera", "wallet"],
     "environments": {
-      "production": {
-        "whitelistedDomains": [
-          "gnosis-safe.io",
-          "app.safe.global",
-          "safe.lightlink.io"
-        ]
-      }
+      "whitelistedDomains": [
+        "https://*.safe.global",
+        "https://*.safe.lightlink.io",
+        "https://*.amped.finance"
+      ]
     }
   }
 } 

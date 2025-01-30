@@ -5,6 +5,9 @@ import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
 import { RefreshContextProvider } from "../Context/RefreshContext";
 import { initSafeSDK, isSafeApp, getSafeProvider } from "../lib/safe/SafeAppProvider";
+import { SafeAppProvider } from '@safe-global/safe-apps-provider';
+import { SafeAppWeb3Modal } from '@safe-global/safe-apps-web3modal';
+import SafeAppsSDK from '@safe-global/safe-apps-sdk';
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -206,22 +209,20 @@ const _chains = map(ACTIVE_CHAIN_IDS, (chainId) => ({
   chainId: parseInt(NETWORK_METADATA[chainId].chainId),
 }));
 
-createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata,
-    defaultChainId: ACTIVE_CHAIN_IDS[0],
-    enableEIP6963: true,
-    enableInjected: true,
-    enableCoinbase: true,
-    rpcUrl: NETWORK_METADATA[ACTIVE_CHAIN_IDS[0]].rpcUrls[0],
-  }),
-  chains: _chains,
-  projectId: "b6587c240d0d3c291075db2d8424aa71",
+// Initialize Safe SDK
+const safeSdk = new SafeAppsSDK();
 
-  themeVariables: {
-    "--w3m-z-index": 9999,
-  },
-  chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
+// Configure Web3Modal with Safe support
+const web3Modal = new SafeAppWeb3Modal({
+  sdk: safeSdk,
+  chains: _chains,
+  options: {
+    projectId: "b6587c240d0d3c291075db2d8424aa71",
+    themeVariables: {
+      "--w3m-z-index": 9999,
+    },
+    chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
+  }
 });
 
 function FullApp() {
@@ -238,56 +239,50 @@ function FullApp() {
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
   const [safeInfo, setSafeInfo] = useState(null);
 
-  // Early SAFE detection and initialization
+  // Initialize Safe connection
   useEffect(() => {
     const initializeSafe = async () => {
-      if (isSafeApp()) {
-        console.log('SAFE environment detected, initializing...');
-        try {
-          const info = await initSafeSDK();
-          if (info && info.safe) {
-            console.log('SAFE successfully initialized:', {
-              chainId: info.safe.chainId,
-              safeAddress: info.safe.safeAddress,
-              provider: !!info.provider
-            });
-            setSafeInfo(info.safe);
-            setSafeAppInitialized(true);
-          } else {
-            console.error('SAFE initialization returned no data');
-          }
-        } catch (error) {
-          console.error('Error during SAFE initialization:', error);
+      try {
+        const isSafeApp = await safeSdk.safe.getInfo()
+          .then(() => true)
+          .catch(() => false);
+
+        if (isSafeApp) {
+          console.log('SAFE environment detected, initializing...');
+          const safeInfo = await safeSdk.safe.getInfo();
+          console.log('SAFE successfully initialized:', {
+            chainId: safeInfo.chainId,
+            safeAddress: safeInfo.safeAddress
+          });
+          setSafeInfo(safeInfo);
+          setSafeAppInitialized(true);
         }
+      } catch (error) {
+        console.error('Error during SAFE initialization:', error);
       }
     };
 
     initializeSafe();
-  }, []); // Run once on mount
+  }, []);
 
-  // Get the appropriate provider with SAFE priority
+  // Get the appropriate provider
   const getProvider = useCallback(() => {
-    if (isSafeApp()) {
-      const safeProvider = getSafeProvider();
-      if (safeProvider) {
-        console.log('Using SAFE provider');
-        return safeProvider;
-      }
-      console.warn('SAFE provider not available, falling back to wallet provider');
+    if (safeAppInitialized && safeInfo) {
+      return new SafeAppProvider(safeInfo, safeSdk);
     }
     if (walletProvider) {
       return new ethers.providers.Web3Provider(walletProvider);
     }
     return null;
-  }, [walletProvider]);
+  }, [walletProvider, safeAppInitialized, safeInfo]);
 
   // Use this provider for all contract interactions
   const provider = useMemo(() => {
     const currentProvider = getProvider();
     if (currentProvider) {
       console.log('Provider initialized:', {
-        isSafe: isSafeApp(),
-        hasWallet: isSafeApp() ? safeAppInitialized : !!walletProvider,
+        isSafe: safeAppInitialized,
+        hasWallet: safeAppInitialized ? true : !!walletProvider,
         provider: currentProvider
       });
     }
@@ -296,32 +291,32 @@ function FullApp() {
 
   // Get the appropriate chainId with SAFE priority
   const chainId = useMemo(() => {
-    if (isSafeApp() && safeInfo?.chainId) {
+    if (safeAppInitialized && safeInfo?.chainId) {
       console.log('Using SAFE chainId:', safeInfo.chainId);
       return safeInfo.chainId;
     }
     return web3ModalChainId;
-  }, [web3ModalChainId, safeInfo]);
+  }, [web3ModalChainId, safeAppInitialized, safeInfo]);
 
   // Get the appropriate account address with SAFE priority
   const account = useMemo(() => {
-    if (isSafeApp() && safeInfo?.safeAddress) {
+    if (safeAppInitialized && safeInfo?.safeAddress) {
       console.log('Using SAFE address:', safeInfo.safeAddress);
       return safeInfo.safeAddress;
     }
     return web3ModalAddress;
-  }, [web3ModalAddress, safeInfo]);
+  }, [web3ModalAddress, safeAppInitialized, safeInfo]);
 
   // Check if we're connected to a wallet
   const active = useMemo(() => {
-    const isSafe = isSafeApp();
-    const isActive = isSafe ? safeAppInitialized : isConnected;
+    const isSafe = safeAppInitialized;
+    const isActive = isSafe;
     const currentAddress = isSafe ? safeInfo?.safeAddress : web3ModalAddress;
     
     console.log('Wallet connection status:', {
       isSafeApp: isSafe,
       safeAppInitialized,
-      isConnected: isSafe ? safeAppInitialized : isConnected,
+      isConnected: isSafe ? true : isConnected,
       isActive,
       account: currentAddress,
       provider: !!provider,
@@ -336,7 +331,7 @@ function FullApp() {
     if (provider) {
       const handleAccountsChanged = async (accounts) => {
         console.log('Accounts changed:', accounts);
-        if (isSafeApp() && safeInfo) {
+        if (safeAppInitialized && safeInfo) {
           // For Safe apps, we use the Safe address
           return;
         }
@@ -344,8 +339,8 @@ function FullApp() {
 
       const handleConnect = async () => {
         console.log('Provider connected');
-        if (isSafeApp() && !safeAppInitialized) {
-          await initSafe();
+        if (!safeAppInitialized) {
+          await initializeSafe();
         }
       };
 
@@ -357,7 +352,7 @@ function FullApp() {
         provider.off('connect', handleConnect);
       };
     }
-  }, [provider, safeInfo, safeAppInitialized]);
+  }, [provider, safeAppInitialized, safeInfo]);
 
   const query = useRouteQuery();
 
@@ -465,32 +460,16 @@ function FullApp() {
     useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = useCallback(async () => {
-    if (isSafeApp()) {
-      if (!safeAppInitialized) {
-        console.log('Reinitializing SAFE connection...');
-        try {
-          const info = await initSafeSDK();
-          if (info && info.safe) {
-            console.log('SAFE reinitialized:', {
-              chainId: info.safe.chainId,
-              safeAddress: info.safe.safeAddress,
-              provider: !!info.provider
-            });
-            setSafeInfo(info.safe);
-            setSafeAppInitialized(true);
-          } else {
-            console.error('SAFE reinitialization failed');
-          }
-        } catch (error) {
-          console.error('Error reinitializing SAFE:', error);
-        }
-      } else {
-        console.log('SAFE already initialized');
+    try {
+      if (safeAppInitialized) {
+        console.log('Already connected via SAFE');
+        return;
       }
-    } else {
-      open();
+      await web3Modal.connect();
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
     }
-  }, [open, safeAppInitialized]);
+  }, [safeAppInitialized]);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
