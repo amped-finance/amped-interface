@@ -4,6 +4,7 @@ import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { HeaderLink } from "./HeaderLink";
+import { HeaderDropdown } from "./HeaderDropdown";
 import "./Header.css";
 import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -48,54 +49,34 @@ export function AppHeaderLinks({
           <Trans>Dashboard</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>Earn</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/buy" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>Buy</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink
-          to="/leaderboard"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
-          <Trans>Leaderboard</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink
-          to="/referrals"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
-          <Trans>Referrals</Trans>
-        </HeaderLink>
-      </div>
+      <HeaderDropdown
+        label={<Trans>Earn</Trans>}
+        items={[
+          { label: <Trans>Earn</Trans>, to: "/earn" },
+          { label: <Trans>Buy / LP</Trans>, to: "/buy" },
+        ]}
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      />
+      <HeaderDropdown
+        label={<Trans>Community</Trans>}
+        items={[
+          { label: <Trans>Leaderboard</Trans>, to: "/leaderboard" },
+          { label: <Trans>Referrals</Trans>, to: "/referrals" },
+        ]}
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      />
       <div className="App-header-link-container">
         <HeaderLink to="/bridge" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Bridge</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
-        <ExternalLink href="https://ido.amped.finance">
-          <Trans>IDO</Trans>
-        </ExternalLink>
-      </div> */}
-        <div className="App-header-link-container">
+      <div className="App-header-link-container">
         <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>MIF</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
-        <ExternalLink href="https://stats.amped.finance">
-          <Trans>Stats</Trans>
-        </ExternalLink>
-      </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://amped.gitbook.io/amped/">
           <Trans>Docs</Trans>
