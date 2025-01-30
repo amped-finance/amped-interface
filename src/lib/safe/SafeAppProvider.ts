@@ -6,10 +6,26 @@ let safeAppsSdk: SafeAppsSDK | undefined
 let provider: SafeAppProvider | undefined
 let safe: SafeInfo | undefined
 let ethersProvider: ethers.providers.Web3Provider | undefined
+let currentAddress: string | undefined
+
+const validateSafeEnvironment = () => {
+  if (!window.parent) {
+    console.error('No parent window found - not in iframe');
+    return false;
+  }
+  
+  try {
+    // Check if we're in a Safe iframe
+    return window.parent !== window;
+  } catch (e) {
+    console.error('Error checking Safe environment:', e);
+    return false;
+  }
+};
 
 export const initSafeSDK = async () => {
   try {
-    if (!isSafeApp()) {
+    if (!validateSafeEnvironment()) {
       console.log('Not running in Safe environment');
       return null;
     }
@@ -24,13 +40,22 @@ export const initSafeSDK = async () => {
     try {
       safe = await safeAppsSdk.safe.getInfo()
       console.log('Safe info retrieved:', safe);
+      
+      if (!safe) {
+        console.error('No Safe info returned');
+        return null;
+      }
+
+      if (!safe.safeAddress) {
+        console.error('Safe info missing address');
+        return null;
+      }
+
+      currentAddress = safe.safeAddress;
+      console.log('Set current address:', currentAddress);
+      
     } catch (error) {
       console.error('Error getting Safe info:', error);
-      return null;
-    }
-    
-    if (!safe || !safe.safeAddress) {
-      console.error('Failed to get Safe info or Safe address is missing');
       return null;
     }
 
@@ -38,7 +63,8 @@ export const initSafeSDK = async () => {
       chainId: safe.chainId,
       safeAddress: safe.safeAddress,
       owners: safe.owners,
-      threshold: safe.threshold
+      threshold: safe.threshold,
+      currentAddress
     });
       
     // Create Safe Provider with explicit permissions
@@ -46,7 +72,7 @@ export const initSafeSDK = async () => {
       provider = new SafeAppProvider(safe, safeAppsSdk)
       console.log('Safe provider created');
       
-      // Create temporary ethers provider to test balance
+      // Verify provider functionality
       const tempProvider = new ethers.providers.Web3Provider(provider as any)
       const balance = await tempProvider.getBalance(safe.safeAddress);
       console.log('Safe balance:', ethers.utils.formatEther(balance));
@@ -65,15 +91,26 @@ export const initSafeSDK = async () => {
       const address = await signer.getAddress();
       console.log('Signer address verified:', address);
       
+      // Double check the current address
+      if (address && address !== currentAddress) {
+        console.warn('Address mismatch, updating current address');
+        currentAddress = address;
+        console.log('Updated current address:', currentAddress);
+      }
+      
       // Verify network connection
       const network = await ethersProvider.getNetwork()
       console.log('Connected to network:', network);
 
-      // Test basic functionality
+      // Verify contract interaction capability
       const code = await ethersProvider.getCode(safe.safeAddress);
-      const balance = await ethersProvider.getBalance(safe.safeAddress);
       console.log('Safe contract exists:', code.length > 2);
-      console.log('Safe balance:', ethers.utils.formatEther(balance));
+      
+      // Final verification of all components
+      if (!currentAddress || !safe || !provider || !ethersProvider) {
+        console.error('Missing required components after initialization');
+        return null;
+      }
       
     } catch (error) {
       console.error('Error setting up ethers provider:', error);
@@ -83,7 +120,8 @@ export const initSafeSDK = async () => {
     return {
       provider: ethersProvider,
       safe,
-      sdk: safeAppsSdk
+      sdk: safeAppsSdk,
+      address: currentAddress
     }
   } catch (error) {
     console.error('Error initializing Safe SDK:', error)
@@ -92,11 +130,7 @@ export const initSafeSDK = async () => {
 }
 
 export const isSafeApp = () => {
-  try {
-    return window.parent !== window;
-  } catch (e) {
-    return false;
-  }
+  return validateSafeEnvironment();
 }
 
 export const getSafeInfo = () => {
@@ -122,31 +156,53 @@ export const getSafeProvider = () => {
 }
 
 export const getSafeAddress = () => {
-  if (!safe) {
-    console.warn('Attempting to get Safe address before initialization');
-    return null;
+  if (currentAddress) {
+    return currentAddress;
   }
-  return safe?.safeAddress
+  if (safe?.safeAddress) {
+    currentAddress = safe.safeAddress;
+    return currentAddress;
+  }
+  console.warn('Attempting to get Safe address before initialization');
+  return null;
 }
 
 export const getSafeSigner = () => {
-  if (!ethersProvider || !safe?.safeAddress) {
+  if (!ethersProvider || !currentAddress) {
     console.warn('Attempting to get Safe signer before initialization');
     return null;
   }
-  return ethersProvider.getSigner(safe.safeAddress);
+  return ethersProvider.getSigner(currentAddress);
 }
 
 export const getSafeBalance = async () => {
-  if (!ethersProvider || !safe?.safeAddress) {
+  if (!ethersProvider || !currentAddress) {
     console.warn('Attempting to get Safe balance before initialization');
     return null;
   }
   try {
-    const balance = await ethersProvider.getBalance(safe.safeAddress);
+    const balance = await ethersProvider.getBalance(currentAddress);
     return ethers.utils.formatEther(balance);
   } catch (error) {
     console.error('Error getting Safe balance:', error);
     return null;
+  }
+}
+
+export const validateSafeConnection = async () => {
+  if (!ethersProvider || !currentAddress || !safe) {
+    return false;
+  }
+  
+  try {
+    const signer = ethersProvider.getSigner(currentAddress);
+    const address = await signer.getAddress();
+    const network = await ethersProvider.getNetwork();
+    const code = await ethersProvider.getCode(currentAddress);
+    
+    return address === currentAddress && code.length > 2;
+  } catch (error) {
+    console.error('Error validating Safe connection:', error);
+    return false;
   }
 } 
