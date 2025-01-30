@@ -1,9 +1,9 @@
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
-import { isSafeApp } from "../../lib/safe/SafeAppProvider";
+import { isSafeApp, getSafeInfo } from "../../lib/safe/SafeAppProvider";
 
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
@@ -46,6 +46,20 @@ export function AppHeaderUser({
   const { open } = useWeb3Modal()
   const showConnectionOptions = !isHomeSite();
 
+  // Get Safe info if we're in a Safe app
+  const safeInfo = useMemo(() => {
+    if (isSafeApp()) {
+      return getSafeInfo();
+    }
+    return null;
+  }, []);
+
+  useEffect(() => {
+    if (active || safeInfo) {
+      setWalletModalVisible(false);
+    }
+  }, [active, safeInfo, setWalletModalVisible]);
+
   // const networkOptions = [
   //   {
   //     label: getChainName(chainId),
@@ -64,12 +78,6 @@ export function AppHeaderUser({
       }
     })
 
-  useEffect(() => {
-    if (active) {
-      setWalletModalVisible(false);
-    }
-  }, [active, setWalletModalVisible]);
-
   const onNetworkSelect = useCallback(
     (option) => {
       if (option.value === chainId) {
@@ -81,6 +89,10 @@ export function AppHeaderUser({
   );
 
   const selectorLabel = getChainName(chainId);
+
+  // Use Safe address if available, otherwise use account from web3modal
+  const displayAddress = safeInfo?.safeAddress || account;
+  const accountUrl = getAccountUrl(chainId, displayAddress);
 
   if (!active && !isSafeApp()) {
     return (
@@ -116,8 +128,6 @@ export function AppHeaderUser({
     );
   }
 
-  const accountUrl = getAccountUrl(chainId, account);
-
   return (
     <div className="App-header-user">
       <div className="App-header-trade-link">
@@ -135,7 +145,7 @@ export function AppHeaderUser({
         <>
           <div className="App-header-user-address">
             <AddressDropdown
-              account={account}
+              account={displayAddress}
               accountUrl={accountUrl}
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
