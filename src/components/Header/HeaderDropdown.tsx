@@ -18,10 +18,10 @@ type Props = {
 export function HeaderDropdown({ label, items, redirectPopupTimestamp, showRedirectModal }: Props) {
   return (
     <div className="App-header-dropdown">
-      <div className="App-header-dropdown-label">
+      <div className="App-header-dropdown-label" role="button" aria-haspopup="true">
         <Trans>{label}</Trans>
       </div>
-      <div className="App-header-dropdown-content">
+      <div className="App-header-dropdown-content" role="menu">
         {items.map((item) => (
           <HeaderLink
             key={item.to}

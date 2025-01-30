@@ -49,28 +49,24 @@ export function AppHeaderLinks({
           <Trans>Dashboard</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <HeaderDropdown
-          label="Earn"
-          items={[
-            { label: "Earn", to: "/earn" },
-            { label: "Buy", to: "/buy" },
-          ]}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        />
-      </div>
-      <div className="App-header-link-container">
-        <HeaderDropdown
-          label="Community"
-          items={[
-            { label: "Leaderboard", to: "/leaderboard" },
-            { label: "Referrals", to: "/referrals" },
-          ]}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        />
-      </div>
+      <HeaderDropdown
+        label="Earn"
+        items={[
+          { label: "Earn", to: "/earn" },
+          { label: "Buy", to: "/buy" },
+        ]}
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      />
+      <HeaderDropdown
+        label="Community"
+        items={[
+          { label: "Leaderboard", to: "/leaderboard" },
+          { label: "Referrals", to: "/referrals" },
+        ]}
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      />
       <div className="App-header-link-container">
         <HeaderLink to="/bridge" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Bridge</Trans>
