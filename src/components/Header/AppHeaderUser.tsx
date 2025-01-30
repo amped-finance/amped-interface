@@ -3,6 +3,7 @@ import ConnectWalletButton from "../Common/ConnectWalletButton";
 import React, { useCallback, useEffect } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
+import { isSafeApp } from "../../lib/safe/SafeAppProvider";
 
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
@@ -81,7 +82,7 @@ export function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
-  if (!active) {
+  if (!active && !isSafeApp()) {
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
