@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
 import { RefreshContextProvider } from "../Context/RefreshContext";
-import { initSafeSDK, isSafeApp, getSafeProvider } from "../lib/safe/SafeAppProvider";
+import { getSafeProvider } from "../lib/safe/SafeAppProvider";
 import { SafeAppProvider } from '@safe-global/safe-apps-provider';
 import { SafeAppWeb3Modal } from '@safe-global/safe-apps-web3modal';
 import SafeAppsSDK from '@safe-global/safe-apps-sdk';
@@ -209,19 +209,27 @@ const _chains = map(ACTIVE_CHAIN_IDS, (chainId) => ({
   chainId: parseInt(NETWORK_METADATA[chainId].chainId),
 }));
 
-// Initialize Safe SDK
-const safeSdk = new SafeAppsSDK();
-
 // Configure Web3Modal with Safe support
-const web3Modal = new SafeAppWeb3Modal({
-  sdk: safeSdk,
+createWeb3Modal({
+  ethersConfig: defaultConfig({
+    metadata,
+    defaultChainId: ACTIVE_CHAIN_IDS[0],
+    enableEIP6963: true,
+    enableInjected: true,
+    enableCoinbase: true,
+    rpcUrl: NETWORK_METADATA[ACTIVE_CHAIN_IDS[0]].rpcUrls[0],
+  }),
   chains: _chains,
-  options: {
-    projectId: "b6587c240d0d3c291075db2d8424aa71",
-    themeVariables: {
-      "--w3m-z-index": 9999,
-    },
-    chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
+  projectId: "b6587c240d0d3c291075db2d8424aa71",
+  themeVariables: {
+    "--w3m-z-index": 9999,
+  },
+  chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
+  // Add Safe App configuration
+  enableSafeApp: true,
+  safeAppConfig: {
+    allowedDomains: [/gnosis-safe.io/, /app.safe.global/, /safe.lightlink.io/],
+    debug: true
   }
 });
 
@@ -238,32 +246,6 @@ function FullApp() {
   useEventToast();
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
   const [safeInfo, setSafeInfo] = useState(null);
-
-  // Initialize Safe connection
-  useEffect(() => {
-    const initializeSafe = async () => {
-      try {
-        const isSafeApp = await safeSdk.safe.getInfo()
-          .then(() => true)
-          .catch(() => false);
-
-        if (isSafeApp) {
-          console.log('SAFE environment detected, initializing...');
-          const safeInfo = await safeSdk.safe.getInfo();
-          console.log('SAFE successfully initialized:', {
-            chainId: safeInfo.chainId,
-            safeAddress: safeInfo.safeAddress
-          });
-          setSafeInfo(safeInfo);
-          setSafeAppInitialized(true);
-        }
-      } catch (error) {
-        console.error('Error during SAFE initialization:', error);
-      }
-    };
-
-    initializeSafe();
-  }, []);
 
   // Get the appropriate provider
   const getProvider = useCallback(() => {
