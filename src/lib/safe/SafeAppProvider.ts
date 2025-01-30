@@ -45,9 +45,10 @@ export const initSafeSDK = async () => {
     try {
       provider = new SafeAppProvider(safe, safeAppsSdk)
       console.log('Safe provider created');
-
-      // Test provider methods
-      const balance = await provider.getBalance(safe.safeAddress);
+      
+      // Create temporary ethers provider to test balance
+      const tempProvider = new ethers.providers.Web3Provider(provider as any)
+      const balance = await tempProvider.getBalance(safe.safeAddress);
       console.log('Safe balance:', ethers.utils.formatEther(balance));
       
     } catch (error) {
