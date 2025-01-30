@@ -53,7 +53,7 @@ export function AppHeaderLinks({
         label={<Trans>Earn</Trans>}
         items={[
           { label: <Trans>Earn</Trans>, to: "/earn" },
-          { label: <Trans>Buy</Trans>, to: "/buy" },
+          { label: <Trans>Buy / LP</Trans>, to: "/buy" },
         ]}
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
