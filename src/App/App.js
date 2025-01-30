@@ -295,37 +295,52 @@ function FullApp() {
       safeAppInitialized,
       isConnected: isSafe ? safeAppInitialized : isConnected,
       isActive,
-      account: isSafe ? safeInfo?.safeAddress : web3ModalAddress
+      account: isSafe ? safeInfo?.safeAddress : web3ModalAddress,
+      provider: !!provider
     });
     return isActive;
-  }, [isConnected, safeAppInitialized, safeInfo, web3ModalAddress]);
+  }, [isConnected, safeAppInitialized, safeInfo, web3ModalAddress, provider]);
 
   // Initialize Safe SDK
   useEffect(() => {
     const initSafe = async () => {
-      try {
-        if (isSafeApp()) {
-          console.log('Initializing Safe SDK...');
+      if (isSafeApp() && !safeAppInitialized) {
+        console.log('Initializing Safe SDK...');
+        try {
           const info = await initSafeSDK();
           if (info && info.safe) {
             console.log('Safe App initialized:', info);
             setSafeInfo(info.safe);
             setSafeAppInitialized(true);
+            
+            // Force provider update
+            const safeProvider = info.provider;
+            if (safeProvider) {
+              try {
+                const network = await safeProvider.getNetwork();
+                console.log('Connected to network:', network);
+                const signer = safeProvider.getSigner();
+                const address = await signer.getAddress();
+                console.log('Connected with address:', address);
+              } catch (error) {
+                console.error('Error verifying connection:', error);
+              }
+            }
           } else {
             console.error('Safe initialization failed or returned no info');
           }
+        } catch (error) {
+          console.error('Error initializing Safe:', error);
         }
-      } catch (error) {
-        console.error('Error initializing Safe:', error);
       }
     };
     initSafe();
-  }, []);
+  }, [safeAppInitialized]);
 
   // Handle provider changes
   useEffect(() => {
     if (provider) {
-      const handleAccountsChanged = (accounts) => {
+      const handleAccountsChanged = async (accounts) => {
         console.log('Accounts changed:', accounts);
         if (isSafeApp() && safeInfo) {
           // For Safe apps, we use the Safe address
@@ -333,12 +348,22 @@ function FullApp() {
         }
       };
 
+      const handleConnect = async () => {
+        console.log('Provider connected');
+        if (isSafeApp() && !safeAppInitialized) {
+          await initSafe();
+        }
+      };
+
       provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('connect', handleConnect);
+      
       return () => {
         provider.off('accountsChanged', handleAccountsChanged);
+        provider.off('connect', handleConnect);
       };
     }
-  }, [provider, safeInfo]);
+  }, [provider, safeInfo, safeAppInitialized]);
 
   const query = useRouteQuery();
 

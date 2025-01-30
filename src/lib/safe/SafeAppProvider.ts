@@ -45,6 +45,12 @@ export const initSafeSDK = async () => {
     try {
       provider = new SafeAppProvider(safe, safeAppsSdk)
       console.log('Safe provider created');
+      
+      // Create temporary ethers provider to test balance
+      const tempProvider = new ethers.providers.Web3Provider(provider as any)
+      const balance = await tempProvider.getBalance(safe.safeAddress);
+      console.log('Safe balance:', ethers.utils.formatEther(balance));
+      
     } catch (error) {
       console.error('Error creating Safe provider:', error);
       return null;
@@ -62,6 +68,12 @@ export const initSafeSDK = async () => {
       // Verify network connection
       const network = await ethersProvider.getNetwork()
       console.log('Connected to network:', network);
+
+      // Test basic functionality
+      const code = await ethersProvider.getCode(safe.safeAddress);
+      const balance = await ethersProvider.getBalance(safe.safeAddress);
+      console.log('Safe contract exists:', code.length > 2);
+      console.log('Safe balance:', ethers.utils.formatEther(balance));
       
     } catch (error) {
       console.error('Error setting up ethers provider:', error);
@@ -123,4 +135,18 @@ export const getSafeSigner = () => {
     return null;
   }
   return ethersProvider.getSigner(safe.safeAddress);
+}
+
+export const getSafeBalance = async () => {
+  if (!ethersProvider || !safe?.safeAddress) {
+    console.warn('Attempting to get Safe balance before initialization');
+    return null;
+  }
+  try {
+    const balance = await ethersProvider.getBalance(safe.safeAddress);
+    return ethers.utils.formatEther(balance);
+  } catch (error) {
+    console.error('Error getting Safe balance:', error);
+    return null;
+  }
 } 
