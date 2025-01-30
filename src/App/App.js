@@ -229,13 +229,14 @@ function FullApp() {
   const exchangeRef = useRef();
   const { disconnect } = useDisconnect();
   const { walletProvider } = useWeb3ModalProvider();
-  const { isConnected } = useWeb3ModalAccount();
+  const { isConnected, address: web3ModalAddress } = useWeb3ModalAccount();
   const { open, close } = useWeb3Modal();
-  const { chainId } = useChainId();
+  const { chainId: web3ModalChainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
+  const [safeInfo, setSafeInfo] = useState(null);
 
   // Initialize Safe SDK
   useEffect(() => {
@@ -243,9 +244,10 @@ function FullApp() {
       try {
         if (isSafeApp()) {
           console.log('Initializing Safe SDK...');
-          const safeInfo = await initSafeSDK();
-          if (safeInfo) {
-            console.log('Safe App initialized:', safeInfo);
+          const info = await initSafeSDK();
+          if (info && info.safe) {
+            console.log('Safe App initialized:', info);
+            setSafeInfo(info.safe);
             setSafeAppInitialized(true);
           } else {
             console.log('Not a Safe app or initialization failed');
@@ -275,6 +277,30 @@ function FullApp() {
 
   // Use this provider for all contract interactions
   const provider = useMemo(() => getProvider(), [getProvider]);
+
+  // Get the appropriate chainId
+  const chainId = useMemo(() => {
+    if (isSafeApp() && safeInfo) {
+      return safeInfo.chainId;
+    }
+    return web3ModalChainId;
+  }, [web3ModalChainId, safeInfo]);
+
+  // Get the appropriate account address
+  const account = useMemo(() => {
+    if (isSafeApp() && safeInfo) {
+      return safeInfo.safeAddress;
+    }
+    return web3ModalAddress;
+  }, [web3ModalAddress, safeInfo]);
+
+  // Check if we're connected to a wallet
+  const active = useMemo(() => {
+    if (isSafeApp()) {
+      return safeAppInitialized;
+    }
+    return isConnected;
+  }, [isConnected, safeAppInitialized]);
 
   const query = useRouteQuery();
 
@@ -528,7 +554,7 @@ function FullApp() {
         ? Vault.abi
         : VaultV2b.abi;
 
-    const wsProvider = getWsProvider(isConnected, chainId);
+    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -568,7 +594,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [isConnected, chainId, vaultAddress, positionRouterAddress]);
+  }, [active, chainId, vaultAddress, positionRouterAddress]);
 
   return (
     <>
