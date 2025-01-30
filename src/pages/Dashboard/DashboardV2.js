@@ -344,60 +344,59 @@ export default function DashboardV2() {
   }
 
   const getWeightText = (tokenInfo) => {
-    if (
-      !tokenInfo.weight ||
-      !adjustedUsdgSupply ||
-      !totalTokenWeights
-    ) {
+    if (!tokenInfo || !tokenInfo.managedUsd || !aum || !tokenInfo.weight || !totalTokenWeights) {
       return "...";
     }
 
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
-    const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
+    try {
+      const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+      const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
 
-    // Calculate current weight based on actual pool amount
-    let currentWeightBps = bigNumberify(0);
-    if (tokenInfo.managedUsd && adjustedUsdgSupply.gt(0)) {
-      currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
+      let currentWeightBps = bigNumberify(0);
+      if (tokenInfo.managedUsd && aum.gt(0)) {
+        currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
+      }
+
+      const currentWeightText = currentWeightBps.lt(100)
+        ? formatAmount(currentWeightBps, 4, 4, false)
+        : formatAmount(currentWeightBps, 2, 2, false);
+
+      return (
+        <TooltipComponent
+          handle={`${currentWeightText}% / ${targetWeightText}%`}
+          position="right-bottom"
+          renderContent={() => {
+            return (
+              <>
+                <StatsTooltipRow
+                  label={t`Current Weight`}
+                  value={`${currentWeightText}%`}
+                  showDollar={false}
+                />
+                <StatsTooltipRow
+                  label={t`Target Weight`}
+                  value={`${targetWeightText}%`}
+                  showDollar={false}
+                />
+                <StatsTooltipRow
+                  label={t`Pool Amount`}
+                  value={formatAmount(tokenInfo.managedUsd || 0, USD_DECIMALS, 2, true)}
+                  showDollar={true}
+                />
+                <StatsTooltipRow
+                  label={t`Total Pool`}
+                  value={formatAmount(aum || 0, USD_DECIMALS, 2, true)}
+                  showDollar={true}
+                />
+              </>
+            );
+          }}
+        />
+      );
+    } catch (ex) {
+      // If any calculation fails, return loading state
+      return "...";
     }
-
-    // Format current weight with appropriate precision
-    const currentWeightText = currentWeightBps.lt(100)
-      ? formatAmount(currentWeightBps, 4, 4, false)
-      : formatAmount(currentWeightBps, 2, 2, false);
-
-    return (
-      <TooltipComponent
-        handle={`${currentWeightText}% / ${targetWeightText}%`}
-        position="right-bottom"
-        renderContent={() => {
-          return (
-            <>
-              <StatsTooltipRow
-                label={t`Current Weight`}
-                value={`${currentWeightText}%`}
-                showDollar={false}
-              />
-              <StatsTooltipRow
-                label={t`Target Weight`}
-                value={`${targetWeightText}%`}
-                showDollar={false}
-              />
-              <StatsTooltipRow
-                label={t`Pool Amount`}
-                value={formatAmount(tokenInfo.managedUsd || 0, USD_DECIMALS, 2, true)}
-                showDollar={true}
-              />
-              <StatsTooltipRow
-                label={t`Total Pool`}
-                value={formatAmount(aum || 0, USD_DECIMALS, 2, true)}
-                showDollar={true}
-              />
-            </>
-          );
-        }}
-      />
-    );
   };
 
   let stakedPercent = 0;
