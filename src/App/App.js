@@ -229,34 +229,14 @@ function FullApp() {
   const exchangeRef = useRef();
   const { disconnect } = useDisconnect();
   const { walletProvider } = useWeb3ModalProvider();
-  const { isConnected } = useWeb3ModalAccount();
+  const { isConnected, address: web3ModalAddress } = useWeb3ModalAccount();
   const { open, close } = useWeb3Modal();
-  const { chainId } = useChainId();
+  const { chainId: web3ModalChainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
   const [safeAppInitialized, setSafeAppInitialized] = useState(false);
-
-  // Initialize Safe SDK
-  useEffect(() => {
-    const initSafe = async () => {
-      try {
-        if (isSafeApp()) {
-          console.log('Initializing Safe SDK...');
-          const safeInfo = await initSafeSDK();
-          if (safeInfo) {
-            console.log('Safe App initialized:', safeInfo);
-            setSafeAppInitialized(true);
-          } else {
-            console.log('Not a Safe app or initialization failed');
-          }
-        }
-      } catch (error) {
-        console.error('Error initializing Safe:', error);
-      }
-    };
-    initSafe();
-  }, []);
+  const [safeInfo, setSafeInfo] = useState(null);
 
   // Get the appropriate provider
   const getProvider = useCallback(() => {
@@ -274,7 +254,68 @@ function FullApp() {
   }, [walletProvider, safeAppInitialized]);
 
   // Use this provider for all contract interactions
-  const provider = useMemo(() => getProvider(), [getProvider]);
+  const provider = useMemo(() => {
+    const currentProvider = getProvider();
+    if (currentProvider) {
+      console.log('Provider initialized:', {
+        isSafe: isSafeApp() && safeAppInitialized,
+        hasWallet: !!walletProvider
+      });
+    }
+    return currentProvider;
+  }, [getProvider, safeAppInitialized, walletProvider]);
+
+  // Get the appropriate chainId
+  const chainId = useMemo(() => {
+    if (isSafeApp() && safeInfo) {
+      console.log('Using Safe chainId:', safeInfo.chainId);
+      return safeInfo.chainId;
+    }
+    return web3ModalChainId;
+  }, [web3ModalChainId, safeInfo]);
+
+  // Get the appropriate account address
+  const account = useMemo(() => {
+    if (isSafeApp() && safeInfo) {
+      console.log('Using Safe address:', safeInfo.safeAddress);
+      return safeInfo.safeAddress;
+    }
+    return web3ModalAddress;
+  }, [web3ModalAddress, safeInfo]);
+
+  // Check if we're connected to a wallet
+  const active = useMemo(() => {
+    const isActive = isSafeApp() ? safeAppInitialized : isConnected;
+    console.log('Wallet connection status:', {
+      isSafeApp: isSafeApp(),
+      safeAppInitialized,
+      isConnected,
+      isActive
+    });
+    return isActive;
+  }, [isConnected, safeAppInitialized]);
+
+  // Initialize Safe SDK
+  useEffect(() => {
+    const initSafe = async () => {
+      try {
+        if (isSafeApp()) {
+          console.log('Initializing Safe SDK...');
+          const info = await initSafeSDK();
+          if (info && info.safe) {
+            console.log('Safe App initialized:', info);
+            setSafeInfo(info.safe);
+            setSafeAppInitialized(true);
+          } else {
+            console.error('Safe initialization failed or returned no info');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing Safe:', error);
+      }
+    };
+    initSafe();
+  }, []);
 
   const query = useRouteQuery();
 
@@ -528,7 +569,7 @@ function FullApp() {
         ? Vault.abi
         : VaultV2b.abi;
 
-    const wsProvider = getWsProvider(isConnected, chainId);
+    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -568,7 +609,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [isConnected, chainId, vaultAddress, positionRouterAddress]);
+  }, [active, chainId, vaultAddress, positionRouterAddress]);
 
   return (
     <>
