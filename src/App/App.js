@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
@@ -243,10 +243,29 @@ function FullApp() {
       const safeInfo = await initSafeSDK();
       if (safeInfo) {
         console.log('Running as Safe App:', safeInfo);
+        // If we're in a Safe app, we want to use the Safe provider
+        if (safeInfo.provider) {
+          // The Safe provider is already connected, so we can use it directly
+          console.log('Using Safe provider');
+        }
       }
     };
     initSafe();
   }, []);
+
+  // Get the appropriate provider
+  const getProvider = useCallback(() => {
+    if (isSafeApp()) {
+      return getSafeProvider();
+    }
+    if (walletProvider) {
+      return new ethers.providers.Web3Provider(walletProvider);
+    }
+    return null;
+  }, [walletProvider]);
+
+  // Use this provider for all contract interactions
+  const provider = useMemo(() => getProvider(), [getProvider]);
 
   const query = useRouteQuery();
 
@@ -438,11 +457,9 @@ function FullApp() {
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      if (!walletProvider) {
+      if (!provider) {
         return;
       }
-
-      const provider = new ethers.providers.Web3Provider(walletProvider);
 
       const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
@@ -486,7 +503,7 @@ function FullApp() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [walletProvider, pendingTxns, chainId]);
+  }, [provider, pendingTxns, chainId]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
