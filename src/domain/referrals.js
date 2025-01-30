@@ -8,7 +8,7 @@ import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy"
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 import { ARBITRUM, PEGASUS, PHOENIX, BSC, SONIC } from "config/chains";
-import { arbitrumReferralsGraphClient, pegasusReferralsGraphClient, phoenixReferralsGraphClient, bscReferralsGraphClient } from "lib/subgraph/clients";
+import { arbitrumReferralsGraphClient, pegasusReferralsGraphClient, phoenixReferralsGraphClient, bscReferralsGraphClient, sonicReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
