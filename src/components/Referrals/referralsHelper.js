@@ -123,7 +123,7 @@ export function getReferralCodeTradeUrl(referralCode) {
 }
 
 export function getTwitterShareUrl(referralCode) {
-  const message = ["Trying out trading on @AmpedFinance, use leverage to trade $BTC, $ETH, $LL and $BNB 📈", "For fee discounts use:"];
+  const message = ["Join the DeFAI movement with @AmpedFinance, trade $BTC, $ETH and $S with leverage 📈", "For fee discounts use:"];
   const shareURL = getReferralCodeTradeUrl(referralCode);
 
   return getTwitterIntentURL(message, shareURL);
