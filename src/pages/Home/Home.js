@@ -87,9 +87,9 @@ export default function Home() {
         <div className="landing-top default-container">
           <div className="landing-top-join">Perpetual trading and yield for the agentic economy</div>
           <div className="landing-top-title font-kufam">
-            Omnichain DeFAI,
+            Omnichain DeFAI
             <br />
-            Asset Amplification
+            Asset Amplifier
           </div>
           <div className="landing-top-des">
           Experience the future of on-chain trading, where AI agents execute with lightning precision and amplified leverage. 
