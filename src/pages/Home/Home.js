@@ -87,9 +87,9 @@ export default function Home() {
         <div className="landing-top default-container">
           <div className="landing-top-join">Join the on-chain trading revolution</div>
           <div className="landing-top-title font-kufam">
-            Instant, On-Chain
+            Amplified DeFAI
             <br />
-            Decentralised Trading
+            Omnichain Liquidity with Leverage
           </div>
           <div className="landing-top-des">
             Discover just how easy on-chain trading can be, with ultra-fast transactions and with leverage. It's not
