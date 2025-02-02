@@ -85,15 +85,15 @@ export default function Home() {
     <div className="landing">
       <div className="landing-section-video">
         <div className="landing-top default-container">
-          <div className="landing-top-join">Perpetual trading for the agentic economy</div>
+          <div className="landing-top-join">Perpetual trading and yield for the agentic economy</div>
           <div className="landing-top-title font-kufam">
-            Amplified DeFAI
+            Omnichain DeFAI,
             <br />
-            Omnichain Liquidity with Leverage
+            Asset Amplification
           </div>
           <div className="landing-top-des">
-            Discover just how easy on-chain trading can be, with ultra-fast transactions and with leverage. It's not
-            just trading – it's a revolution in how perpetual swaps are traded.
+          Experience the future of on-chain trading, where AI agents execute with lightning precision and amplified leverage. 
+          <br />This isn't just trading – it's an AI-powered evolution in perpetuals.
           </div>
           <div className="socials default-container">
             <a href="https://discord.gg/nNKqweuAXj" target="_blank">
