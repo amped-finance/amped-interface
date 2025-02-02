@@ -85,7 +85,7 @@ export default function Home() {
     <div className="landing">
       <div className="landing-section-video">
         <div className="landing-top default-container">
-          <div className="landing-top-join">Join the on-chain trading revolution</div>
+          <div className="landing-top-join">Perpetual trading for the agentic economy</div>
           <div className="landing-top-title font-kufam">
             Amplified DeFAI
             <br />
