@@ -92,8 +92,7 @@ export default function Home() {
             Asset Amplifier
           </div>
           <div className="landing-top-des">
-          Experience the future of on-chain trading, where AI agents execute with lightning precision and amplified leverage. 
-          <br />This isn't just trading – it's an AI-powered evolution in perpetuals.
+          Experience the future of on-chain trading, where AI agents execute with lightning precision while amplifying your assets with leverage.
           </div>
           <div className="socials default-container">
             <a href="https://discord.gg/nNKqweuAXj" target="_blank">
