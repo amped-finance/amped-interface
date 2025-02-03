@@ -65,6 +65,7 @@ import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedTo
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isSafeApp, getSafeProvider } from "../../lib/safe/SafeAppProvider";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 const { AddressZero } = ethers.constants;
 
@@ -149,18 +150,7 @@ export default function AlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedAlpTrackerAddress, usdgAddress];
 
   const tokenAddresses = tokens.map((token) => token.address);
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider();
-  
-  const library = useMemo(() => {
-    if (isSafeApp()) {
-      return getSafeProvider();
-    }
-    if (walletProvider) {
-      return new ethers.providers.Web3Provider(walletProvider);
-    }
-    return null;
-  }, [walletProvider]);
+  const { active, account, provider: library } = useWeb3Connection();
 
   const { data: tokenBalances } = useSWR(
     [`AlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],

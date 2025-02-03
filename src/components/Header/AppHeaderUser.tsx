@@ -15,14 +15,7 @@ import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import { SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import {
-  useWeb3Modal,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-  useDisconnect,
-  createWeb3Modal,
-  defaultConfig
-} from "@web3modal/ethers5/react";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 type Props = {
   openSettings: () => void;
@@ -41,9 +34,8 @@ export function AppHeaderUser({
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
+  const { active, account, connect } = useWeb3Connection();
   const { chainId } = useChainId();
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { open } = useWeb3Modal()
   const showConnectionOptions = !isHomeSite();
 
   // Get Safe info if we're in a Safe app
@@ -110,7 +102,7 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={open}>
+            <ConnectWalletButton onClick={connect}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown
