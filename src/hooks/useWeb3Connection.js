@@ -86,7 +86,7 @@ const useWeb3Connection = () => {
   const disconnectHandler = useCallback(async () => {
     disconnectWeb3Modal();
     if (safeModal) {
-      safeModal.close();
+      // TODO: Disconnect from SafeApp
     }
   })
   
