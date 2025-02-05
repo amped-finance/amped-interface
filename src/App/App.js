@@ -1,28 +1,54 @@
-// App.js
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { SWRConfig } from "swr";
-import useScrollToTop from "lib/useScrollToTop";
-import { RefreshContextProvider } from "../Context/RefreshContext";
-import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
-
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
+import useScrollToTop from "lib/useScrollToTop";
+import { RefreshContextProvider } from "../Context/RefreshContext";
+import { initSafeSDK, isSafeApp, getSafeProvider } from "../lib/safe/SafeAppProvider";
+
+import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
+
+import {
+  DEFAULT_SLIPPAGE_AMOUNT,
+  BASIS_POINTS_DIVISOR,
+  getAppBaseUrl,
+  isHomeSite,
+  isMobileDevice,
+  REFERRAL_CODE_QUERY_PARAM,
+  isDevelopment,
+  importImage,
+} from "lib/legacy";
+
+import Home from "pages/Home/Home";
+import Dashboard from "pages/Dashboard/Dashboard";
+import Stake from "pages/Stake/Stake";
+import { Exchange } from "pages/Exchange/Exchange";
+import Actions from "pages/Actions/Actions";
+import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
+import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import Referrals from "pages/Referrals/Referrals";
+import BuyAlp from "pages/BuyAlp/BuyAlp";
+import BuyAMP from "pages/BuyAMP/BuyAMP";
+import Buy from "pages/Buy/Buy";
+import NftWallet from "pages/NftWallet/NftWallet";
+import ClaimEsAmp from "pages/ClaimEsAmp/ClaimEsAmp";
+import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Leaderboard from "pages/Leaderboard/Leaderboard";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
+
 import "styles/Shared.css";
 import "styles/Font.css";
 import "./App.scss";
 import "styles/Input.css";
 
+import metamaskImg from "img/metamask.png";
+import coinbaseImg from "img/coinbaseWallet.png";
+import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useEventToast from "components/EventToast/useEventToast";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
@@ -60,17 +86,14 @@ import {
   BSC_RPC_PROVIDERS,
   BSC_TESTNET_RPC_PROVIDER,
   UNICHAINTESTNET,
+  UNICHAINTESTNET_RPC_PROVIDERS,
   UNICHAIN_TESTNET_RPC_PROVIDER,
   SONIC,
-  SONIC_RPC_PROVIDER
+  SONIC_RPC_PROVIDER,
 } from "config/chains";
 
-import { useChainId } from "lib/chains"; // If you still want chainId from your custom chain logic
-import {
-  ACTIVE_CHAIN_IDS,
-  NETWORK_METADATA,
-} from "config/chains";
-
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -82,41 +105,34 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
-
 import {
-  DEFAULT_SLIPPAGE_AMOUNT,
-  BASIS_POINTS_DIVISOR,
-  getAppBaseUrl,
-  isHomeSite,
-  isMobileDevice,
-  REFERRAL_CODE_QUERY_PARAM,
-  isDevelopment,
-  importImage,
-} from "lib/legacy";
+  activateInjectedProvider,
+  clearWalletLinkData,
+  getInjectedHandler,
+  getWalletConnectHandler,
+  hasCoinBaseWalletExtension,
+  hasMetaMaskWalletExtension,
+  useEagerConnect,
+  useInactiveListener,
+} from "lib/wallets";
+import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import {
+  useWeb3Modal,
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+  useDisconnect,
+  createWeb3Modal,
+  defaultConfig,
+} from "@web3modal/ethers5/react";
 
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-
-import Home from "pages/Home/Home";
-import Dashboard from "pages/Dashboard/Dashboard";
-import Stake from "pages/Stake/Stake";
-import { Exchange } from "pages/Exchange/Exchange";
-import Actions from "pages/Actions/Actions";
-import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
-import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
-import Referrals from "pages/Referrals/Referrals";
-import BuyAlp from "pages/BuyAlp/BuyAlp";
-import BuyAMP from "pages/BuyAMP/BuyAMP";
-import Buy from "pages/Buy/Buy";
-import NftWallet from "pages/NftWallet/NftWallet";
-import ClaimEsAmp from "pages/ClaimEsAmp/ClaimEsAmp";
-import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
-import Leaderboard from "pages/Leaderboard/Leaderboard";
-
+import { map, mapValues } from "lodash";
+import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
 import Bridge from "pages/Bridge/Bridge";
 import Mif from "pages/Mif/Mif";
-import { useWeb3ConnectionContext, Web3ConnectionProvider } from "Context/Web3ConnectionContext";
+import { Web3ConnectionProvider } from "Context/Web3ConnectionContext";
+
+// import IDO from "pages/IDO/IDO";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -132,16 +148,25 @@ const Zoom = cssTransition({
 });
 
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
+
 const pegasusProvider = new ethers.providers.JsonRpcProvider(PEGASUS_RPC_PROVIDERS[0]);
+
 const phoenixProvider = new ethers.providers.FallbackProvider(
-  PHOENIX_RPC_PROVIDERS.map((url) => new ethers.providers.JsonRpcProvider(url))
+  PHOENIX_RPC_PROVIDERS.map((url, index) => new ethers.providers.JsonRpcProvider(url))
 );
+
 const bsctestnetProvider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
+
+const unichaintestnetProvider = new ethers.providers.JsonRpcProvider(UNICHAIN_TESTNET_RPC_PROVIDER[0]);
+
 const bscProvider = new ethers.providers.JsonRpcProvider(BSC_RPC_PROVIDERS[0]);
+
 const sonicProvider = new ethers.providers.JsonRpcProvider(SONIC_RPC_PROVIDER[0]);
 
 function getWsProvider(active, chainId) {
-  if (!active) return;
+  if (!active) {
+    return;
+  }
   if (chainId === ARBITRUM) {
     return arbWsProvider;
   }
@@ -151,78 +176,201 @@ function getWsProvider(active, chainId) {
   if (chainId === PHOENIX) {
     return phoenixProvider;
   }
+
   if (chainId === BSCTESTNET) {
     return bsctestnetProvider;
   }
+  if (chainId === UNICHAINTESTNET) {
+    return unichaintestnetProvider;
+  }
+
   if (chainId === SONIC) {
     return sonicProvider;
   }
+
   if (chainId === BSC) {
     return bscProvider;
   }
 }
 
+const metadata = {
+  name: "LightLink Bridge",
+  description:
+    "LightLink Bridge facilitates seamless communication between blockchains, enabling the transfer of information and assets with heightened security and efficiency.`",
+  url: window.location.hostname,
+  icons: [],
+};
+
+const _chains = map(ACTIVE_CHAIN_IDS, (chainId) => ({
+  rpcUrl: NETWORK_METADATA[chainId].rpcUrls[0],
+  explorerUrl: NETWORK_METADATA[chainId].blockExplorerUrls[0],
+  currency: NETWORK_METADATA[chainId].nativeCurrency.name,
+  name: NETWORK_METADATA[chainId].chainName,
+  chainId: parseInt(NETWORK_METADATA[chainId].chainId),
+}));
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({
+    metadata,
+    defaultChainId: ACTIVE_CHAIN_IDS[0],
+    enableEIP6963: true,
+    enableInjected: true,
+    enableCoinbase: true,
+    rpcUrl: NETWORK_METADATA[ACTIVE_CHAIN_IDS[0]].rpcUrls[0],
+  }),
+  chains: _chains,
+  projectId: "b6587c240d0d3c291075db2d8424aa71",
+
+  themeVariables: {
+    "--w3m-z-index": 9999,
+  },
+  chainImages: mapValues(NETWORK_METADATA, (metadata) => importImage(`ic_${metadata.chainName.toLowerCase()}.png`)),
+});
+
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-
-  const {
-    account,
-    active,
-    provider,
-    connect,
-    disconnect,
-  } = useWeb3ConnectionContext();
-
-  const { chainId } = useChainId();
-
+  const { disconnect } = useDisconnect();
+  const { walletProvider } = useWeb3ModalProvider();
+  const { isConnected, address: web3ModalAddress } = useWeb3ModalAccount();
+  const { open, close } = useWeb3Modal();
+  const { chainId: web3ModalChainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
+  const [safeAppInitialized, setSafeAppInitialized] = useState(false);
+  const [safeInfo, setSafeInfo] = useState(null);
 
-  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
-  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
-    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
-  const [selectedToPage, setSelectedToPage] = useState("");
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [pendingTxns, setPendingTxns] = useState([]);
+  // Early SAFE detection and initialization
+  useEffect(() => {
+    const initializeSafe = async () => {
+      if (isSafeApp()) {
+        console.log("SAFE environment detected, initializing...");
+        try {
+          const info = await initSafeSDK();
+          if (info && info.safe) {
+            console.log("SAFE successfully initialized:", {
+              chainId: info.safe.chainId,
+              safeAddress: info.safe.safeAddress,
+              provider: !!info.provider,
+            });
+            setSafeInfo(info.safe);
+            setSafeAppInitialized(true);
+          } else {
+            console.error("SAFE initialization returned no data");
+          }
+        } catch (error) {
+          console.error("Error during SAFE initialization:", error);
+        }
+      }
+    };
 
-  // For storing slippage, etc.
-  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
-    [chainId, SLIPPAGE_BPS_KEY],
-    DEFAULT_SLIPPAGE_AMOUNT
-  );
-  const [slippageAmount, setSlippageAmount] = useState(0);
-  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
-    [chainId, IS_PNL_IN_LEVERAGE_KEY],
-    false
-  );
+    initializeSafe();
+  }, []); // Run once on mount
 
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
-  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
-    [chainId, SHOW_PNL_AFTER_FEES_KEY],
-    false
-  );
+  // Get the appropriate provider with SAFE priority
+  const getProvider = useCallback(() => {
+    if (isSafeApp()) {
+      const safeProvider = getSafeProvider();
+      if (safeProvider) {
+        console.log("Using SAFE provider");
+        return safeProvider;
+      }
+      console.warn("SAFE provider not available, falling back to wallet provider");
+    }
+    if (walletProvider) {
+      return new ethers.providers.Web3Provider(walletProvider);
+    }
+    return null;
+  }, [walletProvider]);
 
-  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
-    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
+  // Use this provider for all contract interactions
+  const provider = useMemo(() => {
+    const currentProvider = getProvider();
+    if (currentProvider) {
+      console.log("Provider initialized:", {
+        isSafe: isSafeApp(),
+        hasWallet: isSafeApp() ? safeAppInitialized : !!walletProvider,
+        provider: currentProvider,
+      });
+    }
+    return currentProvider;
+  }, [getProvider, safeAppInitialized, walletProvider]);
 
-  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
-    [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
-    false
-  );
+  // Get the appropriate chainId with SAFE priority
+  const chainId = useMemo(() => {
+    if (isSafeApp() && safeInfo?.chainId) {
+      console.log("Using SAFE chainId:", safeInfo.chainId);
+      return safeInfo.chainId;
+    }
+    return web3ModalChainId;
+  }, [web3ModalChainId, safeInfo]);
 
+  // Get the appropriate account address with SAFE priority
+  const account = useMemo(() => {
+    if (isSafeApp() && safeInfo?.safeAddress) {
+      console.log("Using SAFE address:", safeInfo.safeAddress);
+      return safeInfo.safeAddress;
+    }
+    return web3ModalAddress;
+  }, [web3ModalAddress, safeInfo]);
+
+  // Check if we're connected to a wallet
+  const active = useMemo(() => {
+    const isSafe = isSafeApp();
+    const isActive = isSafe ? safeAppInitialized : isConnected;
+    const currentAddress = isSafe ? safeInfo?.safeAddress : web3ModalAddress;
+
+    console.log("Wallet connection status:", {
+      isSafeApp: isSafe,
+      safeAppInitialized,
+      isConnected: isSafe ? safeAppInitialized : isConnected,
+      isActive,
+      account: currentAddress,
+      provider: !!provider,
+      chainId: chainId,
+    });
+
+    return isActive && !!currentAddress;
+  }, [isConnected, safeAppInitialized, safeInfo, web3ModalAddress, provider, chainId]);
+
+  // Handle provider changes
+  useEffect(() => {
+    if (provider) {
+      const handleAccountsChanged = async (accounts) => {
+        console.log("Accounts changed:", accounts);
+        if (isSafeApp() && safeInfo) {
+          // For Safe apps, we use the Safe address
+          return;
+        }
+      };
+
+      const handleConnect = async () => {
+        console.log("Provider connected");
+        if (isSafeApp() && !safeAppInitialized) {
+          await initSafe();
+        }
+      };
+
+      provider.on("accountsChanged", handleAccountsChanged);
+      provider.on("connect", handleConnect);
+
+      return () => {
+        provider.off("accountsChanged", handleAccountsChanged);
+        provider.off("connect", handleConnect);
+      };
+    }
+  }, [provider, safeInfo, safeAppInitialized]);
 
   const query = useRouteQuery();
+
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
     if (!referralCode || referralCode.length === 0) {
       const params = new URLSearchParams(window.location.search);
       referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
     }
+
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== ethers.constants.HashZero) {
@@ -237,30 +385,179 @@ function FullApp() {
       }
     }
   }, [query, history, location]);
-  const connectWallet = useCallback(() => {
-    connect();
-  }, [connect]);
 
   const disconnectAccount = useCallback(() => {
+    // only works with WalletConnect
+    clearWalletLinkData();
     disconnect();
-    // Optionally remove localstorage items, etc.
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
   }, [disconnect]);
 
   const disconnectAccountAndCloseSettings = () => {
     disconnectAccount();
+    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
+    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
     setIsSettingsVisible(false);
   };
 
-  const showRedirectModal = (to) => {
-    setRedirectModalVisible(true);
-    setSelectedToPage(to);
+  // const connectInjectedWallet = getInjectedHandler(activate);
+  // const activateWalletConnect = () => {
+  //   getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
+  // };
+
+  const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
+
+  const activateMetaMask = () => {
+    if (!hasMetaMaskWalletExtension()) {
+      helperToast.error(
+        <div>
+          <Trans>MetaMask not detected.</Trans>
+          <br />
+          <br />
+          {userOnMobileDevice ? (
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use AMP with its built-in
+              browser
+            </Trans>
+          ) : (
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using AMP
+            </Trans>
+          )}
+        </div>
+      );
+      return false;
+    }
+    attemptActivateWallet("MetaMask");
+  };
+  const activateCoinBase = () => {
+    if (!hasCoinBaseWalletExtension()) {
+      helperToast.error(
+        <div>
+          <Trans>Coinbase Wallet not detected.</Trans>
+          <br />
+          <br />
+          {userOnMobileDevice ? (
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use AMP
+              with its built-in browser
+            </Trans>
+          ) : (
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
+              AMP
+            </Trans>
+          )}
+        </div>
+      );
+      return false;
+    }
+    attemptActivateWallet("CoinBase");
   };
 
+  const attemptActivateWallet = (providerName) => {
+    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
+    localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
+    activateInjectedProvider(providerName);
+    // connectInjectedWallet();
+  };
+
+  // const [walletModalVisible, setWalletModalVisible] = useState(false);
+  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
+    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [selectedToPage, setSelectedToPage] = useState("");
+  const connectWallet = useCallback(async () => {
+    if (isSafeApp()) {
+      if (!safeAppInitialized) {
+        console.log("Reinitializing SAFE connection...");
+        try {
+          const info = await initSafeSDK();
+          if (info && info.safe) {
+            console.log("SAFE reinitialized:", {
+              chainId: info.safe.chainId,
+              safeAddress: info.safe.safeAddress,
+              provider: !!info.provider,
+            });
+            setSafeInfo(info.safe);
+            setSafeAppInitialized(true);
+          } else {
+            console.error("SAFE reinitialization failed");
+          }
+        } catch (error) {
+          console.error("Error reinitializing SAFE:", error);
+        }
+      } else {
+        console.log("SAFE already initialized");
+      }
+    } else {
+      open();
+    }
+  }, [open, safeAppInitialized]);
+
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
+    [chainId, SLIPPAGE_BPS_KEY],
+    DEFAULT_SLIPPAGE_AMOUNT
+  );
+  const [slippageAmount, setSlippageAmount] = useState(0);
+  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
+  const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
+
+  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
+    [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
+
+  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
+    [chainId, SHOW_PNL_AFTER_FEES_KEY],
+    false
+  );
+  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
+    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
+
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
+    [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
+    false
+  );
+
+  const openSettings = () => {
+    const slippage = parseInt(savedSlippageAmount);
+    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
+    setIsPnlInLeverage(savedIsPnlInLeverage);
+    setShowPnlAfterFees(savedShowPnlAfterFees);
+    setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
+    setIsSettingsVisible(true);
+  };
+
+  const saveAndCloseSettings = () => {
+    const slippage = parseFloat(slippageAmount);
+    if (isNaN(slippage)) {
+      helperToast.error(t`Invalid slippage value`);
+      return;
+    }
+    if (slippage > 5) {
+      helperToast.error(t`Slippage should be less than 5%`);
+      return;
+    }
+
+    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
+    if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
+      helperToast.error(t`Max slippage precision is 0.01%`);
+      return;
+    }
+
+    setSavedIsPnlInLeverage(isPnlInLeverage);
+    setSavedShowPnlAfterFees(showPnlAfterFees);
+    setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
+    setSavedSlippageAmount(basisPoints);
+    setIsSettingsVisible(false);
+  };
+
+  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl + selectedToPage;
-  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.constants.HashZero) {
     const decodedRefCode = decodeReferralCode(localStorageCode);
     if (decodedRefCode) {
@@ -268,10 +565,19 @@ function FullApp() {
     }
   }
 
-  useEffect(() => {
-    if (!provider) return;
+  const [pendingTxns, setPendingTxns] = useState([]);
 
+  const showRedirectModal = (to) => {
+    setRedirectModalVisible(true);
+    setSelectedToPage(to);
+  };
+
+  useEffect(() => {
     const checkPendingTxns = async () => {
+      if (!provider) {
+        return;
+      }
+
       const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
@@ -310,7 +616,9 @@ function FullApp() {
       }
     };
 
-    const interval = setInterval(checkPendingTxns, 2000);
+    const interval = setInterval(() => {
+      checkPendingTxns();
+    }, 2 * 1000);
     return () => clearInterval(interval);
   }, [provider, pendingTxns, chainId]);
 
@@ -329,7 +637,9 @@ function FullApp() {
         : VaultV2b.abi;
 
     const wsProvider = getWsProvider(active, chainId);
-    if (!wsProvider) return;
+    if (!wsProvider) {
+      return;
+    }
 
     const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
     const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
@@ -338,9 +648,12 @@ function FullApp() {
       if (!exchangeRef || !exchangeRef.current) {
         return;
       }
+
       exchangeRef.current[method](...args);
     };
 
+    // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
+    // each time the Exchange components re-renders, which happens on every data update
     const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
     const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
     const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
@@ -365,37 +678,6 @@ function FullApp() {
     };
   }, [active, chainId, vaultAddress, positionRouterAddress]);
 
-  const openSettings = () => {
-    const slippage = parseInt(savedSlippageAmount);
-    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
-    setIsPnlInLeverage(savedIsPnlInLeverage);
-    setShowPnlAfterFees(savedShowPnlAfterFees);
-    setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
-    setIsSettingsVisible(true);
-  };
-
-  const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount);
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
-    if (slippage > 5) {
-      helperToast.error(t`Slippage should be less than 5%`);
-      return;
-    }
-    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
-    if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error(t`Max slippage precision is 0.01%`);
-      return;
-    }
-
-    setSavedIsPnlInLeverage(isPnlInLeverage);
-    setSavedShowPnlAfterFees(showPnlAfterFees);
-    setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    setSavedSlippageAmount(basisPoints);
-    setIsSettingsVisible(false);
-  };
   return (
     <>
       <div className="App">
@@ -403,11 +685,11 @@ function FullApp() {
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
-            setWalletModalVisible={() => null}
+            setWalletModalVisible={close}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
           />
-          {isHome ? (
+          {isHome && (
             <Switch>
               <Route exact path="/">
                 <Home />
@@ -425,7 +707,8 @@ function FullApp() {
                 <PageNotFound />
               </Route>
             </Switch>
-          ) : (
+          )}
+          {!isHome && (
             <Switch>
               <Route exact path="/">
                 <Home />
@@ -469,6 +752,15 @@ function FullApp() {
               <Route exact path="/jobs">
                 <Jobs />
               </Route>
+              {/* <Route exact path="/ido">
+                <IDO />
+              </Route> */}
+              {/* <Route exact path="/buy_layer">
+                <BuyAMP />
+              </Route> */}
+              {/* <Route exact path="/ecosystem">
+                <Ecosystem />
+              </Route> */}
               <Route exact path="/bridge">
                 <Bridge setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
@@ -476,18 +768,10 @@ function FullApp() {
                 <Mif />
               </Route>
               <Route exact path="/referrals">
-                <Referrals
-                  pendingTxns={pendingTxns}
-                  connectWallet={connectWallet}
-                  setPendingTxns={setPendingTxns}
-                />
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/referrals/:account">
-                <Referrals
-                  pendingTxns={pendingTxns}
-                  connectWallet={connectWallet}
-                  setPendingTxns={setPendingTxns}
-                />
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
@@ -602,13 +886,10 @@ function FullApp() {
 
 function App() {
   useScrollToTop();
-
-  // Handle i18n on mount
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
-
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <RefreshContextProvider>
