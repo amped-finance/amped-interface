@@ -74,10 +74,7 @@ const useWeb3Connection = () => {
       setSafeModal(_safeModal);
       return;
     }
-    if (!loadedAsSafeApp) {
-      open();
-    }
-  }, [isConnected, address, walletProvider, open]);
+  }, [isConnected, address, walletProvider, open, active]);
 
   const disconnectHandler = useCallback(async () => {
     disconnectWeb3Modal();
