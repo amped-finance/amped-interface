@@ -56,13 +56,20 @@ const useWeb3Connection = () => {
 
   useEffect(() => {
     const initConnection = async () => {
-      await connect();
+      await connectSafe();
     };
 
     initConnection();
   }, []);
 
   const connect = useCallback(async () => {
+    await connectSafe();
+    if (!active) {
+      await open();
+    }
+  }, [isConnected, address, walletProvider, open, active]);
+
+  const connectSafe = useCallback(async () => {
     const _safeModal = new SafeAppWeb3Modal(web3ModalConfig);
     
     const safeProvider = await _safeModal.requestProvider();
