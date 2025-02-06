@@ -77,11 +77,21 @@ export function AppHeaderLinks({
           <Trans>MIF</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <ExternalLink href="https://amped.gitbook.io/amped/">
-          <Trans>Docs</Trans>
-        </ExternalLink>
-      </div>
+      <HeaderDropdown
+        label={<Trans>Resources</Trans>}
+        items={[
+          { 
+            label: <Trans>Docs</Trans>, 
+            to: "https://amped.gitbook.io/amped/"
+          },
+          { 
+            label: <Trans>Analytics</Trans>, 
+            to: "https://stats.amped.finance"
+          },
+        ]}
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      />
 
       {small && !isHomeSite() && (
         <div className="App-header-link-container">

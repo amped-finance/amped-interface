@@ -289,6 +289,17 @@
   a.App-header-user-account {
     margin-right: 0;
   }
+
+  .App-header-dropdown {
+    width: 100%;
+  }
+
+  .App-header-dropdown-content {
+    position: static;
+    width: 100%;
+    background: transparent;
+    margin-left: 1.6rem;
+  }
 }
 
 @media (max-width: 600px) {
@@ -339,37 +350,27 @@
 /* Dropdown styles */
 .App-header-dropdown {
   position: relative;
-  display: inline-block;
-  height: 100%;
-  padding: 1.8rem 1.7rem;
-  color: #a0a3c4;
-  font-size: 1.5rem;
-  line-height: 1.8rem;
-  font-weight: normal;
   cursor: pointer;
-}
-
-.App-header-dropdown:hover {
-  color: white;
+  display: inline-flex;
+  align-items: center;
 }
 
 .App-header-dropdown-content {
-  display: none;
   position: absolute;
-  top: calc(100% - 0.8rem);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 100%;
+  left: 0;
+  min-width: 12rem;
   background: #17182c;
-  min-width: 16rem;
-  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
   z-index: 1000;
-  border: 1px solid #ffffff10;
-  backdrop-filter: blur(4px);
 }
 
 .App-header-dropdown:hover .App-header-dropdown-content {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 
 .App-header-dropdown-content a,
