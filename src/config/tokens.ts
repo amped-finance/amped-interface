@@ -510,7 +510,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Wrapped BERA",
-      symbol: "wBERA",
+      symbol: "WBERA",
       decimals: 18,
       address: "0x6969696969696969696969696969696969696969",
       isWrapped: true,

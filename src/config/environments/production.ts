@@ -13,6 +13,7 @@ export const PRODUCTION_ENVIRONMENTS = {
   DROPDOWN_CHAINS: [
     { value: 30309, label: "Lightlink Phoenix Mainnet", chain: "LIGHTLINK", chainId: 1890 },
     { value: 30102, label: "BNB Smart Chain Mainnet", chain: "BSC", chainId: 56 },
+    { value: 30310, label: "Berachain Mainnet", chain: "BERACHAIN", chainId: 80094 },
   ],
   API_LAYERZERO: "https://scan.layerzero-api.com",
   API: {
@@ -50,6 +51,21 @@ export const PRODUCTION_ENVIRONMENTS = {
       },
       NOTIFICATION_MESSAGE: {
         WRONG_NETWORK: "Please connect to Lightlink Phoenix Mainnet",
+      },
+    },
+    BERACHAIN: {
+      SHORT_NAME: "Berachain",
+      NAME: "Berachain Mainnet",
+      RPC: "https://rpc.berachain.com",
+      CHAIN_ID: "0x13894",
+      EXPLORER_URL: "https://berascan.com",
+      NATIVE_CURRENCY: {
+        NAME: "BERA",
+        SYMBOL: "BERA",
+        DECIMALS: 18,
+      },
+      NOTIFICATION_MESSAGE: {
+        WRONG_NETWORK: "Please connect to Berachain Mainnet",
       },
     },
   },
