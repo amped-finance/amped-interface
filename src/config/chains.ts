@@ -172,6 +172,13 @@ const constants = {
     wrappedTokenSymbol: "WBERA",
     defaultCollateralSymbol: "HONEY",
     defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
   }
 };
 
@@ -377,12 +384,12 @@ export function getExplorerUrl(chainId) {
   } else if (chainId === SONIC) {
     return "https://sonicscan.org/"
   } else if (chainId === BERACHAIN) {
-    return "https://berachain.com/"
+    return "https://berascan.com/"
   }
   return "https://phoenix.lightlink.io/";
 }
 
-export function getHighExecutionFee(chainId) {
+export function getHighExecutionFee(chainId: number) {
   return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
 }
 
