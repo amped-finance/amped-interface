@@ -24,14 +24,7 @@ const TxnHistories = ({ trigger }) => {
     setLoading(true);
     const response = await handleGetHistories(account);
     if (response?.data?.data) {
-      setDataHistories(
-        response.data.data.filter(
-          (item) =>
-            !isEmpty(item?.destination?.lzCompose?.txs) &&
-            item?.destination?.lzCompose?.txs[0]?.to?.toLowerCase() ===
-              APP_ENVIRONMENTS.CHAINS_MIF.BSC.INDEX_FUND?.COMPOSER_CONTRACT.ADDRESS.toLowerCase()
-        )
-      );
+      setDataHistories(response.data.data);
       setLoading(false);
     }
     if (response?.error) {

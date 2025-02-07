@@ -14,9 +14,14 @@ export const STAGE_ENVIRONMENTS = {
     { value: 40309, label: "Lightlink Pegasus Testnet", chain: "LIGHTLINK", chainId: 1891 },
     { value: 40102, label: "BNB Smart Chain Testnet", chain: "BSC", chainId: 97 },
   ],
+  DROPDOWN_CHAINS_INDEX: [
+    { label: "BNB Smart Chain Testnet", chain: "bsc" },
+    { label: "COINBASE", chain: "base" },
+  ],
   API_LAYERZERO: "https://scan-testnet.layerzero-api.com",
+  LL_SCAN: "https://pegasus.lightlink.io",
   API: {
-    ROOT_URL: "https://services-stage.pellar.io/api/v1/mif",
+    ROOT_URL: "https://services-stage.pellar.io/api/v1/index-fund",
     API_KEY: "08835380-ceba-490e-a72c-9f083191220a",
   },
   URL_BRIDGE_USDT_TO_LL:

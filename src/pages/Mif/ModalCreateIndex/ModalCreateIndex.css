@@ -1,0 +1,139 @@
+.create-index-modal .Modal-content {
+  width: 76rem;
+  max-width: 90%;
+}
+
+.create-index-modal .line-1 {
+  display: flex;
+  gap: 4%;
+  margin-bottom: 2rem;
+}
+
+.create-index-modal .line-3 .token-composition {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem 0;
+}
+
+.create-index-modal .btn-add-token {
+  cursor: pointer;
+}
+
+.create-index-modal .btn-add-token {
+  cursor: pointer;
+}
+
+.create-index-modal .btn-add-token.disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.create-index-modal .line-3 {
+  margin-bottom: 2rem;
+}
+
+.create-index-modal .line-3 .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.create-index-modal .line-3 .row .col-input {
+  width: calc(50% - 3em);
+}
+
+.create-index-modal .line-3 .row .remove-row {
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  border-radius: 0.8rem;
+  max-height: 4.5rem;
+}
+
+.create-index-modal .line-3 .row .remove-row:hover {
+  background: var(--color-pink);
+}
+
+.create-index-modal .line-4 {
+  background: var(--dark-blue-bg);
+  display: flex;
+  justify-content: space-between;
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+
+.create-index-modal .line-4 .text-total {
+  font-size: 1.6rem;
+  line-height: 2.1rem;
+  font-weight: 600;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.create-index-modal .line-4 .text-green {
+  color: rgb(34, 197, 94);
+}
+
+.create-index-modal .line-4 .text-yellow {
+  color: rgb(234, 179, 8);
+}
+
+.create-index-modal .line-error {
+  border: 1px solid rgb(127, 29, 29);
+  border-radius: 0.8rem;
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background: rgba(127, 29, 29, 0.2);
+}
+
+.create-index-modal .action-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.6rem;
+}
+
+.create-index-modal .line-1 .item-form {
+  width: 48%;
+}
+
+.create-index-modal .label-field {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.6rem;
+}
+
+.create-index-modal .input-field {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 0.8rem;
+}
+
+.create-index-modal .select-field {
+  background: none;
+  color: var(--color-white);
+  padding: 1.25rem;
+  cursor: pointer;
+}
+
+.create-index-modal .select-field:focus-visible {
+  outline: none;
+}
+
+.create-index-modal .select-field option {
+  background: var(--color-bg-panel);
+  padding: 0.5rem;
+  cursor: pointer !important;
+}
+
+.create-index-modal .button-secondary:disabled {
+  opacity: 0.7;
+}
+
+.create-index-modal .error-message {
+  color: #e21f1e;
+  font-size: 1.2rem;
+}

@@ -612,7 +612,7 @@ function FullApp() {
               <Route exact path="/bridge">
                 <Bridge setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
-              <Route exact path="/mif">
+              <Route exact path="/index-funds">
                 <Mif />
               </Route>
               <Route exact path="/referrals">

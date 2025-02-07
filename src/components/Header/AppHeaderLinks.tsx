@@ -87,8 +87,8 @@ export function AppHeaderLinks({
         </ExternalLink>
       </div> */}
         <div className="App-header-link-container">
-        <HeaderLink to="/mif" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>MIF</Trans>
+        <HeaderLink to="/index-funds" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+          <Trans>Index Funds</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">

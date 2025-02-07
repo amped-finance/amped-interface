@@ -1,8 +1,8 @@
 import { LayerZeroRequest } from "./layerzero/LayerZeroRequest"
-import { PriceRequest } from "./price/PriceRequest"
+import { TokenRequest } from "./token/TokenRequest"
 
 const RequestMap: { [key: string]: any } = {
-  PriceRequest: PriceRequest,
+  TokenRequest: TokenRequest,
   LayerZeroRequest: LayerZeroRequest,
 }
 
@@ -24,8 +24,8 @@ export class RequestFactory {
     return requestInstance as T
   }
 
-  static getPriceRequest() {
-    return RequestFactory.getRequest<PriceRequest>("PriceRequest")
+  static getTokenRequest() {
+    return RequestFactory.getRequest<TokenRequest>("TokenRequest")
   }
 
   static getLayerZeroRequest() {

@@ -31,6 +31,7 @@
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "ethers": "5.7.2",
+    "formik": "^2.4.6",
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
@@ -57,7 +58,8 @@
     "sass": "^1.55.0",
     "swr": "0.4.2",
     "typescript": "latest",
-    "web-vitals": "1.1.2"
+    "web-vitals": "1.1.2",
+    "yup": "^1.6.1"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
