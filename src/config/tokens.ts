@@ -524,7 +524,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       address: "0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/standard/weth.png?1696503332",
-    }
+    },
     {
       name: "HONEY",
       symbol: "HONEY",
@@ -759,22 +759,20 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
     },
   },
   [BERACHAIN]: {
-    USDC: {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      berachain: "https://berascan.com/address/0x549943e04f40284185054145c6e4e9568c1d3241",
+    AMP: {
+      name: "AMP",
+      symbol: "AMP",
+      decimals: 18,
+      address: getContract(BERACHAIN, "AMP"),
+      imageUrl: "",
     },
-    HONEY: {
-      coingecko: "https://www.coingecko.com/en/coins/honey-berachain",
-      berachain: "https://berascan.com/address/0x406a4A676b84F90B6Bd05ae0e80c002DD5879415",
+    ALP: {
+      name: "AMP LP",
+      symbol: "ALP",
+      decimals: 18,
+      address: getContract(BERACHAIN, "ALP"),
+      imageUrl: "",
     },
-    WETH: {
-      coingecko: "https://www.coingecko.com/en/coins/weth",
-      berachain: "https://berascan.com/address/0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
-    },
-    wBERA: {
-      coingecko: "https://www.coingecko.com/en/coins/bera",
-      berachain: "https://berascan.com/address/0x6969696969696969696969696969696969696969",
-    }
   },
 
 };
