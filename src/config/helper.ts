@@ -4,7 +4,8 @@ import { head, reduce } from "lodash";
 export const ChainSupported = {
   Lightlink: "LIGHTLINK",
   Bsc: "BSC",
-  Sonic: "SONIC"
+  Sonic: "SONIC",
+  Berachain: "BERACHAIN",
 };
 
 export function formatAddress(address: string) {

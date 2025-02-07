@@ -163,6 +163,8 @@ const bscProvider = new ethers.providers.JsonRpcProvider(BSC_RPC_PROVIDERS[0]);
 
 const sonicProvider = new ethers.providers.JsonRpcProvider(SONIC_RPC_PROVIDER[0]);
 
+const berachainProvider = new ethers.providers.JsonRpcProvider(BERACHAIN_RPC_PROVIDER[0]);
+
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
