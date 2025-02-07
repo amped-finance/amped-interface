@@ -9,13 +9,14 @@ export const BSC = 56
 export const BSCTESTNET = 97
 export const UNICHAINTESTNET = 1301
 export const SONIC = 146
+export const BERACHAIN = 80094
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = PHOENIX;
+export const DEFAULT_CHAIN_ID = SONIC;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC];
+export const SUPPORTED_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC, BERACHAIN];
 
-export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC]
+export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC, BERACHAIN]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -24,7 +25,8 @@ export const IS_NETWORK_DISABLED = {
   [BSCTESTNET]: false,
   [UNICHAINTESTNET]: false,
   [BSC]: false,
-  [SONIC]: false
+  [SONIC]: false,
+  [BERACHAIN]: false
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -34,7 +36,8 @@ export const CHAIN_NAMES_MAP = {
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
   [BSC]: "BNB Smart Chain",
-  [SONIC]: "Sonic"
+  [SONIC]: "Sonic",
+  [BERACHAIN]: "Berachain"
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -44,7 +47,8 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [BSCTESTNET]: "0", // Changed to "0" to use network gas price
   [UNICHAINTESTNET]: "1000000", // 3 times
   [BSC]: "1000000", // 3 times
-  [SONIC]: "1000000"
+  [SONIC]: "1000000",
+  [BERACHAIN]: "1000000"
 };
 
 export const MAX_GAS_PRICE_MAP = {
@@ -53,7 +57,8 @@ export const MAX_GAS_PRICE_MAP = {
   [BSCTESTNET]: "20000000",
   [UNICHAINTESTNET]: "0",
   [BSC]: "0",
-  [SONIC]: "1000000"
+  [SONIC]: "1000000",
+  [BERACHAIN]: "1000000"
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -63,7 +68,8 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [BSCTESTNET]: 10,
   [UNICHAINTESTNET]: 10,
   [BSC]: 10,
-  [SONIC]: 10
+  [SONIC]: 10,
+  [BERACHAIN]: 10
 };
 
 const constants = {
@@ -160,6 +166,12 @@ const constants = {
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
+  },
+  [BERACHAIN]: {
+    nativeTokenSymbol: "BERA",
+    wrappedTokenSymbol: "WBERA",
+    defaultCollateralSymbol: "HONEY",
+    defaultFlagOrdersEnabled: true,
   }
 };
 
@@ -208,6 +220,11 @@ export const SONIC_RPC_PROVIDER = [
   "https://rpc.soniclabs.com",
 ];
 
+export const BERACHAIN_RPC_PROVIDER = [
+  "https://rpc.berachain.com",
+];
+
+
 export const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [PEGASUS]: PEGASUS_RPC_PROVIDERS,
@@ -215,7 +232,8 @@ export const RPC_PROVIDERS = {
   [BSCTESTNET]: BSC_TESTNET_RPC_PROVIDER,
   [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER,
   [BSC]: BSC_RPC_PROVIDERS,
-  [SONIC]: SONIC_RPC_PROVIDER
+  [SONIC]: SONIC_RPC_PROVIDER,
+  [BERACHAIN]: BERACHAIN_RPC_PROVIDER
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -225,7 +243,8 @@ export const FALLBACK_PROVIDERS = {
   [BSCTESTNET]: [BSC_TESTNET_RPC_PROVIDER[0]],
   [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]],
   [BSC]: [BSC_RPC_PROVIDERS[0]],
-  [SONIC]: [SONIC_RPC_PROVIDER[0]]
+  [SONIC]: [SONIC_RPC_PROVIDER[0]],
+  [BERACHAIN]: [BERACHAIN_RPC_PROVIDER[0]]
 };
 
 export const NETWORK_METADATA = {
@@ -294,6 +313,17 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: SONIC_RPC_PROVIDER,
     blockExplorerUrls: [getExplorerUrl(SONIC)],
+  },
+  [BERACHAIN]: {
+    chainId: "0x" + BERACHAIN.toString(16),
+    chainName: "Berachain",
+    nativeCurrency: {
+      name: "BERA",
+      symbol: "BERA",
+      decimals: 18,
+    },
+    rpcUrls: BERACHAIN_RPC_PROVIDER,
+    blockExplorerUrls: [getExplorerUrl(BERACHAIN)],
   }
 };
 
@@ -346,6 +376,8 @@ export function getExplorerUrl(chainId) {
     return "https://bscscan.com/"
   } else if (chainId === SONIC) {
     return "https://sonicscan.org/"
+  } else if (chainId === BERACHAIN) {
+    return "https://berachain.com/"
   }
   return "https://phoenix.lightlink.io/";
 }

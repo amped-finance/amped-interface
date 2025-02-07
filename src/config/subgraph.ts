@@ -1,4 +1,4 @@
-import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC } from "./chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, BERACHAIN } from "./chains";
 
 export const SUBGRAPH_URLS = {
   [ARBITRUM]: {
@@ -65,7 +65,17 @@ export const SUBGRAPH_URLS = {
     raw:"https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",  
     price: "https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",
     ordernew: "https://api.studio.thegraph.com/query/91379/amped-orders-sonic/version/latest",
-    points: "https://graph.phoenix.lightlink.io/query/subgraphs/name/amped-finance/leaderboard"
+    points: "https://api.studio.thegraph.com/query/91379/amped-leaderboard-sonic/version/latest"
+  },
+
+  [BERACHAIN]: {
+    stats: "https://api.studio.thegraph.com/query/91379/amped-trades-bera/version/latest",
+    referrals: "https://api.studio.thegraph.com/query/91379/amped-referrals-bera/version/latest",
+    trades:"https://api.studio.thegraph.com/query/91379/amped-trades-bera/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/91379/amped-trades-bera/version/latest",  
+    price: "https://api.studio.thegraph.com/query/91379/amped-trades-bera/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/91379/amped-orders-bera/version/latest",
+    points: "https://api.studio.thegraph.com/query/91379/amped-leaderboard-bera/version/latest"
   },
   
   common: {
