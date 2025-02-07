@@ -88,7 +88,9 @@ import {
   UNICHAINTESTNET_RPC_PROVIDERS,
   UNICHAIN_TESTNET_RPC_PROVIDER,
   SONIC,
-  SONIC_RPC_PROVIDER
+  SONIC_RPC_PROVIDER,
+  BERACHAIN,
+  BERACHAIN_RPC_PROVIDER
 } from "config/chains";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -188,6 +190,10 @@ function getWsProvider(active, chainId) {
 
   if (chainId === BSC) {
     return bscProvider;
+  }
+
+  if (chainId === BERACHAIN) {
+    return berachainProvider;
   }
 }
 
@@ -491,7 +497,8 @@ function FullApp() {
       chainId === BSCTESTNET ||
       chainId === UNICHAINTESTNET ||
       chainId === BSC ||
-      chainId === SONIC
+      chainId === SONIC ||
+      chainId === BERACHAIN
         ? Vault.abi
         : VaultV2b.abi;
 
