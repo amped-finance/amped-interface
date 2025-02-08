@@ -529,7 +529,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "HONEY",
       symbol: "HONEY",
       decimals: 18,
-      address: "0x406a4A676b84F90B6Bd05ae0e80c002DD5879415",
+      address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/54194/standard/honey.png?1738725085",
     },
