@@ -20,10 +20,10 @@ export const ACTIVE_CHAIN_IDS = [PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC, 
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
-  [PEGASUS]: false,
+  [PEGASUS]: true,
   [PHOENIX]: false,
-  [BSCTESTNET]: false,
-  [UNICHAINTESTNET]: false,
+  [BSCTESTNET]: true,
+  [UNICHAINTESTNET]: true,
   [BSC]: false,
   [SONIC]: false,
   [BERACHAIN]: false
