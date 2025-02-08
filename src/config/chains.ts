@@ -268,7 +268,7 @@ export const NETWORK_METADATA = {
   },
    [PHOENIX]: {
     chainId: "0x" + PHOENIX.toString(16),
-    chainName: "Phoenix",
+    chainName: "LightLink",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
