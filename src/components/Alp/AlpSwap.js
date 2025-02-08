@@ -64,6 +64,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { isSafeApp, getSafeProvider } from "../../lib/safe/SafeAppProvider";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 const { AddressZero } = ethers.constants;
 
@@ -148,13 +150,7 @@ export default function AlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedAlpTrackerAddress, usdgAddress];
 
   const tokenAddresses = tokens.map((token) => token.address);
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider();
-  const library = useMemo(() => {
-    if (walletProvider) {
-      return new ethers.providers.Web3Provider(walletProvider);      
-    }
-  }, [walletProvider])
+  const { active, account, provider: library } = useWeb3Connection();
 
   const { data: tokenBalances } = useSWR(
     [`AlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
@@ -514,7 +510,7 @@ export default function AlpSwap(props) {
     if (IS_NETWORK_DISABLED[chainId]) {
       return false;
     }
-    if (!active) {
+    if (!active && !isSafeApp()) {
       return true;
     }
     const [error, modal] = getError();
@@ -538,7 +534,7 @@ export default function AlpSwap(props) {
   };
 
   const getPrimaryText = () => {
-    if (!active) {
+    if (!active && !isSafeApp()) {
       return t`Connect Wallet`;
     }
     const [error, modal] = getError();
@@ -636,7 +632,7 @@ export default function AlpSwap(props) {
   };
 
   const onClickPrimary = () => {
-    if (!active) {
+    if (!active && !isSafeApp()) {
       connectWallet();
       return;
     }
