@@ -19,7 +19,8 @@ const FEED_ID_MAP = {
   SOL_USD: "0xef0d8b6fda2ceba41da15d4095d1da392a0d2f8ed0c6c7bc0f4cfac8c280b56d",
   LL_USD: "0x2805c8894235111024c54253267f2b325be23763d534d2051742e39234b5835a",
   S_USD: "0xf490b178d0c85683b7a0f2388b40af2e6f7c90cbe0f96b31f315f08d0e5a2d6d",
-  WBERA_USD: "0x962088abcfdbdb6e30db2e340c8cf887d9efb311b1f2f17b155a63dbb6d40265"
+  WBERA_USD: "0x962088abcfdbdb6e30db2e340c8cf887d9efb311b1f2f17b155a63dbb6d40265",
+  BERA_USD: "0x962088abcfdbdb6e30db2e340c8cf887d9efb311b1f2f17b155a63dbb6d40265"
 };
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
