@@ -14,9 +14,9 @@ export const BERACHAIN = 80094
 export const DEFAULT_CHAIN_ID = SONIC;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PHOENIX, BSC, SONIC, BERACHAIN];
+export const SUPPORTED_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN];
 
-export const ACTIVE_CHAIN_IDS = [PHOENIX, BSC, SONIC, BERACHAIN]
+export const ACTIVE_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -24,14 +24,14 @@ export const IS_NETWORK_DISABLED = {
   [PHOENIX]: false,
   [BSCTESTNET]: true,
   [UNICHAINTESTNET]: true,
-  [BSC]: false,
+  [BSC]: true,
   [SONIC]: false,
   [BERACHAIN]: false
 };
 
 export const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
-  [PHOENIX]: "LightLink Mainnet",
+  [PHOENIX]: "LightLink",
   [PEGASUS]: "LightLink Testnet",
   [BSCTESTNET]: "BSC Testnet",
   [UNICHAINTESTNET]: "Unichain Testnet",
