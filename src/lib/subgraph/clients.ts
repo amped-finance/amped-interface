@@ -1,6 +1,6 @@
 import { createClient } from "./utils";
 import { SUBGRAPH_URLS } from "config/subgraph";
-import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC } from "config/chains";
+import { ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, BERACHAIN } from "config/chains";
 
 export const chainlinkClient = createClient(SUBGRAPH_URLS.common.chainLink);
 
@@ -44,6 +44,12 @@ export const sonicGraphClientForTrades = createClient(SUBGRAPH_URLS[SONIC].trade
 export const sonicGraphClientForRaw = createClient(SUBGRAPH_URLS[SONIC].raw);
 export const sonicGraphClientForPoints = createClient(SUBGRAPH_URLS[SONIC].points);
 
+export const berachainGraphClient = createClient(SUBGRAPH_URLS[BERACHAIN].stats);
+export const berachainReferralsGraphClient = createClient(SUBGRAPH_URLS[BERACHAIN].referrals);
+export const berachainGraphClientForTrades = createClient(SUBGRAPH_URLS[BERACHAIN].trades);
+export const berachainGraphClientForRaw = createClient(SUBGRAPH_URLS[BERACHAIN].raw);
+export const berachainGraphClientForPoints = createClient(SUBGRAPH_URLS[BERACHAIN].points);
+
 export function getAmpGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
     return arbitrumGraphClient;
@@ -59,6 +65,8 @@ export function getAmpGraphClient(chainId: number) {
     return bscGraphClient
   } else if (chainId === SONIC) {
     return sonicGraphClient
+  } else if (chainId === BERACHAIN) {
+    return berachainGraphClient
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -79,6 +87,8 @@ export function getTradesGraphClient(chainId: number) {
     return bscGraphClientForTrades
   } else if (chainId === SONIC) {
     return sonicGraphClientForTrades
+  } else if (chainId === BERACHAIN) {
+    return berachainGraphClientForTrades
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -99,6 +109,8 @@ export function getPointsGraphClient(chainId: number) {
     return bscGraphClientForPoints
   } else if (chainId === SONIC) {
     return sonicGraphClientForPoints
+  } else if (chainId === BERACHAIN) {
+    return berachainGraphClientForPoints
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -117,6 +129,8 @@ export function getRawGraphClient(chainId: number) {
     return bscGraphClientForRaw
   } else if (chainId === SONIC) {
     return sonicGraphClientForRaw
+  } else if (chainId === BERACHAIN) {
+    return berachainGraphClientForRaw
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -137,6 +151,8 @@ export function getAmpGraphClientByNewCreate(chainId: number) {
     return createClient(SUBGRAPH_URLS[BSC].stats)
   } else if (chainId === SONIC) {
     return createClient(SUBGRAPH_URLS[SONIC].stats)
+  } else if (chainId === BERACHAIN) {
+    return createClient(SUBGRAPH_URLS[BERACHAIN].stats)
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
@@ -157,6 +173,8 @@ export function getAmpGraphClientByNewCreateOrder(chainId: number) {
     return createClient(SUBGRAPH_URLS[BSC].ordernew)
   } else if (chainId === SONIC) {
     return createClient(SUBGRAPH_URLS[SONIC].ordernew)
+  } else if (chainId === BERACHAIN) {
+    return createClient(SUBGRAPH_URLS[BERACHAIN].ordernew)
   }
 
   throw new Error(`Unsupported chain ${chainId}`);

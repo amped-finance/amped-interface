@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, getChainName } from "config/chains";
+import { BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, BERACHAIN, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
@@ -250,13 +250,25 @@ export default function DashboardV2() {
 
   // const { data: feesSummaryByChain } = useFeesSummary();
   // const feesSummary = feesSummaryByChain[chainId];
-  let eth
-  if (chainId === BSCTESTNET || chainId === BSC)
-    eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
-  else if (chainId === SONIC)
-    eth = infoTokens[getTokenBySymbol(chainId, "wS").address];
-  else 
-    eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
+  let eth;
+  try {
+    if (chainId === BSCTESTNET || chainId === BSC) {
+      const token = getTokenBySymbol(chainId, "WBNB");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else if (chainId === SONIC) {
+      const token = getTokenBySymbol(chainId, "wS");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else if (chainId === BERACHAIN) {
+      const token = getTokenBySymbol(chainId, "WBERA");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else {
+      const token = getTokenBySymbol(chainId, "WETH");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    }
+  } catch (error) {
+    console.error("Error getting token info:", error);
+    eth = null;
+  }
 
   // const shouldIncludeCurrrentFees =
   //   feesSummaryByChain[chainId].lastUpdatedAt &&

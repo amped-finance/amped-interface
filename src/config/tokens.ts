@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC } from "./chains";
+import { ARBITRUM, BSCTESTNET, PEGASUS, PHOENIX, UNICHAINTESTNET, BSC, SONIC, BERACHAIN } from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -497,6 +497,50 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
     }    
+  ],
+  [BERACHAIN]: [
+    {
+      name: "BERA",
+      symbol: "BERA",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/25235/standard/BERA.png?1738822008",
+    },
+    {
+      name: "Wrapped BERA",
+      symbol: "WBERA",
+      decimals: 18,
+      address: "0x6969696969696969696969696969696969696969",
+      isWrapped: true,
+      baseSymbol: "BERA",
+      imageUrl: "https://assets.coingecko.com/coins/images/54219/standard/BERA_%282%29.png?1738848488",
+    },
+    {
+      name: "Wrapped Ether",
+      symbol: "WETH",
+      decimals: 18,
+      isShortable: true,
+      address: "0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/standard/weth.png?1696503332",
+    },
+    {
+      name: "HONEY",
+      symbol: "HONEY",
+      decimals: 18,
+      address: "0xfcbd14dc51f0a4d49d5e53c2e0950e0bc26d0dce",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/54194/standard/honey.png?1738725085",
+    },
+    {
+      name: "USDC",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0x549943e04f40284185054145c6e4e9568c1d3241",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/standard/usdc.png?1696506694",
+    },
   ]
 };
 
@@ -608,6 +652,27 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
     },
   ],
+  [BERACHAIN]: [
+    {
+      name: "AMP",
+      symbol: "AMP",
+      address: getContract(BERACHAIN, "AMP"),
+      decimals: 18,
+      imageUrl: "",
+    },
+    {
+      name: "Escrowed AMP",
+      symbol: "esAMP",
+      address: getContract(BERACHAIN, "ES_AMP"),
+      decimals: 18,
+    },
+    {
+      name: "AMP LP",
+      symbol: "ALP",
+      address: getContract(BERACHAIN, "ALP"),
+      decimals: 18,
+    },
+  ] 
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -690,6 +755,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "ALP",
       decimals: 18,
       address: getContract(SONIC, "ALP"),
+      imageUrl: "",
+    },
+  },
+  [BERACHAIN]: {
+    AMP: {
+      name: "AMP",
+      symbol: "AMP",
+      decimals: 18,
+      address: getContract(BERACHAIN, "AMP"),
+      imageUrl: "",
+    },
+    ALP: {
+      name: "AMP LP",
+      symbol: "ALP",
+      decimals: 18,
+      address: getContract(BERACHAIN, "ALP"),
       imageUrl: "",
     },
   },
@@ -918,6 +999,24 @@ export const ICONLINKS = {
       sonic: "https://sonicscan.org/token/0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c"
     },
   },
+  [BERACHAIN]: {
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      berachain: "https://berascan.com/address/0x549943e04f40284185054145c6e4e9568c1d3241",
+    },
+    HONEY: {
+      coingecko: "https://www.coingecko.com/en/coins/honey-berachain",
+      berachain: "https://berascan.com/address/0x406a4A676b84F90B6Bd05ae0e80c002DD5879415",
+    },
+    WETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      berachain: "https://berascan.com/address/0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
+    },
+    wBERA: {
+      coingecko: "https://www.coingecko.com/en/coins/bera",
+      berachain: "https://berascan.com/address/0x6969696969696969696969696969696969696969",
+    }
+  },
 };
 
 export const ALP_POOL_COLORS = {
@@ -945,7 +1044,10 @@ export const ALP_POOL_COLORS = {
   S: "#FE9A4C",
   EURC: "#2775CA",
   WETH: "#6062a6",
-  ANON: "#C2330F"
+  ANON: "#C2330F",
+  BERA: "#814625",
+  WBERA: "#814625",
+  HONEY: "#ebb268",
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
@@ -953,7 +1055,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC];
+const CHAIN_IDS = [ARBITRUM, PEGASUS, PHOENIX, BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, BERACHAIN];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
