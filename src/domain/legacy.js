@@ -1714,7 +1714,7 @@ export function useAmpPrice(chainId, library, active) {
   // };
 
   return {
-    ampPrice: ethers.utils.parseUnits("0.1", 30),
+    ampPrice: ethers.utils.parseUnits("0", 30),
     mutate: null,
   };
 }
