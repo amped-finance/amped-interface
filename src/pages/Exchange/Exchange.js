@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle, act } from "react";
 import { Trans, t, Plural } from "@lingui/macro";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -50,15 +50,8 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import {
-  useWeb3Modal,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-  useDisconnect,
-  createWeb3Modal,
-  defaultConfig
-} from "@web3modal/ethers5/react";
 import ExchangeTVChartPyth from "components/Exchange/ExchangeTVChartPyth";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 const { AddressZero } = ethers.constants;
 
@@ -398,13 +391,7 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider();
-  const library = useMemo(() => {
-    if (walletProvider) {
-      return new ethers.providers.Web3Provider(walletProvider);
-    }
-  }, [walletProvider])
+  const { active, account, provider: library, connect } = useWeb3Connection();
   const { chainId } = useChainId();
   const currentAccount = account;
 
@@ -985,7 +972,7 @@ export const Exchange = forwardRef((props, ref) => {
             chainId={chainId}
             infoTokens={infoTokens}
             active={active}
-            connectWallet={connectWallet}
+            connectWallet={connect}
             library={library}
             account={account}
             positionsMap={positionsMap}
