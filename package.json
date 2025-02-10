@@ -68,8 +68,8 @@
   },
   "scripts": {
     "start": "PORT=3010 react-scripts start",
-    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
+    "start-home": "npm run lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
+    "start-app": "npm run lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
     "start-win": "set PORT=3010&react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
@@ -81,7 +81,7 @@
     "prepare": "husky install && npm run lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
-    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:prepare": "NODE_ENV=development npm run extract && npm run compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -113,5 +113,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "npm"
 }
