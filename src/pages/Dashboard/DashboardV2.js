@@ -49,7 +49,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BSCTESTNET, UNICHAINTESTNET, BSC, getChainName } from "config/chains";
+import { BSCTESTNET, UNICHAINTESTNET, BSC, SONIC, BERACHAIN, getChainName } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, ALP_POOL_COLORS } from "config/tokens";
@@ -250,11 +250,25 @@ export default function DashboardV2() {
 
   // const { data: feesSummaryByChain } = useFeesSummary();
   // const feesSummary = feesSummaryByChain[chainId];
-  let eth
-  if (chainId === BSCTESTNET || chainId === BSC)
-    eth = infoTokens[getTokenBySymbol(chainId, "WBNB").address];
-  else 
-    eth = infoTokens[getTokenBySymbol(chainId, "WETH").address];
+  let eth;
+  try {
+    if (chainId === BSCTESTNET || chainId === BSC) {
+      const token = getTokenBySymbol(chainId, "WBNB");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else if (chainId === SONIC) {
+      const token = getTokenBySymbol(chainId, "wS");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else if (chainId === BERACHAIN) {
+      const token = getTokenBySymbol(chainId, "WBERA");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    } else {
+      const token = getTokenBySymbol(chainId, "WETH");
+      eth = token && token.address && infoTokens ? infoTokens[token.address] : null;
+    }
+  } catch (error) {
+    console.error("Error getting token info:", error);
+    eth = null;
+  }
 
   // const shouldIncludeCurrrentFees =
   //   feesSummaryByChain[chainId].lastUpdatedAt &&
@@ -342,88 +356,59 @@ export default function DashboardV2() {
   }
 
   const getWeightText = (tokenInfo) => {
-    if (
-      !tokenInfo.weight ||
-      !tokenInfo.usdgAmount ||
-      !adjustedUsdgSupply ||
-      adjustedUsdgSupply.eq(0) ||
-      !totalTokenWeights
-    ) {
+    if (!tokenInfo || !tokenInfo.managedUsd || !aum || !tokenInfo.weight || !totalTokenWeights) {
       return "...";
     }
 
-    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    // use add(1).div(10).mul(10) to round numbers up
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
+    try {
+      const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+      const targetWeightText = formatAmount(targetWeightBps, 2, 2, false);
 
-    const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
-      targetWeightBps,
-      2,
-      2,
-      false
-    )}%`;
+      let currentWeightBps = bigNumberify(0);
+      if (tokenInfo.managedUsd && aum.gt(0)) {
+        currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
+      }
 
-    return (
-      <TooltipComponent
-        handle={weightText}
-        position="right-bottom"
-        renderContent={() => {
-          return (
-            <>
-              <StatsTooltipRow
-                label={t`Current Weight`}
-                value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
-                showDollar={false}
-              />
-              <StatsTooltipRow
-                label={t`Target Weight`}
-                value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
-                showDollar={false}
-              />
-              <br />
-              {currentWeightBps.lt(targetWeightBps) && (
-                <div className="text-black">
-                  <Trans>
-                    {tokenInfo.symbol} is below its target weight.
-                    <br />
-                    <br />
-                    Get lower fees to{" "}
-                    <Link to="/buy_alp" target="_blank" rel="noopener noreferrer">
-                      buy ALP
-                    </Link>{" "}
-                    with {tokenInfo.symbol},&nbsp; and to{" "}
-                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                      swap
-                    </Link>{" "}
-                    {tokenInfo.symbol} for other tokens.
-                  </Trans>
-                </div>
-              )}
-              {currentWeightBps.gt(targetWeightBps) && (
-                <div className="text-black">
-                  <Trans>
-                    {tokenInfo.symbol} is above its target weight.
-                    <br />
-                    <br />
-                    Get lower fees to{" "}
-                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                      swap
-                    </Link>{" "}
-                    tokens for {tokenInfo.symbol}.
-                  </Trans>
-                </div>
-              )}
-              <br />
-              <div>
-                <ExternalLink href="https://amped.gitbook.io/amped/">
-                  <Trans>More Info</Trans>
-                </ExternalLink>
-              </div>
-            </>
-          );
-        }}
-      />
-    );
+      const currentWeightText = currentWeightBps.lt(100)
+        ? formatAmount(currentWeightBps, 4, 4, false)
+        : formatAmount(currentWeightBps, 2, 2, false);
+
+      return (
+        <TooltipComponent
+          handle={`${currentWeightText}% / ${targetWeightText}%`}
+          position="right-bottom"
+          renderContent={() => {
+            return (
+              <>
+                <StatsTooltipRow
+                  label={t`Current Weight`}
+                  value={`${currentWeightText}%`}
+                  showDollar={false}
+                />
+                <StatsTooltipRow
+                  label={t`Target Weight`}
+                  value={`${targetWeightText}%`}
+                  showDollar={false}
+                />
+                <StatsTooltipRow
+                  label={t`Pool Amount`}
+                  value={formatAmount(tokenInfo.managedUsd || 0, USD_DECIMALS, 2, true)}
+                  showDollar={true}
+                />
+                <StatsTooltipRow
+                  label={t`Total Pool`}
+                  value={formatAmount(aum || 0, USD_DECIMALS, 2, true)}
+                  showDollar={true}
+                />
+              </>
+            );
+          }}
+        />
+      );
+    } catch (ex) {
+      // If any calculation fails, return loading state
+      return "...";
+    }
   };
 
   let stakedPercent = 0;
@@ -463,8 +448,8 @@ export default function DashboardV2() {
 
   let alpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
-    if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+    if (tokenInfo.managedUsd && aum && aum.gt(0)) {
+      const currentWeightBps = tokenInfo.managedUsd.mul(BASIS_POINTS_DIVISOR).div(aum);
       if (tokenInfo.isStable) {
         stableAlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
       }

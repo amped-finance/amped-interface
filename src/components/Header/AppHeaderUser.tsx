@@ -1,8 +1,9 @@
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
+import { isSafeApp, getSafeInfo } from "../../lib/safe/SafeAppProvider";
 
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
@@ -14,14 +15,7 @@ import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import { SUPPORTED_CHAIN_IDS, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import {
-  useWeb3Modal,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-  useDisconnect,
-  createWeb3Modal,
-  defaultConfig
-} from "@web3modal/ethers5/react";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 type Props = {
   openSettings: () => void;
@@ -40,10 +34,23 @@ export function AppHeaderUser({
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
+  const { active, account, connect } = useWeb3Connection();
   const { chainId } = useChainId();
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { open } = useWeb3Modal()
   const showConnectionOptions = !isHomeSite();
+
+  // Get Safe info if we're in a Safe app
+  const safeInfo = useMemo(() => {
+    if (isSafeApp()) {
+      return getSafeInfo();
+    }
+    return null;
+  }, []);
+
+  useEffect(() => {
+    if (active || safeInfo) {
+      setWalletModalVisible(false);
+    }
+  }, [active, safeInfo, setWalletModalVisible]);
 
   // const networkOptions = [
   //   {
@@ -63,12 +70,6 @@ export function AppHeaderUser({
       }
     })
 
-  useEffect(() => {
-    if (active) {
-      setWalletModalVisible(false);
-    }
-  }, [active, setWalletModalVisible]);
-
   const onNetworkSelect = useCallback(
     (option) => {
       if (option.value === chainId) {
@@ -81,7 +82,11 @@ export function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
-  if (!active) {
+  // Use Safe address if available, otherwise use account from web3modal
+  const displayAddress = safeInfo?.safeAddress || account;
+  const accountUrl = getAccountUrl(chainId, displayAddress);
+
+  if (!active && !isSafeApp()) {
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
@@ -97,7 +102,7 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={open}>
+            <ConnectWalletButton onClick={connect}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown
@@ -114,8 +119,6 @@ export function AppHeaderUser({
       </div>
     );
   }
-
-  const accountUrl = getAccountUrl(chainId, account);
 
   return (
     <div className="App-header-user">
@@ -134,7 +137,7 @@ export function AppHeaderUser({
         <>
           <div className="App-header-user-address">
             <AddressDropdown
-              account={account}
+              account={displayAddress}
               accountUrl={accountUrl}
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />

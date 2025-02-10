@@ -53,6 +53,7 @@ import {
   createWeb3Modal,
   defaultConfig
 } from "@web3modal/ethers5/react";
+import useWeb3Connection from "hooks/useWeb3Connection";
 
 const { AddressZero } = ethers.constants;
 
@@ -910,13 +911,8 @@ function ClaimModal(props) {
 }
 
 export default function StakeV2({ setPendingTxns, connectWallet }) {
-  const { isConnected: active, address: account } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider();
-  const library = useMemo(() => {
-    if (walletProvider) {
-      return new ethers.providers.Web3Provider(walletProvider);      
-    }
-  }, [walletProvider])
+  const { active, account, provider: library } = useWeb3Connection();
+
   const { chainId } = useChainId();
 
   const chainName = getChainName(chainId);

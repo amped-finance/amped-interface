@@ -2402,8 +2402,8 @@ export default function SwapBox(props) {
         </div>
         <div className="Exchange-info-row">
           <div className="Exchange-info-label-button">
-            <ExternalLink href="https://amped.gitbook.io/amped/trading#backup-rpc-urls">
-              <Trans>Speed up page loading</Trans>
+            <ExternalLink href="https://t.me/BellaSignalBot?start=ads3">
+              <Trans>Bella Signal Bot</Trans>
             </ExternalLink>
           </div>
         </div>

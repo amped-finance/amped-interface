@@ -289,6 +289,26 @@
   a.App-header-user-account {
     margin-right: 0;
   }
+
+  .App-header-dropdown {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.8rem;
+  }
+
+  .App-header-link-container {
+    margin: 0;
+    margin-bottom: 0.8rem;
+  }
+
+  .App-header-dropdown-content {
+    position: static;
+    width: 100%;
+    background: transparent;
+    margin-left: 1.6rem;
+    margin-top: 0.4rem;
+  }
 }
 
 @media (max-width: 600px) {
@@ -334,4 +354,78 @@
   .App-header-drawer {
     background: #0e0f1f;
   }
+}
+
+/* Dropdown styles */
+.App-header-dropdown {
+  position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 1.8rem 1.7rem;
+  margin-right: 0.8rem;
+}
+
+.App-header-link-container {
+  margin-right: 0.8rem;
+}
+
+.App-header-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 12rem;
+  background: #17182c;
+  border-radius: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1000;
+}
+
+.App-header-dropdown:hover .App-header-dropdown-content {
+  opacity: 1;
+  visibility: visible;
+}
+
+.App-header-dropdown-content a,
+.App-header-dropdown-content .a {
+  padding: 1.2rem 1.6rem;
+  white-space: nowrap;
+  display: block;
+  color: #a0a3c4;
+  font-size: 1.4rem;
+  line-height: 1.8rem;
+  font-weight: normal;
+  text-align: left;
+}
+
+.App-header-dropdown-content a:hover,
+.App-header-dropdown-content .a:hover {
+  background: #303fd024;
+  color: white;
+}
+
+.App-header-dropdown-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.App-header-dropdown-label::after {
+  content: "▼";
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
+  opacity: 0.7;
+}
+
+.App-header-dropdown:hover .App-header-dropdown-label::after {
+  opacity: 1;
+}
+
+/* Reduce Trade button width */
+.btn-trade.btn-header {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  min-width: 8rem;
 }

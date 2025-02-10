@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
@@ -87,6 +87,11 @@ import {
   UNICHAINTESTNET,
   UNICHAINTESTNET_RPC_PROVIDERS,
   UNICHAIN_TESTNET_RPC_PROVIDER,
+  SONIC,
+  SONIC_RPC_PROVIDER,
+  BERACHAIN,
+  BERACHAIN_RPC_PROVIDER
+
 } from "config/chains";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -127,6 +132,7 @@ import { map, mapValues } from "lodash";
 import { ACTIVE_CHAIN_IDS, NETWORK_METADATA } from "config/chains";
 import Bridge from "pages/Bridge/Bridge";
 import Mif from "pages/Mif/Mif";
+import { useWeb3ConnectionContext, Web3ConnectionProvider } from "Context/Web3ConnectionContext";
 
 // import IDO from "pages/IDO/IDO";
 
@@ -147,13 +153,19 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const pegasusProvider = new ethers.providers.JsonRpcProvider(PEGASUS_RPC_PROVIDERS[0]);
 
-const phoenixProvider = new ethers.providers.JsonRpcProvider(PHOENIX_RPC_PROVIDERS[0]);
+const phoenixProvider = new ethers.providers.FallbackProvider(
+  PHOENIX_RPC_PROVIDERS.map((url, index) => new ethers.providers.JsonRpcProvider(url))
+);
 
 const bsctestnetProvider = new ethers.providers.JsonRpcProvider(BSC_TESTNET_RPC_PROVIDER[0]);
 
 const unichaintestnetProvider = new ethers.providers.JsonRpcProvider(UNICHAIN_TESTNET_RPC_PROVIDER[0]);
 
 const bscProvider = new ethers.providers.JsonRpcProvider(BSC_RPC_PROVIDERS[0]);
+
+const sonicProvider = new ethers.providers.JsonRpcProvider(SONIC_RPC_PROVIDER[0]);
+
+const berachainProvider = new ethers.providers.JsonRpcProvider(BERACHAIN_RPC_PROVIDER[0]);
 
 function getWsProvider(active, chainId) {
   if (!active) {
@@ -176,8 +188,16 @@ function getWsProvider(active, chainId) {
     return unichaintestnetProvider;
   }
 
+  if (chainId === SONIC) {
+    return sonicProvider;
+  }
+
   if (chainId === BSC) {
     return bscProvider;
+  }
+
+  if (chainId === BERACHAIN) {
+    return berachainProvider;
   }
 }
 
@@ -218,22 +238,17 @@ createWeb3Modal({
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { disconnect } = useDisconnect();
-  const { walletProvider } = useWeb3ModalProvider();
-  const { isConnected } = useWeb3ModalAccount();
-  const { open, close } = useWeb3Modal();
+  const {
+    account,
+    active,
+    provider,
+    connect: connectWallet,
+    disconnect,
+  } = useWeb3ConnectionContext();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
-  // const [activatingConnector, setActivatingConnector] = useState();
-  // useEffect(() => {
-  //   if (activatingConnector && activatingConnector === connector) {
-  //     setActivatingConnector(undefined);
-  //   }
-  // }, [activatingConnector, connector, chainId]);
-  // const triedEager = useEagerConnect(setActivatingConnector);
-  // useInactiveListener(!triedEager || !!activatingConnector);
 
   const query = useRouteQuery();
 
@@ -246,7 +261,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodeReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
@@ -340,7 +355,6 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
     useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
-  const connectWallet = () => open();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
@@ -421,11 +435,9 @@ function FullApp() {
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      if (!walletProvider) {
+      if (!provider) {
         return;
       }
-
-      const provider = new ethers.providers.Web3Provider(walletProvider);
 
       const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
@@ -469,7 +481,7 @@ function FullApp() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [walletProvider, pendingTxns, chainId]);
+  }, [provider, pendingTxns, chainId]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -480,11 +492,13 @@ function FullApp() {
       chainId === PHOENIX ||
       chainId === BSCTESTNET ||
       chainId === UNICHAINTESTNET ||
-      chainId === BSC
+      chainId === BSC ||
+      chainId === SONIC ||
+      chainId === BERACHAIN
         ? Vault.abi
         : VaultV2b.abi;
 
-    const wsProvider = getWsProvider(isConnected, chainId);
+    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -524,7 +538,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [isConnected, chainId, vaultAddress, positionRouterAddress]);
+  }, [active, chainId, vaultAddress, positionRouterAddress]);
 
   return (
     <>
@@ -741,13 +755,15 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <RefreshContextProvider>
-        <SEO>
+        <Web3ConnectionProvider>
           <Router>
             <I18nProvider i18n={i18n}>
-              <FullApp />
+              <SEO>
+                <FullApp />
+              </SEO>
             </I18nProvider>
           </Router>
-        </SEO>
+        </Web3ConnectionProvider>
       </RefreshContextProvider>
     </SWRConfig>
   );
