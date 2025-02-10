@@ -122,7 +122,7 @@ export default function Mif() {
     if (data?.success) {
       setPools(data?.data?.items);
       if (!isEmpty(data?.data?.items)) {
-        setSelectPool(data?.data?.items[0]);
+        setSelectPool(data?.data?.items[7]);
       }
     } else {
       setPools([]);
@@ -647,9 +647,13 @@ export default function Mif() {
               </div>
             </div>
 
-            {/* <div className="mif-table-txn">
-              <TxnHistories trigger={triggerFetch} />
-            </div> */}
+            <div className="mif-table-txn">
+              <TxnHistories
+                trigger={triggerFetch}
+                metadata={metadata}
+                selectPool={selectPool}
+              />
+            </div>
           </div>
         </div>
         {showModalCreateIndex && (
