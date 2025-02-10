@@ -69,8 +69,8 @@
   },
   "scripts": {
     "start": "PORT=3010 react-scripts start",
-    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
+    "start-home": "npm run lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
+    "start-app": "npm run lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
     "start-win": "set PORT=3010&react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false npx react-scripts build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home npx react-scripts build",
@@ -79,10 +79,10 @@
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install && yarn lingui:prepare",
+    "prepare": "husky install && npm run lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
-    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:prepare": "NODE_ENV=development npm run extract && npm run compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -99,10 +99,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@lingui/cli": "^3.13.3",
     "@lingui/loader": "3.14.0",
     "@lingui/macro": "3.13.3",
-    "eslint": "7.32.0",
+    "eslint": "^8.0.0",
     "eslint-config-react-app": "^7.0.1",
     "husky": "^8.0.3",
     "lint-staged": "12.3.4",
@@ -114,5 +115,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "npm"
 }

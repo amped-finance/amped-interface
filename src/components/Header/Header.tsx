@@ -71,7 +71,7 @@ export function Header({
               variants={fadeVariants}
               transition={{ duration: 0.2 }}
               onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-            ></motion.div>
+            />
           )}
         </AnimatePresence>
       )}
@@ -86,7 +86,7 @@ export function Header({
               variants={fadeVariants}
               transition={{ duration: 0.2 }}
               onClick={() => setIsNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
-            ></motion.div>
+            />
           )}
         </AnimatePresence>
       )}
@@ -97,7 +97,6 @@ export function Header({
               <img src={logoImg} className="big" alt="AMP Logo" />
               <img src={logoSmallImg} className="small" alt="AMP Logo" />
             </Link>
-            
           </div>
           <div className="App-header-container-left">
             <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
@@ -150,12 +149,9 @@ export function Header({
             animate="visible"
             exit="hidden"
             variants={slideVariants}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
           >
             <AppHeaderLinks
-              small
-              openSettings={openSettings}
-              clickCloseIcon={() => setIsDrawerVisible(false)}
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             />
