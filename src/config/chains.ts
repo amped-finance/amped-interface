@@ -1,22 +1,23 @@
 import { ethers } from "ethers";
+import { APP_ENVIRONMENTS } from "./env";
 
 const { parseEther } = ethers.utils;
 
 export const ARBITRUM = 42161;
-export const PEGASUS = 1891
-export const PHOENIX = 1890
-export const BSC = 56
-export const BSCTESTNET = 97
-export const UNICHAINTESTNET = 1301
-export const SONIC = 146
-export const BERACHAIN = 80094
+export const PEGASUS = 1891;
+export const PHOENIX = 1890;
+export const BSC = 56;
+export const BSCTESTNET = 97;
+export const UNICHAINTESTNET = 1301;
+export const SONIC = 146;
+export const BERACHAIN = 80094;
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = SONIC;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN];
+export const SUPPORTED_CHAIN_IDS = APP_ENVIRONMENTS.IS_PRODUCTION ? [PHOENIX, SONIC, BERACHAIN] : [PEGASUS];
 
-export const ACTIVE_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN]
+export const ACTIVE_CHAIN_IDS = APP_ENVIRONMENTS.IS_PRODUCTION ? [PHOENIX, SONIC, BERACHAIN] : [PEGASUS];
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -26,7 +27,7 @@ export const IS_NETWORK_DISABLED = {
   [UNICHAINTESTNET]: true,
   [BSC]: true,
   [SONIC]: false,
-  [BERACHAIN]: false
+  [BERACHAIN]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -37,7 +38,7 @@ export const CHAIN_NAMES_MAP = {
   [UNICHAINTESTNET]: "Unichain Testnet",
   [BSC]: "BNB Smart Chain",
   [SONIC]: "Sonic",
-  [BERACHAIN]: "Berachain"
+  [BERACHAIN]: "Berachain",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -48,7 +49,7 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [UNICHAINTESTNET]: "1000000", // 3 times
   [BSC]: "1000000", // 3 times
   [SONIC]: "1000000",
-  [BERACHAIN]: "1000000"
+  [BERACHAIN]: "1000000",
 };
 
 export const MAX_GAS_PRICE_MAP = {
@@ -58,7 +59,7 @@ export const MAX_GAS_PRICE_MAP = {
   [UNICHAINTESTNET]: "0",
   [BSC]: "0",
   [SONIC]: "1000000",
-  [BERACHAIN]: "1000000"
+  [BERACHAIN]: "1000000",
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
@@ -69,7 +70,7 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [UNICHAINTESTNET]: 10,
   [BSC]: 10,
   [SONIC]: 10,
-  [BERACHAIN]: 10
+  [BERACHAIN]: 10,
 };
 
 const constants = {
@@ -179,7 +180,7 @@ const constants = {
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.001"),
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0011"),
-  }
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["amp.io", "app.amp.io"];
@@ -208,29 +209,18 @@ export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed3.binance.org",
   "https://bsc-dataseed4.binance.org",
 ];
-export const PEGASUS_RPC_PROVIDERS = [
-  "https://replicator.pegasus.lightlink.io/rpc/v1",  
-];
+export const PEGASUS_RPC_PROVIDERS = ["https://replicator.pegasus.lightlink.io/rpc/v1"];
 export const PHOENIX_RPC_PROVIDERS = [
   "https://replicator.phoenix.lightlink.io/rpc/v1",
-  "https://endpoints.omniatech.io/v1/lightlink/phoenix/public"
+  "https://endpoints.omniatech.io/v1/lightlink/phoenix/public",
 ];
 
-export const BSC_TESTNET_RPC_PROVIDER = [
-  "https://bsc-testnet.blastapi.io/c9643dfa-4f00-4b9f-82e3-039e3068afa0",  
-];
-export const UNICHAIN_TESTNET_RPC_PROVIDER = [
-  "https://sepolia.unichain.org",
-];
+export const BSC_TESTNET_RPC_PROVIDER = ["https://bsc-testnet.blastapi.io/c9643dfa-4f00-4b9f-82e3-039e3068afa0"];
+export const UNICHAIN_TESTNET_RPC_PROVIDER = ["https://sepolia.unichain.org"];
 
-export const SONIC_RPC_PROVIDER = [
-  "https://rpc.soniclabs.com",
-];
+export const SONIC_RPC_PROVIDER = ["https://rpc.soniclabs.com"];
 
-export const BERACHAIN_RPC_PROVIDER = [
-  "https://rpc.berachain.com",
-];
-
+export const BERACHAIN_RPC_PROVIDER = ["https://rpc.berachain.com"];
 
 export const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
@@ -240,7 +230,7 @@ export const RPC_PROVIDERS = {
   [UNICHAINTESTNET]: UNICHAIN_TESTNET_RPC_PROVIDER,
   [BSC]: BSC_RPC_PROVIDERS,
   [SONIC]: SONIC_RPC_PROVIDER,
-  [BERACHAIN]: BERACHAIN_RPC_PROVIDER
+  [BERACHAIN]: BERACHAIN_RPC_PROVIDER,
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -251,7 +241,7 @@ export const FALLBACK_PROVIDERS = {
   [UNICHAINTESTNET]: [UNICHAIN_TESTNET_RPC_PROVIDER[0]],
   [BSC]: [BSC_RPC_PROVIDERS[0]],
   [SONIC]: [SONIC_RPC_PROVIDER[0]],
-  [BERACHAIN]: [BERACHAIN_RPC_PROVIDER[0]]
+  [BERACHAIN]: [BERACHAIN_RPC_PROVIDER[0]],
 };
 
 export const NETWORK_METADATA = {
@@ -266,7 +256,7 @@ export const NETWORK_METADATA = {
     rpcUrls: PEGASUS_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(PEGASUS)],
   },
-   [PHOENIX]: {
+  [PHOENIX]: {
     chainId: "0x" + PHOENIX.toString(16),
     chainName: "LightLink",
     nativeCurrency: {
@@ -331,7 +321,7 @@ export const NETWORK_METADATA = {
     },
     rpcUrls: BERACHAIN_RPC_PROVIDER,
     blockExplorerUrls: [getExplorerUrl(BERACHAIN)],
-  }
+  },
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -372,19 +362,19 @@ export function getExplorerUrl(chainId) {
   if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === PEGASUS) {
-    return "https://pegasus.lightlink.io/"
+    return "https://pegasus.lightlink.io/";
   } else if (chainId === PHOENIX) {
-    return "https://phoenix.lightlink.io/"
+    return "https://phoenix.lightlink.io/";
   } else if (chainId === BSCTESTNET) {
-    return "https://testnet.bscscan.com/"
+    return "https://testnet.bscscan.com/";
   } else if (chainId === UNICHAINTESTNET) {
-    return "https://sepolia.uniscan.xyz/"
+    return "https://sepolia.uniscan.xyz/";
   } else if (chainId === BSC) {
-    return "https://bscscan.com/"
+    return "https://bscscan.com/";
   } else if (chainId === SONIC) {
-    return "https://sonicscan.org/"
+    return "https://sonicscan.org/";
   } else if (chainId === BERACHAIN) {
-    return "https://berascan.com/"
+    return "https://berascan.com/";
   }
   return "https://phoenix.lightlink.io/";
 }

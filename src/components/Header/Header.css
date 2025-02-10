@@ -368,6 +368,8 @@
 
 .App-header-link-container {
   margin-right: 0.8rem;
+  display: flex;
+  align-items: center;
 }
 
 .App-header-dropdown-content {

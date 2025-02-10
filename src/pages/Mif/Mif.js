@@ -49,7 +49,7 @@ export default function Mif() {
   const { isConnected: active, address: account } = useWeb3ModalAccount();
 
   const [providerSourceChain, setProviderSourceChain] = useState(
-    new ethers.providers.JsonRpcProvider(APP_ENVIRONMENTS.CHAINS[ChainSupported.Lightlink].RPC)
+    new ethers.providers.JsonRpcProvider(APP_ENVIRONMENTS.LL_RPC)
   );
 
   const [balanceUsdt, setBalanceUsdt] = useState(0);
@@ -190,7 +190,7 @@ export default function Mif() {
       const decimals = await (await tokenContractPool).decimals();
       setDecimalsPool(decimals);
     } catch (err) {
-      console.log("err: ", err);
+      console.log("errxxxxx: ", err);
     }
   };
 
@@ -371,7 +371,7 @@ export default function Mif() {
   }, [selectPool]);
 
   return (
-    <SEO title={getPageTitle("Meme Index Fund")}>
+    <SEO title={getPageTitle("Index Funds")}>
       <div className="mif default-container page-layout">
         <div className="mif-container">
           <div className="section-title-content">
@@ -648,11 +648,7 @@ export default function Mif() {
             </div>
 
             <div className="mif-table-txn">
-              <TxnHistories
-                trigger={triggerFetch}
-                metadata={metadata}
-                selectPool={selectPool}
-              />
+              <TxnHistories trigger={triggerFetch} metadata={metadata} selectPool={selectPool} />
             </div>
           </div>
         </div>
