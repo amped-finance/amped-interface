@@ -91,6 +91,11 @@ export default function Mif() {
   }, [oftContract, metadata, walletProvider, selectPool, providerSourceChain]);
 
   useEffect(() => {
+    setAmountBuy("");
+    setAmountSell("");
+  }, [selectPool]);
+
+  useEffect(() => {
     getMetadata();
     getPools();
   }, []);
@@ -190,7 +195,7 @@ export default function Mif() {
       const decimals = await (await tokenContractPool).decimals();
       setDecimalsPool(decimals);
     } catch (err) {
-      console.log("errxxxxx: ", err);
+      console.log("err: ", err);
     }
   };
 
@@ -271,6 +276,7 @@ export default function Mif() {
       }, 2000);
     } catch (error) {
       console.log("error: ", error);
+      helperToast.error(error?.reason);
     } finally {
       setIsLoadingBuy(false);
     }
@@ -333,6 +339,7 @@ export default function Mif() {
       }, 2000);
     } catch (error) {
       console.log("error: ", error);
+      helperToast.error(error?.reason);
     } finally {
       setIsLoadingSell(false);
     }
