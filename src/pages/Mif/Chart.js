@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import Chart from "react-apexcharts";
 import { handleGetDataChart } from "services/tokens/action";
-// import { handleGetDataChart } from "@/services/tokens/action"
 
 const ChartPrice = ({ type, pool }) => {
   const [dataChart, setDataChart] = useState([]);
@@ -32,7 +31,7 @@ const ChartPrice = ({ type, pool }) => {
 
     //Clearing the interval
     return () => clearInterval(interval);
-  }, [timeRequest]);
+  }, [timeRequest, pool]);
 
   const getDataChart = async (type, poolId) => {
     setLoading(true);
