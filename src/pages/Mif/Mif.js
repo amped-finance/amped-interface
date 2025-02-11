@@ -122,7 +122,7 @@ export default function Mif() {
     if (data?.success) {
       setPools(data?.data?.items);
       if (!isEmpty(data?.data?.items)) {
-        setSelectPool(data?.data?.items[7]);
+        setSelectPool(data?.data?.items[0]);
       }
     } else {
       setPools([]);
