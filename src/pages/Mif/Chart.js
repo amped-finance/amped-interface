@@ -3,9 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import Chart from "react-apexcharts";
 import { handleGetDataChart } from "services/tokens/action";
-// import { handleGetDataChart } from "@/services/tokens/action"
 
-const ChartPrice = ({ type }) => {
+const ChartPrice = ({ type, pool }) => {
   const [dataChart, setDataChart] = useState([]);
   const getLocalDate = (timestamp) => {
     const format = moment.utc(timestamp).local().format("MMM DD YYYY, HH:mm");
@@ -20,26 +19,26 @@ const ChartPrice = ({ type }) => {
   const timeRequest = 60 * 1000;
 
   useEffect(() => {
-    if (type) {
-      getDataChart(type);
+    if (type && pool) {
+      getDataChart(type, pool?.metadata?.pool_id);
     }
-  }, [type]);
+  }, [type, pool]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getDataChart(type);
+      getDataChart(type, pool?.metadata?.pool_id);
     }, timeRequest);
 
     //Clearing the interval
     return () => clearInterval(interval);
-  }, [timeRequest]);
+  }, [timeRequest, pool]);
 
-  const getDataChart = async (type) => {
+  const getDataChart = async (type, poolId) => {
     setLoading(true);
-    const data = await handleGetDataChart(type);
+    const data = await handleGetDataChart(type, poolId);
     const reversedData = reverse(data?.data?.stats);
     if (isEmpty(reversedData)) {
-      return;
+      return setDataChart([]);
     }
     setMinTime(reversedData[0][0]);
     const res = map(reversedData, (item) => {

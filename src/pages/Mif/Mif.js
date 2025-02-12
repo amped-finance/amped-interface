@@ -5,21 +5,24 @@ import { getPageTitle } from "lib/legacy";
 import ChartPrice from "./Chart";
 import TxnHistories from "./TxnHistories";
 import { APP_ENVIRONMENTS } from "config/env";
-import { map, isNaN, size } from "lodash";
-import { ChainSupported, computePrice, formatAddress, formatBalance, formatNumber } from "config/helper";
-import Tab from "components/Tab/Tab";
+import { map, isNaN, size, find, toLower, isEmpty } from "lodash";
+import { ChainSupported, formatAddress, formatBalance, formatNumber } from "config/helper";
 import { useEffect, useMemo, useState } from "react";
 import { CurrencyInput } from "components/CurrencyInput/CurrencyInput";
 import { ethers } from "ethers";
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/react";
-import { useMIContract, useMILzContract, useUsdtContract, useUsdtLzContract } from "hooks/useContract";
-import { getIndexFundMasterData, useIndexFundMasterData } from "hooks/useIndexFundFetcher";
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { helperToast } from "lib/helperToast";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { switchNetworkbridge } from "pages/Bridge/data";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import ModalCreateIndex from "./ModalCreateIndex/ModalCreateIndex";
+import { handleGetMetadata, handleGetPools } from "services/tokens/action";
+import { OFT_ABI } from "config/contracts/oft.abi";
+import { ERC20_ABI } from "config/contracts/erc20.abi";
+import { handleGetTokenRefs } from "services/tokens/action";
+import Select from "react-select";
 
 const TAB_OPTIONS_CHART = ["day", "week", "month", "year"];
 const TAB_OPTION_CHART_LABELS = {
@@ -29,17 +32,7 @@ const TAB_OPTION_CHART_LABELS = {
   year: "Year",
 };
 
-const TAB_OPTIONS_ACTION = ["buy", "sell"];
-const TAB_OPTION_ACTION_LABELS = {
-  buy: "BUY",
-  sell: "SELL",
-};
-
-const MIF_PRICE_DECIMALS = 6;
-
-const UNIT_PRICE_TRADING = "0.0002";
-
-const BASE_DIVIDER = 10_000;
+const POOL_PRICE_DECIMALS = 6;
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -52,34 +45,94 @@ export default function Mif() {
   const [amountBuy, setAmountBuy] = useState("");
   const [amountSell, setAmountSell] = useState("");
 
-  const [sourceChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF[ChainSupported.Lightlink]);
-  const [destChain] = useState(APP_ENVIRONMENTS.CHAINS_MIF[ChainSupported.Bsc]);
-
   const { walletProvider } = useWeb3ModalProvider();
   const { isConnected: active, address: account } = useWeb3ModalAccount();
 
   const [providerSourceChain, setProviderSourceChain] = useState(
-    new ethers.providers.JsonRpcProvider(APP_ENVIRONMENTS.CHAINS[sourceChain.KEY].RPC)
+    new ethers.providers.JsonRpcProvider(APP_ENVIRONMENTS.LL_RPC)
   );
 
-  const usdtContract = useUsdtContract(sourceChain.KEY, providerSourceChain);
-  const usdtLzContract = useUsdtLzContract(sourceChain.KEY, providerSourceChain);
-  const miContract = useMIContract(sourceChain.KEY, providerSourceChain);
-  const miLzContract = useMILzContract(sourceChain.KEY, providerSourceChain);
-
   const [balanceUsdt, setBalanceUsdt] = useState(0);
-  const [balanceMi, setBalanceMi] = useState(0);
+  const [balancePool, setBalancePool] = useState(0);
   const [decimalsUsdt, setDecimalsUsdt] = useState(0);
-  const [decimalsMi, setDecimalsMi] = useState(0);
+  const [decimalsPool, setDecimalsPool] = useState(18);
 
   const [triggerFetch, setTriggerFetch] = useState(0);
 
-  const [mifMasterData, setMifMasterData] = useState({
-    totalToken: "0",
-    pools: [],
-    totalValue: 0,
-    poolSize: 0,
-  });
+  const [metadata, setMetadata] = useState();
+  const [tokens, setTokens] = useState([]);
+
+  const [pools, setPools] = useState();
+  const [selectPool, setSelectPool] = useState();
+  const [showModalCreateIndex, setShowModalCreateIndex] = useState(false);
+
+  const oftContract = useMemo(async () => {
+    if (!metadata || !walletProvider || !providerSourceChain) return;
+    const lz_usdt = metadata?.contracts?.source?.lz_usdt?.address;
+    const LZ_ABI = metadata?.contracts?.source?.lz_usdt?.abi;
+    const lzContract = new ethers.Contract(lz_usdt, LZ_ABI, providerSourceChain);
+
+    const usdtAddress = await lzContract.token();
+    return new ethers.Contract(usdtAddress, OFT_ABI, providerSourceChain);
+  }, [metadata, walletProvider, providerSourceChain]);
+
+  const tokenContract = useMemo(async () => {
+    if (!(await oftContract) || !metadata || !walletProvider || !providerSourceChain) return;
+    const token = await (await oftContract).token();
+
+    return new ethers.Contract(token, ERC20_ABI, providerSourceChain);
+  }, [oftContract, metadata, walletProvider, providerSourceChain]);
+
+  const tokenContractPool = useMemo(async () => {
+    if (!metadata || !walletProvider || !selectPool || !providerSourceChain) return;
+    const token = selectPool?.metadata?.token_address;
+
+    return new ethers.Contract(token, ERC20_ABI, providerSourceChain);
+  }, [oftContract, metadata, walletProvider, selectPool, providerSourceChain]);
+
+  useEffect(() => {
+    setAmountBuy("");
+    setAmountSell("");
+  }, [selectPool]);
+
+  useEffect(() => {
+    getMetadata();
+    getPools();
+  }, []);
+
+  useEffect(() => {
+    getListTokens();
+  }, []);
+
+  const getListTokens = async () => {
+    const res = await handleGetTokenRefs();
+    if (res.success) {
+      setTokens(res?.data?.items);
+    } else {
+      setTokens([]);
+    }
+  };
+
+  const getMetadata = async () => {
+    const data = await handleGetMetadata();
+    if (data?.success) {
+      setMetadata(data?.data);
+    } else {
+      setMetadata(undefined);
+    }
+  };
+
+  const getPools = async () => {
+    const data = await handleGetPools();
+    if (data?.success) {
+      setPools(data?.data?.items);
+      if (!isEmpty(data?.data?.items)) {
+        setSelectPool(data?.data?.items[0]);
+      }
+    } else {
+      setPools([]);
+    }
+  };
 
   useEffect(() => {
     if (active && walletProvider) {
@@ -103,58 +156,57 @@ export default function Mif() {
     await switchNetworkbridge(ChainSupported.Lightlink, walletProvider);
   };
 
-  useEffect(() => {
-    getMasterData();
-  }, []);
-
-  const getMasterData = async () => {
-    const data = await getIndexFundMasterData(ChainSupported.Bsc);
-    setMifMasterData(data);
-  };
-
-  const mifPrice = computePrice(mifMasterData.totalToken, mifMasterData.totalValue, Number(decimalsMi ?? 0));
-
   const getBalanceUsdt = async () => {
-    const balance = await usdtContract.balanceOf(account);
+    if (!(await tokenContract)) return;
+    const balance = await (await tokenContract).balanceOf(account);
     setBalanceUsdt(balance);
   };
 
+  useEffect(() => {
+    if (account) {
+      getBalanceUsdt();
+    }
+  }, [account]);
+
   const getDecimalsUsdt = async () => {
-    const decimals = await usdtContract.decimals();
+    if (!(await tokenContract)) return;
+    const decimals = await (await tokenContract).decimals();
     setDecimalsUsdt(decimals);
   };
 
   useEffect(() => {
-    if (usdtContract) {
+    if (tokenContract) {
       getDecimalsUsdt();
       if (active) {
         getBalanceUsdt();
       }
     }
-  }, [usdtContract, active]);
+  }, [tokenContract, active]);
 
-  const getBalanceMi = async () => {
-    const data = await miContract.balanceOf(account);
-    setBalanceMi(data);
+  const getBalancePool = async () => {
+    if (!(await tokenContractPool)) return;
+    const data = await (await tokenContractPool).balanceOf(account);
+    setBalancePool(data);
   };
 
-  const getDecimalsMi = async () => {
+  const getDecimalsPool = async () => {
     try {
-      const decimals = await miContract.decimals();
-      setDecimalsMi(decimals);
+      if (!(await tokenContractPool)) return;
+      const decimals = await (await tokenContractPool).decimals();
+      setDecimalsPool(decimals);
     } catch (err) {
       console.log("err: ", err);
     }
   };
 
   useEffect(() => {
-    if (miContract) {
-      getDecimalsMi();
+    if (tokenContractPool) {
+      getDecimalsPool();
       if (active) {
-        getBalanceMi();
+        getBalancePool();
       }
     }
-  }, [miContract, active]);
+  }, [tokenContractPool, active]);
 
   const buy = async () => {
     if (!walletProvider) return;
@@ -162,61 +214,51 @@ export default function Mif() {
     if (!check) return;
     setIsLoadingBuy(true);
     try {
+      const to = account;
+      const contractAddress = metadata?.contracts?.source?.gateway?.address;
+      const ABI = metadata?.contracts?.source?.gateway?.abi;
+      const eidB = metadata?.chains?.[selectPool?.metadata?.dest_chain]?.lz_eid;
+      const poolId = selectPool?.metadata?.pool_id;
+
+      const gatewayContract = new ethers.Contract(contractAddress, ABI, providerSourceChain);
+
       const options = Options.newOptions()
-        .addExecutorLzReceiveOption(120_000, 0)
-        .addExecutorComposeOption(
-          0,
-          750_000 * mifMasterData.poolSize,
-          ethers.utils.parseEther(UNIT_PRICE_TRADING).mul(mifMasterData.poolSize).toBigInt()
-        )
+        .addExecutorLzReceiveOption(500_000, 0)
+        .addExecutorComposeOption(0, 5_000_000, ethers.utils.parseEther("0.0007").mul(3).toBigInt())
         .toBytes();
 
-      const allowance = (await usdtContract.allowance(account, usdtLzContract.address)).toBigInt();
+      const amount = ethers.utils.parseUnits(amountBuy.toString(), decimalsUsdt);
+      const allowance = await (await tokenContract).allowance(account, gatewayContract.address);
 
-      const amountToSend = ethers.utils.parseUnits(amountBuy.toString(), Number(decimalsUsdt)).toBigInt();
-
-      if (allowance < amountToSend) {
-        const tx = await usdtContract
-          .connect(providerSourceChain)
-          .approve(usdtLzContract.address, ethers.constants.MaxUint256);
-
-        await tx.wait(1);
+      if (Number(allowance) < Number(amount)) {
+        const re = await (await tokenContract).approve(gatewayContract.address, ethers.constants.MaxUint256);
+        await re.wait();
       }
 
-      const composeMessage = ethers.utils.defaultAbiCoder.encode(
-        ["bytes4", "address"],
-        [ethers.utils.id("acquire(uint32,address,uint256)").substring(0, 10), account]
-      );
+      const composeMessage = ethers.utils.defaultAbiCoder.encode(["bytes32", "address"], [poolId, to]);
 
       const sendParam = {
-        dstEid: destChain.EID,
-        to: ethers.utils.hexlify(addressToBytes32(destChain.INDEX_FUND.COMPOSER_CONTRACT.ADDRESS)),
-        amountLD: amountToSend,
-        minAmountLD: 0,
+        dstEid: eidB,
+        to: ethers.utils.hexlify(addressToBytes32(gatewayContract.address)), // addressToBytes32(toAddress),
+        amountLD: amount,
+        minAmountLD: amount,
         extraOptions: ethers.utils.hexlify(options),
         composeMsg: composeMessage,
-        oftCmd: "0x",
+        oftCmd: "0x", // ethers.utils.arrayify('0x'), // Assuming no OFT command is needed
       };
 
-      const oftReceipt = await usdtLzContract.quoteOFT(sendParam);
+      const oftReceipt = await (await oftContract).quoteOFT(sendParam);
       sendParam.minAmountLD = oftReceipt.receipt.amountReceivedLD;
 
       // Get the quote for the send operation
-      const feeQuote = await usdtLzContract.quoteSend(sendParam, false);
+      const feeQuote = await (await oftContract).quoteSend(sendParam, false);
       const nativeFee = feeQuote.nativeFee;
 
-      const params = [sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, account];
-      const gasLimit = await usdtLzContract.estimateGas.send(...params, {
+      const r = await gatewayContract.acquire(eidB, poolId, to, amount, options, {
         value: nativeFee,
       });
 
-      const r = await usdtLzContract.send(...params, {
-        value: nativeFee,
-        gasLimit: gasLimit.mul(150).div(100),
-      });
-      await r.wait(1);
-
-      getBalanceUsdt();
+      await r.wait();
 
       helperToast.success(
         <div>
@@ -227,9 +269,14 @@ export default function Mif() {
           <br />
         </div>
       );
-      setTriggerFetch(Math.random());
+
+      setTimeout(() => {
+        getBalanceUsdt();
+        setTriggerFetch(Math.random());
+      }, 2000);
     } catch (error) {
-      console.log(error);
+      console.log("error: ", error);
+      helperToast.error(error?.reason);
     } finally {
       setIsLoadingBuy(false);
     }
@@ -241,60 +288,40 @@ export default function Mif() {
     if (!check) return;
     setIsLoadingSell(true);
     try {
+      const to = account;
+      const contractAddress = metadata?.contracts?.source?.gateway?.address;
+      const ABI = metadata?.contracts?.source?.gateway?.abi;
+      const eidB = metadata?.chains?.[selectPool?.metadata?.dest_chain]?.lz_eid;
+      const poolId = selectPool?.metadata?.pool_id;
+
+      const gatewayContract = new ethers.Contract(contractAddress, ABI, providerSourceChain);
+
       const options = Options.newOptions()
-        .addExecutorLzReceiveOption(120_000, 0)
-        .addExecutorComposeOption(
-          0,
-          750_000 * mifMasterData.poolSize,
-          ethers.utils.parseEther(UNIT_PRICE_TRADING).mul(mifMasterData.poolSize).toBigInt()
-        )
+        .addExecutorLzReceiveOption(2_000_000, ethers.utils.parseEther("0.0007").mul(3).toBigInt())
         .toBytes();
 
-      const allowance = (await miContract.allowance(account, miLzContract.address)).toBigInt();
+      const amount = ethers.utils.parseUnits(amountSell.toString(), decimalsUsdt);
+      const allowance = await (await tokenContractPool).allowance(account, gatewayContract.address);
 
-      const amountToSend = ethers.utils.parseUnits(amountSell.toString(), Number(decimalsMi)).toBigInt();
-
-      if (allowance < amountToSend) {
-        const tx = await miContract.approve(miLzContract.address, ethers.constants.MaxUint256);
-
-        await tx.wait(1);
+      if (Number(allowance) < Number(amount)) {
+        const re = await (await tokenContractPool).approve(gatewayContract.address, ethers.constants.MaxUint256);
+        await re.wait();
       }
 
-      const composeMessage = ethers.utils.defaultAbiCoder.encode(
-        ["bytes4", "address"],
-        [ethers.utils.id("redeem(uint32,address,uint256)").substring(0, 10), account]
+      const payload = ethers.utils.defaultAbiCoder.encode(
+        ["bytes32", "address", "address", "uint256"],
+        [poolId, account, to, amount]
       );
 
-      const sendParam = {
-        dstEid: destChain.EID,
-        to: ethers.utils.hexlify(addressToBytes32(destChain.INDEX_FUND.COMPOSER_CONTRACT.ADDRESS)),
-        amountLD: amountToSend,
-        minAmountLD: 0,
-        extraOptions: ethers.utils.hexlify(options),
-        composeMsg: composeMessage,
-        oftCmd: "0x",
-      };
+      const feeQuote = await gatewayContract.quote(eidB, payload, options, false);
 
-      const oftReceipt = await miLzContract.quoteOFT(sendParam);
-      sendParam.minAmountLD = oftReceipt.receipt.amountReceivedLD;
-
-      // Get the quote for the send operation
-      const feeQuote = await miLzContract.quoteSend(sendParam, false);
       const nativeFee = feeQuote.nativeFee;
 
-      const params = [sendParam, { nativeFee: nativeFee, lzTokenFee: 0 }, account];
-      const gasLimit = await miLzContract.estimateGas.send(...params, {
+      const r = await gatewayContract.redeem(eidB, poolId, to, amount, options, {
         value: nativeFee,
       });
 
-      const r = await miLzContract.send(...params, {
-        value: nativeFee,
-        gasLimit: gasLimit.mul(150).div(100),
-      });
-
-      await r.wait(1);
-
-      getBalanceMi();
+      await r.wait();
 
       helperToast.success(
         <div>
@@ -306,22 +333,17 @@ export default function Mif() {
         </div>
       );
 
-      setTriggerFetch(Math.random());
+      setTimeout(() => {
+        getBalancePool();
+        setTriggerFetch(Math.random());
+      }, 2000);
     } catch (error) {
       console.log("error: ", error);
+      helperToast.error(error?.reason);
     } finally {
       setIsLoadingSell(false);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getMasterData();
-    }, 120 * 1000);
-
-    //Clearing the interval
-    return () => clearInterval(interval);
-  }, []);
 
   const generateRandomColors = (num) => {
     const colors = [];
@@ -335,11 +357,11 @@ export default function Mif() {
   const listColors = ["#f89422", "#bba033", "#ff2300", "#4c9642"];
 
   const colors = useMemo(() => {
-    if (size(mifMasterData?.pools) > 4) {
-      return [...listColors, ...generateRandomColors(size(mifMasterData?.pools) - 4)];
+    if (size(selectPool?.metadata?.weights) > 4) {
+      return [...listColors, ...generateRandomColors(size(selectPool?.metadata?.weights) - 4)];
     }
     return listColors;
-  }, [mifMasterData]);
+  }, [selectPool]);
 
   const pieData = useMemo(() => {
     return {
@@ -347,36 +369,83 @@ export default function Mif() {
       datasets: [
         {
           label: "Percentage(%)",
-          data: map(mifMasterData.pools, (pool) => formatNumber((pool.poolInfo.weight / BASE_DIVIDER) * 100, 2)),
+          data: map(selectPool?.metadata?.weights, (weight) => formatNumber(weight / 100, 2)),
           backgroundColor: colors,
           borderColor: colors.map((color) => "transparent"),
         },
       ],
     };
-  }, [mifMasterData]);
+  }, [selectPool]);
 
   return (
-    <SEO title={getPageTitle("Meme Index Fund")}>
+    <SEO title={getPageTitle("Index Funds")}>
       <div className="mif default-container page-layout">
         <div className="mif-container">
           <div className="section-title-content">
+            <div className="index-top">
+              <div className="top-left">
+                <Select
+                  name=""
+                  isSearchable={false}
+                  classNamePrefix="component-select"
+                  value={selectPool}
+                  onChange={(value) => {
+                    setSelectPool(value);
+                  }}
+                  options={pools}
+                  components={{
+                    Option: ({ data, innerProps }) => {
+                      return (
+                        <div
+                          className={`custom-option ${
+                            selectPool?.metadata?.token_address === data?.metadata?.token_address
+                              ? "custom-option-selected"
+                              : ""
+                          }`}
+                          {...innerProps}
+                        >
+                          {data?.metadata?.name || data?.metadata?.symbol ? (
+                            <>
+                              {data?.metadata?.name} ({data?.metadata?.symbol})
+                            </>
+                          ) : (
+                            <> </>
+                          )}
+                        </div>
+                      );
+                    },
+                    SingleValue: ({ data }) => (
+                      <div className="custom-option-single">
+                        <span className="custom-option-label">
+                          {data?.metadata?.name || data?.metadata?.symbol ? (
+                            <>
+                              {data?.metadata?.name} ({data?.metadata?.symbol})
+                            </>
+                          ) : (
+                            <> </>
+                          )}
+                        </span>
+                      </div>
+                    ),
+                  }}
+                />
+                <div className="Page-title font-kufam">
+                  <Trans>Index Funds</Trans>
+                </div>
+              </div>
+              <button className="button-secondary" onClick={() => setShowModalCreateIndex(true)}>
+                + Create Index
+              </button>
+            </div>
             <div className="mif-top-page App-card">
-              <div className="Page-title font-kufam">
-                <Trans>
-                  <b className="text-main">MIF</b> - Meme Index Fund
-                </Trans>
-              </div>
               <div className="App-card-title font-kufam">
-                <Trans>Meme Coin Index Fund</Trans>
+                <Trans>Your Portfolio</Trans>
               </div>
-              <div className="Page-description">
-                <ul>
-                  <Trans>
-                    <li>Tokens purchased are held in in smart contracts on the source chain</li>
-                    <li>Your purchased MIF token is redeemable for the underlying tokens on the destination chain</li>
-                    <li>This initial release is only available on BSC Mainnet</li>
-                  </Trans>
-                </ul>
+              <div className="top-price">
+                <div className="label font-kufam">
+                  {selectPool?.metadata?.name} {selectPool?.metadata?.name ? <>({selectPool?.metadata?.symbol})</> : ""}
+                </div>
+                <div>{formatNumber(selectPool?.context?.price || 0, POOL_PRICE_DECIMALS)} USD</div>
               </div>
             </div>
 
@@ -385,7 +454,7 @@ export default function Mif() {
                 <div className="App-card">
                   <div className="App-card-title font-kufam">Price chart</div>
                   <div className="mif-chart">
-                    <ChartPrice type={activeTabChart} />
+                    <ChartPrice type={activeTabChart} pool={selectPool} />
                     <div className="list-tabs tabs-chart">
                       {map(TAB_OPTIONS_CHART, (item, index) => (
                         <div
@@ -396,26 +465,25 @@ export default function Mif() {
                           {TAB_OPTION_CHART_LABELS[item]}
                         </div>
                       ))}
-                      {/* <Tab
-                        options={TAB_OPTIONS_CHART}
-                        optionLabels={TAB_OPTION_CHART_LABELS}
-                        option={activeTabChart}
-                        setOption={setActiveTabChart}
-                        onChange={setActiveTabChart}
-                      /> */}
                     </div>
                   </div>
                 </div>
                 <div className="App-card">
-                  <div className="App-card-title font-kufam">MI Token Composition</div>
+                  <div className="App-card-title font-kufam">Token Composition</div>
                   <div className="chart-pie">
                     <div className="pie-label">
-                      {map(mifMasterData.pools, (pool, index) => (
-                        <div key={index} className="label">
-                          <div className="pie-legend" style={{ backgroundColor: colors[index] }}></div>
-                          <div>{pool.name}</div>
-                        </div>
-                      ))}
+                      {map(selectPool?.metadata?.tokens, (address, index) => {
+                        const token = find(
+                          tokens,
+                          (item) => toLower(item?.metadata?.token_address) === toLower(address)
+                        );
+                        return (
+                          <div key={index} className="label">
+                            <div className="pie-legend" style={{ backgroundColor: colors[index] }}></div>
+                            <div>{token?.metadata?.symbol}</div>
+                          </div>
+                        );
+                      })}
                     </div>
                     <div className="pie-circle">
                       <Pie data={pieData} />
@@ -426,13 +494,6 @@ export default function Mif() {
               <div className="mif-detail-right">
                 <div className="App-card">
                   <div className="list-tabs tabs-action">
-                    {/* <Tab
-                      options={TAB_OPTIONS_ACTION}
-                      optionLabels={TAB_OPTION_ACTION_LABELS}
-                      option={activeTabAction}
-                      setOption={setActiveTabAction}
-                      onChange={setActiveTabAction}
-                    /> */}
                     <div
                       className={`option-tab-action ${activeTabAction === 1 ? "active" : ""}`}
                       onClick={() => setActiveTabAction(1)}
@@ -450,8 +511,8 @@ export default function Mif() {
                     <>
                       <div className="App-card-content">
                         <div className="App-card-row">
-                          <div className="label">MI Price</div>
-                          <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
+                          <div className="label">Price</div>
+                          <div>{formatNumber(selectPool?.context?.price || 0, POOL_PRICE_DECIMALS)} USD</div>
                         </div>
                         <div className="App-card-row">
                           <div className="label">USDT Balance</div>
@@ -476,7 +537,10 @@ export default function Mif() {
                       <div className="App-card-content">
                         <div className="App-card-row">
                           <div className="label">Receive (Estimated)</div>
-                          <div>{0 || formatNumber(amountBuy / mifPrice)} MIF</div>
+                          <div>
+                            {selectPool?.context?.price ? formatNumber(amountBuy / selectPool?.context?.price) : 0}{" "}
+                            {selectPool?.metadata?.symbol}
+                          </div>
                         </div>
                       </div>
                       <div className="mif-action">
@@ -495,11 +559,11 @@ export default function Mif() {
                       <div className="App-card-content">
                         <div className="App-card-row">
                           <div className="label">Price</div>
-                          <div>{formatNumber(mifPrice, MIF_PRICE_DECIMALS)} USD</div>
+                          <div>{formatNumber(selectPool?.context?.price || 0, POOL_PRICE_DECIMALS)} USD</div>
                         </div>
                         <div className="App-card-row">
-                          <div className="label">MI Balance</div>
-                          <div>{formatBalance(balanceMi, decimalsMi)}</div>
+                          <div className="label">{selectPool?.metadata?.symbol} Balance</div>
+                          <div>{formatBalance(balancePool, decimalsPool)}</div>
                         </div>
                       </div>
                       <div className="link-bridge-usdt">
@@ -520,7 +584,7 @@ export default function Mif() {
                       <div className="App-card-content">
                         <div className="App-card-row">
                           <div className="label">Receive (Estimated)</div>
-                          <div>{0 || formatNumber(mifPrice * amountSell)} USDT</div>
+                          <div>{0 || formatNumber((selectPool?.context?.price || 0) * amountSell)} USDT</div>
                         </div>
                       </div>
                       <div className="mif-action">
@@ -539,64 +603,51 @@ export default function Mif() {
                 <div className="App-card">
                   <div className="mif-fund-glance">
                     <div className="App-card-title font-kufam">
-                      <b className="text-main">MI</b> funds at a glance
+                      <b className="text-main">{selectPool?.metadata?.symbol}</b> funds at a glance
                     </div>
 
                     <div className="list-contract">
-                      {map(APP_ENVIRONMENTS.CHAINS_MIF, (chain) => {
-                        return (
-                          <div key={chain.KEY} className="item-contract">
-                            <span className="label">{chain.KEY}</span>
-                            <a
-                              className="text-main"
-                              target="_blank"
-                              rel="noreferrer"
-                              href={`${chain.SCAN}/address/${chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS}`}
-                            >
-                              {formatAddress(chain.LZ.MIF.TOKEN_CONTRACT.ADDRESS)}
-                            </a>
-                          </div>
-                        );
-                      })}
+                      <div className="item-contract">
+                        <span className="label">LIGHTLINK</span>
+                        <a
+                          className="text-main"
+                          target="_blank"
+                          rel="noreferrer"
+                          href={`${APP_ENVIRONMENTS.LL_SCAN}/address/${selectPool?.metadata?.token_address}`}
+                        >
+                          {formatAddress(selectPool?.metadata?.token_address || "")}
+                        </a>
+                      </div>
                     </div>
 
                     <div className="mif-pool">
-                      {map(mifMasterData.pools, (pool) => {
+                      {map(selectPool?.metadata?.tokens || [], (address) => {
+                        const token = find(
+                          tokens,
+                          (item) => toLower(item?.metadata?.token_address) === toLower(address)
+                        );
                         return (
-                          <div key={pool.address}>
+                          <div key={address}>
                             <div className="item-token">
-                              <span className="label-name label">{pool.name}</span>
-                              <span className="text-main">{formatBalance(pool.totalHolding, pool.decimals)}</span>
+                              <span className="label-name label">{token?.metadata?.symbol}</span>
+                              <span className="text-main">
+                                {formatBalance(
+                                  selectPool?.context?.tokens?.[address]?.total_holding,
+                                  selectPool?.context?.tokens?.[address]?.decimals
+                                )}
+                              </span>
                             </div>
                           </div>
                         );
                       })}
                     </div>
 
-                    {/* <table className="mif-table Exchange-list App-box">
-                      <thead>
-                        <tr>
-                          <th>
-                            <Trans>Token Name</Trans>
-                          </th>
-                          <th>
-                            <Trans>Quantity</Trans>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {map(mifMasterData.pools, (pool, index) => (
-                          <tr key={index}>
-                            <td>{pool.name}</td>
-                            <td>{formatBalance(pool.totalHolding, pool.decimals)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table> */}
-
                     <div className="total-tokens">
                       <span className="label">Total Tokens Issued:</span>
-                      <div className="text-main">{formatBalance(mifMasterData.totalToken, decimalsMi)} MI</div>
+                      <div className="text-main">
+                        {formatBalance(selectPool?.context?.total_issued || 0, decimalsPool)}{" "}
+                        {selectPool?.metadata?.symbol}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -604,10 +655,18 @@ export default function Mif() {
             </div>
 
             <div className="mif-table-txn">
-              <TxnHistories trigger={triggerFetch} />
+              <TxnHistories trigger={triggerFetch} metadata={metadata} selectPool={selectPool} />
             </div>
           </div>
         </div>
+        {showModalCreateIndex && (
+          <ModalCreateIndex
+            isVisible={showModalCreateIndex}
+            setIsVisible={setShowModalCreateIndex}
+            metadata={metadata}
+            tokens={tokens}
+          />
+        )}
       </div>
     </SEO>
   );

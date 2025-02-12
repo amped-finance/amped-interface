@@ -112,11 +112,7 @@ export const OFT_ABI = [
       {
         components: [
           { internalType: "uint256", name: "amountSentLD", type: "uint256" },
-          {
-            internalType: "uint256",
-            name: "amountReceivedLD",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "amountReceivedLD", type: "uint256" },
         ],
         internalType: "struct OFTReceipt",
         name: "receipt",
@@ -257,4 +253,4 @@ export const OFT_ABI = [
     stateMutability: "view",
     type: "function",
   },
-]
+];

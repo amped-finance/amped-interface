@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { isEmpty } from "lodash";
+import { isEmpty, toLower } from "lodash";
 import moment from "moment";
 import { APP_ENVIRONMENTS } from "config/env";
 import { ShareSvg } from "pages/Bridge/ShareSvg";
@@ -7,18 +7,18 @@ import { Trans } from "@lingui/macro";
 import { handleGetHistories } from "services/layerZero/layerZero";
 import { useWeb3ModalAccount } from "@web3modal/ethers5/react";
 
-const TxnHistories = ({ trigger }) => {
+const TxnHistories = ({ trigger, metadata, selectPool }) => {
   const [dataHistories, setDataHistories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { address: account } = useWeb3ModalAccount();
 
   useEffect(() => {
-    if (account) {
+    if (account && metadata && selectPool) {
       getHistory(account);
     } else {
       setDataHistories([]);
     }
-  }, [account, trigger]);
+  }, [account, trigger, metadata, selectPool]);
 
   const getHistory = async (account) => {
     setLoading(true);
@@ -27,11 +27,12 @@ const TxnHistories = ({ trigger }) => {
       setDataHistories(
         response.data.data.filter(
           (item) =>
-            !isEmpty(item?.destination?.lzCompose?.txs) &&
-            item?.destination?.lzCompose?.txs[0]?.to?.toLowerCase() ===
-              APP_ENVIRONMENTS.CHAINS_MIF.BSC.INDEX_FUND?.COMPOSER_CONTRACT.ADDRESS.toLowerCase()
+            toLower(item?.destination?.lzCompose?.txs?.[0]?.to) ===
+              toLower(metadata?.contracts?.edge?.[selectPool?.metadata?.dest_chain]?.gateway?.address) ||
+            toLower(item?.pathway?.sender?.address) === toLower(metadata?.contracts?.source?.gateway?.address)
         )
       );
+
       setLoading(false);
     }
     if (response?.error) {
@@ -71,10 +72,10 @@ const TxnHistories = ({ trigger }) => {
             </thead>
             <tbody>
               {dataHistories.map((item, index) => (
-                <tr>
+                <tr key={index}>
                   <td>
-                    {item?.pathway?.receiver?.address ===
-                    APP_ENVIRONMENTS.CHAINS_MIF.BSC.LZ.MIF.LZ_CONTRACT.ADDRESS.toLowerCase() ? (
+                    {toLower(item?.pathway?.sender?.address) ===
+                    toLower(metadata?.contracts?.source?.gateway?.address) ? (
                       <span className="text-red">Sell</span>
                     ) : (
                       <span className="text-green">Buy</span>

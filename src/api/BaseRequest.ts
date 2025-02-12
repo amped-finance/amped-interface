@@ -30,13 +30,7 @@ export class BaseRequest {
     return `${this._route}${url}`;
   }
 
-  public async get(
-    url: string,
-    params = {},
-    opts?: {
-      access_token?: string;
-    }
-  ) {
+  public async get(url: string, params = {}, headers = {}) {
     try {
       const config = {
         params,
@@ -44,7 +38,7 @@ export class BaseRequest {
 
       const response = await this._client.get(this._getUrl(url), {
         ...config,
-        headers: {},
+        headers,
       });
       return this._responseHandler(response);
     } catch (error) {

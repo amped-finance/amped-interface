@@ -6,8 +6,29 @@
   width: 100%;
 }
 
+.index-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.index-top .top-left {
+  display: flex;
+  gap: 1rem;
+}
+
 .mif-top-page {
   margin-bottom: 3rem;
+}
+
+.mif-top-page .top-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dark-blue-bg);
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
 .mif-detail {
@@ -26,6 +47,7 @@
   gap: 1.6rem;
   background-color: var(--dark-blue-bg);
   margin-top: 1rem;
+  border-radius: 1rem;
 }
 
 .mif-chart .tabs-chart .option-tab-chart {
