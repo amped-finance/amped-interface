@@ -11,7 +11,7 @@ export const UNICHAINTESTNET = 1301
 export const SONIC = 146
 export const BERACHAIN = 80094
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = SONIC;
+export const DEFAULT_CHAIN_ID = PHOENIX;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const SUPPORTED_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN];
