@@ -82,7 +82,7 @@ export function AppHeaderLinks({
         items={[
           { 
             label: <Trans>Docs</Trans>, 
-            to: "https://amped.gitbook.io/amped/"
+            to: "https://docs.amped.finance"
           },
           { 
             label: <Trans>Analytics</Trans>, 
