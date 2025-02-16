@@ -14,9 +14,9 @@ export const BERACHAIN = 80094
 export const DEFAULT_CHAIN_ID = PHOENIX;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN];
+export const SUPPORTED_CHAIN_IDS = [PHOENIX, SONIC];
 
-export const ACTIVE_CHAIN_IDS = [PHOENIX, SONIC, BERACHAIN]
+export const ACTIVE_CHAIN_IDS = [PHOENIX, SONIC]
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
@@ -228,7 +228,8 @@ export const SONIC_RPC_PROVIDER = [
 ];
 
 export const BERACHAIN_RPC_PROVIDER = [
-  "https://rpc.berachain.com",
+  "https://berachain-rpc.publicnode.com",  // Alternative endpoint
+  "https://rpc.berachain.com"         // Current endpoint as fallback
 ];
 
 
