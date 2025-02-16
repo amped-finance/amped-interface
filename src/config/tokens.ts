@@ -983,10 +983,6 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       sonic: "https://sonicscan.org/token/0x29219dd400f2bf60e5a23d13be72b486d4038894",
     },
-    EURC: {
-      coingecko: "https://www.coingecko.com/en/coins/eurc",
-      sonic: "https://sonicscan.org/token/0xe715cba7b5ccb33790cebff1436809d36cb17e57",
-    },
     WS: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-sonic",
       sonic: "https://sonicscan.org/token/0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",

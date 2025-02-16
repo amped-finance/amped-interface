@@ -59,13 +59,13 @@ export const SUBGRAPH_URLS = {
   },
 
   [SONIC]: {
-    stats: "https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",
-    referrals: "https://api.studio.thegraph.com/query/91379/amped-referrals-sonic/version/latest",
-    trades:"https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",  
-    raw:"https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",  
-    price: "https://api.studio.thegraph.com/query/91379/amped-trades-sonic/version/latest",
-    ordernew: "https://api.studio.thegraph.com/query/91379/amped-orders-sonic/version/latest",
-    points: "https://api.studio.thegraph.com/query/91379/amped-leaderboard-sonic/version/latest"
+    stats: "https://api.studio.thegraph.com/query/91379/trades-sonic/version/latest",
+    referrals: "https://api.studio.thegraph.com/query/91379/referrals-sonic/version/latest",
+    trades:"https://api.studio.thegraph.com/query/91379/trades-sonic/version/latest",  
+    raw:"https://api.studio.thegraph.com/query/91379/trades-sonic/version/latest",  
+    price: "https://api.studio.thegraph.com/query/91379/trades-sonic/version/latest",
+    ordernew: "https://api.studio.thegraph.com/query/91379/orders-sonic/version/latest",
+    points: "https://api.studio.thegraph.com/query/91379/leaderboard-sonic/version/latest"
   },
 
   [BERACHAIN]: {
