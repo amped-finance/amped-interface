@@ -82,13 +82,13 @@
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "pre-commit": "yarn test --watchAll=false && yarn lint",
-    "prepare": "yarn install && husky install && yarn lingui:prepare",
+    "prepare": "husky install",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit",
-    "postinstall": "husky install"
+    "postinstall": "yarn lingui:prepare"
   },
   "browserslist": {
     "production": [
@@ -119,5 +119,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "npm@10.8.2"
 }
