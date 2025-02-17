@@ -7,7 +7,7 @@ export function UpdateBanner() {
       <div className="update-banner-content">
         Sonic contracts have been re-deployed, see the announcement for more details &nbsp;
         <a 
-          href="https://twitter.com/AmpedFinance/status/1891308056752869753" 
+          href="https://x.com/AmpedFinance/status/1891308056752869753" 
           target="_blank" 
           rel="noopener noreferrer"
           className="update-banner-link"
