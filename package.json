@@ -61,34 +61,29 @@
     "swr": "0.4.2",
     "typescript": "latest",
     "web-vitals": "1.1.2",
-    "@wagmi/core": "^1.4.13",
-    "viem": "^1.21.4"
+    "web3modal": "^1.9.12"
   },
   "resolutions": {
-    "react-error-overlay": "6.0.9",
-    "@rollup/plugin-terser": "^0.4.4",
-    "eslint": "^8.57.0",
-    "web3modal": "^1.9.12"
+    "react-error-overlay": "6.0.9"
   },
   "scripts": {
     "start": "PORT=3010 react-scripts start",
-    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
+    "start-home": "npm run lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
+    "start-app": "npm run lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
     "start-win": "set PORT=3010&react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
     "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src",
-    "pre-commit": "yarn test --watchAll=false && yarn lint",
-    "prepare": "husky install",
+    "lint": "node node_modules/.bin/eslint src",
+    "pre-commit": "npm run test -- --watchAll=false && npm run lint",
+    "prepare": "husky install && npm run lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
-    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:prepare": "NODE_ENV=development npm run extract && npm run compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit",
-    "postinstall": "yarn lingui:prepare"
+    "tscheck": "tsc -p tsconfig.json --noEmit"
   },
   "browserslist": {
     "production": [
@@ -119,5 +114,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "npm@10.8.2"
+  "packageManager": "npm"
 }

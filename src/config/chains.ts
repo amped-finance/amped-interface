@@ -228,8 +228,7 @@ export const SONIC_RPC_PROVIDER = [
 ];
 
 export const BERACHAIN_RPC_PROVIDER = [
-  "https://berachain-rpc.publicnode.com",  // Alternative endpoint
-  "https://rpc.berachain.com"         // Current endpoint as fallback
+  "https://rpc.berachain.com",
 ];
 
 
