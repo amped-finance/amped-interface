@@ -487,15 +487,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       isShortable: true,
       imageUrl: "https://sonicscan.org/token/images/usdc_32.png",
-    },
-    {
-      name: "EURC",
-      symbol: "EURC",
-      address: "0xe715cba7b5ccb33790cebff1436809d36cb17e57",
-      decimals: 6,
-      isStable: true,
-      isShortable: true,
-      imageUrl: "https://sonicscan.org/token/images/eurc_32.png",
     }    
   ],
   [BERACHAIN]: [
@@ -982,10 +973,6 @@ export const ICONLINKS = {
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       sonic: "https://sonicscan.org/token/0x29219dd400f2bf60e5a23d13be72b486d4038894",
-    },
-    EURC: {
-      coingecko: "https://www.coingecko.com/en/coins/eurc",
-      sonic: "https://sonicscan.org/token/0xe715cba7b5ccb33790cebff1436809d36cb17e57",
     },
     WS: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-sonic",
