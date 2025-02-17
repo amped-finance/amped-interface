@@ -3,6 +3,7 @@ import cx from "classnames";
 
 import { AppHeaderUser } from "./AppHeaderUser";
 import { AppHeaderLinks } from "./AppHeaderLinks";
+import { UpdateBanner } from "./UpdateBanner";
 
 import logoImg from "img/logo_with_name.svg";
 import logoSmallImg from "img/logo.svg";
@@ -140,6 +141,7 @@ export function Header({
           </div>
         </div>
       </header>
+      <UpdateBanner />
       <AnimatePresence>
         {isDrawerVisible && (
           <motion.div

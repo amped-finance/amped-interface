@@ -1,0 +1,30 @@
+.update-banner {
+  width: 100%;
+  background-color: #2d2d3d;
+  padding: 8px 0;
+  text-align: center;
+  font-size: 14px;
+  position: relative;
+  z-index: 10;
+}
+
+.update-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  color: #ffffff;
+  position: relative;
+}
+
+.update-banner-link {
+  color: #00b8d8;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  z-index: 11;
+}
+
+.update-banner-link:hover {
+  text-decoration: underline;
+} 
