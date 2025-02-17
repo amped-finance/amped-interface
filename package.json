@@ -61,10 +61,14 @@
     "swr": "0.4.2",
     "typescript": "latest",
     "web-vitals": "1.1.2",
-    "web3modal": "^1.9.12"
+    "@wagmi/core": "^1.4.13",
+    "viem": "^1.21.4"
   },
   "resolutions": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^8.57.0",
+    "web3modal": "^1.9.12"
   },
   "scripts": {
     "start": "PORT=3010 react-scripts start",
@@ -78,12 +82,13 @@
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "pre-commit": "yarn test --watchAll=false && yarn lint",
-    "prepare": "husky install && yarn lingui:prepare",
+    "prepare": "yarn install && husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit"
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "postinstall": "husky install"
   },
   "browserslist": {
     "production": [
@@ -114,5 +119,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@3.1.0"
 }
